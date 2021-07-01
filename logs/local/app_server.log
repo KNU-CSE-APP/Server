@@ -1,0 +1,29 @@
+2021-07-01 22:56:10- INFO  - Starting MobileAppApplication using Java 11.0.11 on nowwater with PID 3616 (C:\Users\ggolo\Server\build\classes\java\main started by ggolo in C:\Users\ggolo\Server)
+2021-07-01 22:56:10- INFO  - No active profile set, falling back to default profiles: default
+2021-07-01 22:56:11- INFO  - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-07-01 22:56:11- INFO  - Finished Spring Data repository scanning in 8 ms. Found 0 JPA repository interfaces.
+2021-07-01 22:56:12- INFO  - Tomcat initialized with port(s): 8080 (http)
+2021-07-01 22:56:12- INFO  - Initializing ProtocolHandler ["http-nio-8080"]
+2021-07-01 22:56:12- INFO  - Starting service [Tomcat]
+2021-07-01 22:56:12- INFO  - Starting Servlet engine: [Apache Tomcat/9.0.48]
+2021-07-01 22:56:12- INFO  - Initializing Spring embedded WebApplicationContext
+2021-07-01 22:56:12- INFO  - Root WebApplicationContext: initialization completed in 1538 ms
+2021-07-01 22:56:12- INFO  - HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-07-01 22:56:12- INFO  - HHH000412: Hibernate ORM core version 5.4.32.Final
+2021-07-01 22:56:12- INFO  - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-07-01 22:56:12- INFO  - HikariPool-1 - Starting...
+2021-07-01 22:56:12- INFO  - HikariPool-1 - Start completed.
+2021-07-01 22:56:13- INFO  - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2021-07-01 22:56:13- INFO  - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-07-01 22:56:13- INFO  - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-07-01 22:56:13- WARN  - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-07-01 22:56:13- INFO  - Mapped URL path [/v2/api-docs] onto method [springfox.documentation.swagger2.web.Swagger2Controller#getDocumentation(String, HttpServletRequest)]
+2021-07-01 22:56:13- INFO  - Starting ProtocolHandler ["http-nio-8080"]
+2021-07-01 22:56:13- INFO  - Tomcat started on port(s): 8080 (http) with context path ''
+2021-07-01 22:56:13- INFO  - Context refreshed
+2021-07-01 22:56:13- INFO  - Found 1 custom documentation plugin(s)
+2021-07-01 22:56:13- INFO  - Scanning for api listing references
+2021-07-01 22:56:14- INFO  - Started MobileAppApplication in 3.86 seconds (JVM running for 5.058)
+2021-07-01 22:56:30- INFO  - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-07-01 22:56:31- INFO  - Initializing Servlet 'dispatcherServlet'
+2021-07-01 22:56:31- INFO  - Completed initialization in 1 ms
