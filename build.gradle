@@ -30,8 +30,20 @@ dependencies {
 	//swagger
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+
+	//mysql
+	implementation 'mysql:mysql-connector-java'
+
+	//actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 test {
 	useJUnitPlatform()
+}
+
+// Spring Profile 등록 - 프로필 별 자원 이용
+bootRun {
+	String activeProfile = System.properties['spring.profiles.active']
+	systemProperty "spring.profiles.active", activeProfile
 }
