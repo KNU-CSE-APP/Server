@@ -12,6 +12,11 @@ public class WebRestController {
 
     private final Environment env;
 
+    @GetMapping("/")
+    public String index(){
+        return "현재 Profile " + Arrays.stream(env.getActiveProfiles()).findFirst().orElse("");
+    }
+
     @GetMapping("/profile")
     public String getProfile(){
         return Arrays.stream(env.getActiveProfiles()).findFirst().orElse("");
