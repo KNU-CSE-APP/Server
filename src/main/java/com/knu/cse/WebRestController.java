@@ -14,7 +14,7 @@ public class WebRestController {
 
     @GetMapping("/")
     public String index(){
-        return "현재 Profile " + Arrays.stream(env.getActiveProfiles()).findFirst().orElse("") + " - CI/CD 구축 완료";
+        return "현재 Profile " + Arrays.stream(env.getActiveProfiles()).findFirst().orElse("") + " - CI/CD 구축 TEST";
     }
 
     @GetMapping("/profile")
