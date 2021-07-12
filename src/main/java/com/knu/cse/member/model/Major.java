@@ -1,4 +1,4 @@
-package com.knu.cse.domain.userConfig;
+package com.knu.cse.member.model;
 
 public enum Major {
     ADVANCED, GLOBAL
