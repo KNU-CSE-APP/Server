@@ -2,6 +2,7 @@ package com.knu.cse.domain;
 
 import com.knu.cse.Board.domain.Board;
 import com.knu.cse.Board.domain.WriteBoard;
+import com.knu.cse.Comment.domain.WriteComment;
 import com.knu.cse.domain.userConfig.Gender;
 import com.knu.cse.domain.userConfig.Major;
 import com.knu.cse.domain.userConfig.UserRole;
@@ -50,6 +51,9 @@ public class User {
 
     @OneToMany(mappedBy="member")
     private List<WriteBoard> boardList;
+
+    @OneToMany(mappedBy="member")
+    private List<WriteComment> commentList;
 
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();

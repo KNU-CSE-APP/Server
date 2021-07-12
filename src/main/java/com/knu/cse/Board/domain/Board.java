@@ -1,6 +1,7 @@
 package com.knu.cse.Board.domain;
 
 
+import com.knu.cse.Comment.domain.Comment;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
@@ -38,5 +39,8 @@ public class Board {
     private LocalDateTime date;
 
     @OneToMany(mappedBy="board")
-    private List<WriteBoard> writenUserList;
+    private List<WriteBoard> writerList;
+
+    @OneToMany(mappedBy="board")
+    private List<Comment> commentList;
 }
