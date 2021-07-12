@@ -17,7 +17,7 @@ spring:
     type: redis
 
   jwt:
-    secret: aoneeJjangjwt
+    secret: secretKey
 
   mail:
     host: smtp.gmail.com
