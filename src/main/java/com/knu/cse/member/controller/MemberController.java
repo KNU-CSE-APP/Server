@@ -37,7 +37,7 @@ public class MemberController {
     public Response signIn(@Valid @RequestBody SignInForm signInForm, HttpServletRequest req, HttpServletResponse res) throws Exception {
         try {
             final Member member = authService.loginUser(signInForm);
-            final String token = jwtUtil.generateToken(member);
+            final String token = jwtUtil.generateToken(member.getUsername());
             final String refreshJwt = jwtUtil.generateRefreshToken(member);
             Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
             Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);

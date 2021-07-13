@@ -48,8 +48,8 @@ public class JwtUtil {
         return expiration.before(new Date());
     }
 
-    public String generateToken(Member member) {
-        return doGenerateToken(member.getUsername(), TOKEN_VALIDATION_SECOND);
+    public String generateToken(String username) {
+        return doGenerateToken(username, TOKEN_VALIDATION_SECOND);
     }
 
     public String generateRefreshToken(Member member) {

@@ -27,4 +27,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //http.formLogin()
         //    .loginPage("/signIn").permitAll();
     }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+            .mvcMatchers("/node_modules/**")
+            .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
 }
