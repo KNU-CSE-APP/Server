@@ -1,6 +1,5 @@
 package com.knu.cse.domain;
 
-import com.knu.cse.Board.domain.Board;
 import com.knu.cse.Board.domain.WriteBoard;
 import com.knu.cse.Comment.domain.WriteComment;
 import com.knu.cse.domain.userConfig.Gender;
@@ -14,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Entity
 @Builder

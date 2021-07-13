@@ -1,6 +1,7 @@
 package com.knu.cse.Comment.domain;
 
 import com.knu.cse.Board.domain.Board;
+import com.knu.cse.reply.domain.Reply;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
@@ -35,9 +36,11 @@ public class Comment {
     @JoinColumn(name="board_id")
     private Board board;
 
-    @OneToMany
-    @JoinColumn(name="comment_id")
+    @OneToMany(mappedBy = "comment")
     private List<WriteComment> commenterList;
+
+    @OneToMany(mappedBy = "comment")
+    private List<Reply> replyList;
 
     public void setBoard(Board board){
         if(board.getId()!=null){
