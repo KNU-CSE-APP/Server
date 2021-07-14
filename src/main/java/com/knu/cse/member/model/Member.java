@@ -1,6 +1,9 @@
 package com.knu.cse.member.model;
 
 import com.knu.cse.base.BaseTimeEntity;
+import com.knu.cse.board.domain.WriteBoard;
+import com.knu.cse.comment.domain.WriteComment;
+import java.util.List;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,5 +36,11 @@ public class Member extends BaseTimeEntity {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private MemberRole role = MemberRole.ROLE_NOT_PERMITTED;
+
+    @OneToMany(mappedBy="member")
+    private List<WriteBoard> boardList;
+
+    @OneToMany(mappedBy="member")
+    private List<WriteComment> commentList;
 
 }
