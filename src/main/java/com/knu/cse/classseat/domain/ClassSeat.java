@@ -11,11 +11,13 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString(of = {"id","number","status"})
+
 public class ClassSeat {
 
     @Id @GeneratedValue
     @Column(name = "seat_id")
     private Long id;
+
     private Integer number;
 
     @Enumerated(EnumType.STRING)
@@ -27,6 +29,7 @@ public class ClassSeat {
 
     @OneToOne(mappedBy = "classSeat")
     private Reservation reservation;
+
 
     public void setClassRoom(ClassRoom classRoom){
         if (this.classRoom != null){
@@ -46,3 +49,4 @@ public class ClassSeat {
 
 
 }
+

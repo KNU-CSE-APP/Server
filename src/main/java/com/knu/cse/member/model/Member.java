@@ -1,6 +1,9 @@
 package com.knu.cse.member.model;
 
 import com.knu.cse.base.BaseTimeEntity;
+import com.knu.cse.board.domain.WriteBoard;
+import com.knu.cse.comment.domain.WriteComment;
+import java.util.List;
 import javax.persistence.*;
 
 import com.knu.cse.reservation.domain.Reservation;
@@ -38,7 +41,15 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private MemberRole role = MemberRole.ROLE_NOT_PERMITTED;
 
+
     @OneToMany(mappedBy = "member")
     private List<Reservation> reservations;
+
+    @OneToMany(mappedBy="member")
+    private List<WriteBoard> boardList;
+
+    @OneToMany(mappedBy="member")
+    private List<WriteComment> commentList;
+
 
 }
