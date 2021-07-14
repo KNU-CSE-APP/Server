@@ -1,8 +1,8 @@
 package com.knu.cse.classroom.domain;
 
 import com.knu.cse.classseat.domain.ClassSeat;
+import com.knu.cse.reservation.domain.Reservation;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,8 @@ import java.util.List;
 @Entity
 @Table(name = "CLASS_ROOM")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @ToString(of = {"id","number","building","totalSeats"})
 public class ClassRoom {
@@ -33,5 +35,4 @@ public class ClassRoom {
         this.building = building;
         this. totalSeats = totalSeats;
     }
-
 }
