@@ -9,26 +9,40 @@ import javax.persistence.*;
 @Entity
 @Table(name = "CLASS_SEAT")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Getter
-@Builder
+@ToString(of = {"id","number","status"})
 public class ClassSeat {
 
     @Id @GeneratedValue
     @Column(name = "seat_id")
     private Long id;
-
     private Integer number;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="room_id")
     private ClassRoom classRoom;
 
     @OneToOne(mappedBy = "classSeat")
     private Reservation reservation;
+
+    public void setClassRoom(ClassRoom classRoom){
+        if (this.classRoom != null){
+            this.classRoom.getClassSeats().remove(this);
+        }
+        this.classRoom = classRoom;
+        classRoom.getClassSeats().add(this);
+    }
+
+    public ClassSeat(Integer number, Status status, ClassRoom classRoom){
+        this.number = number;
+        this.status = status;
+        setClassRoom(classRoom);
+
+    }
+
 
 
 }
