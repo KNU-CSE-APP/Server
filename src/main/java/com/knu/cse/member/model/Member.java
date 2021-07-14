@@ -2,11 +2,15 @@ package com.knu.cse.member.model;
 
 import com.knu.cse.base.BaseTimeEntity;
 import javax.persistence.*;
+
+import com.knu.cse.reservation.domain.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -33,5 +37,8 @@ public class Member extends BaseTimeEntity {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private MemberRole role = MemberRole.ROLE_NOT_PERMITTED;
+
+    @OneToMany(mappedBy = "member")
+    private List<Reservation> reservations;
 
 }
