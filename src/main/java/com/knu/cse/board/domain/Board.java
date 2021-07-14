@@ -1,7 +1,7 @@
-package com.knu.cse.Board.domain;
+package com.knu.cse.board.domain;
 
 
-import com.knu.cse.Comment.domain.Comment;
+import com.knu.cse.comment.domain.Comment;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;

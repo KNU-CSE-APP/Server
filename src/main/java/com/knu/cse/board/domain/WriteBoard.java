@@ -1,7 +1,7 @@
-package com.knu.cse.Comment.domain;
+package com.knu.cse.board.domain;
 
 
-import com.knu.cse.Board.domain.Board;
+import com.knu.cse.Member.domain.Member;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,35 +12,35 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class WriteComment {
+public class WriteBoard {
 
     @Id
     @GeneratedValue
-    @Column(name="write_comment_id")
+    @Column(name="write_board_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="comment_id")
-    private Comment comment;
+    @JoinColumn(name="board_id")
+    private Board board;
 
     @ManyToOne
     @JoinColumn(name="member_id")
     private Member member;
 
+
     public void setMember(Member member){
         if(member.getId()!=null){
-            member.getCommentList().remove(this);
+            member.getBoardList().remove(this);
         }
         this.member=member;
-        member.getCommentList().add(this);
+        member.getBoardList().add(this);
     }
 
-    public void setComment(Comment comment){
-        if(comment.getId()!=null){
-            comment.getCommenterList().remove(this);
+    public void setBoard(Board board){
+        if(board.getId()!=null){
+            board.getWriterList().remove(this);
         }
-        this.comment=comment;
-        comment.getCommenterList().add(this);
+        this.board=board;
+        board.getWriterList().add(this);
     }
-
 }
