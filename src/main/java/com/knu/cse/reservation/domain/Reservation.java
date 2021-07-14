@@ -1,15 +1,18 @@
 package com.knu.cse.reservation.domain;
 
+import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.member.model.Member;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-public class Reservation {
+@NoArgsConstructor
+public class Reservation extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name="reservation_id")
@@ -34,8 +37,8 @@ public class Reservation {
         member.getReservations().add(this);
     }
 
-    public Reservation(LocalDateTime dueDate, Long extensionNum, ClassSeat classSeat, Member member){
-        this.dueDate = dueDate;
+    public Reservation(Long extensionNum, ClassSeat classSeat, Member member){
+        this.dueDate = LocalDateTime.now().plusHours(6);
         this.extensionNum = extensionNum;
         this.classSeat = classSeat;
         setMember(member);

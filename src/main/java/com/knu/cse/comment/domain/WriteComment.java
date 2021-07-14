@@ -1,6 +1,6 @@
 package com.knu.cse.comment.domain;
 
-
+import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.member.model.Member;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class WriteComment {
+public class WriteComment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

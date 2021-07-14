@@ -2,6 +2,7 @@ package com.knu.cse.board.domain;
 
 
 
+import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.member.model.Member;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +14,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class WriteBoard {
+public class WriteBoard extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

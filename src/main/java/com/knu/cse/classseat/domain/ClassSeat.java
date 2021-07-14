@@ -1,5 +1,6 @@
 package com.knu.cse.classseat.domain;
 
+import com.knu.cse.base.BaseEntity;
 import com.knu.cse.classroom.domain.ClassRoom;
 import com.knu.cse.reservation.domain.Reservation;
 import lombok.*;
@@ -11,8 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString(of = {"id","number","status"})
-
-public class ClassSeat {
+public class ClassSeat extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "seat_id")

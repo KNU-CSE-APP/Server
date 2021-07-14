@@ -1,8 +1,7 @@
 package com.knu.cse.board.domain;
 
-
+import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.comment.domain.Comment;
-import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor @AllArgsConstructor
 @Builder
 @Getter
-public class Board {
+public class Board extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
@@ -35,8 +34,6 @@ public class Board {
     private String content;
 
     private String author;
-
-    private LocalDateTime date;
 
     @OneToMany(mappedBy="board")
     private List<WriteBoard> writerList;

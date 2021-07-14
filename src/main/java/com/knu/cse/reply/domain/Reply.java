@@ -1,7 +1,7 @@
 package com.knu.cse.reply.domain;
 
+import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.comment.domain.Comment;
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class Reply {
+public class Reply extends BaseTimeEntity {
 
 
     @Id
@@ -25,8 +25,6 @@ public class Reply {
     private Long id;
 
     private String content;
-
-    private LocalDateTime date;
 
     private String author;
 
