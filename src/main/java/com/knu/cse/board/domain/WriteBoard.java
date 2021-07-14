@@ -1,7 +1,8 @@
 package com.knu.cse.board.domain;
 
 
-import com.knu.cse.Member.domain.Member;
+
+import com.knu.cse.member.model.Member;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
