@@ -1,17 +1,23 @@
 package com.knu.cse.member.model;
 
+import com.knu.cse.base.BaseTimeEntity;
+import com.knu.cse.board.domain.WriteBoard;
+import com.knu.cse.comment.domain.WriteComment;
+import java.util.List;
 import javax.persistence.*;
+import com.knu.cse.reservation.domain.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
 @Entity
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 @Getter
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "member_id")
@@ -36,4 +42,13 @@ public class Member {
     public void changeRole(MemberRole memberRole){
         this.role = memberRole;
     }
+
+    @OneToMany(mappedBy = "member")
+    private List<Reservation> reservations;
+
+    @OneToMany(mappedBy="member")
+    private List<WriteBoard> boardList;
+
+    @OneToMany(mappedBy="member")
+    private List<WriteComment> commentList;
 }
