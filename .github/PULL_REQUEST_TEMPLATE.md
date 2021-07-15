@@ -2,12 +2,12 @@
 
 ## 종류
 
-- [] New Feature
-- [] Bug Fix
-- [] Setup
-- [] Chore
-- [] Test
-- [] Refactor
+- [ ] New Feature
+- [ ] Bug Fix
+- [ ] Setup
+- [ ] Chore
+- [ ] Test
+- [ ] Refactor
 
 ## 작업 내용
 
