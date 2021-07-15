@@ -1,4 +1,4 @@
-package com.knu.cse;
+/*package com.knu.cse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -104,4 +104,4 @@ public class AuthServiceTest {
         System.out.println(encoder.encodeToString(bytes));
     }
 
-}
+}*/
