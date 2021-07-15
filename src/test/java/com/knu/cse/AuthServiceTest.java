@@ -2,7 +2,6 @@ package com.knu.cse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.knu.cse.ApiResult.Response;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.model.Gender;
 import com.knu.cse.member.model.Major;
@@ -66,7 +65,7 @@ public class AuthServiceTest {
         try {
             this.member = authService.signUpMember(signUpForm);
         } catch (Exception e){
-            log.error("회원가입 실패 : " + e.getMessage());
+            System.out.println("회원가입 실패 : " + e.getMessage());
             return;
         }
         // 다음 로직은 수행되지 않아야함.
@@ -84,7 +83,6 @@ public class AuthServiceTest {
         try {
             authService.loginUser(loginUser);
             System.out.println("이메일!!!!!!!" + loginUser.getEmail());
-            log.info("로그인 성공");
         } catch (Exception e) {
             e.printStackTrace();
         }

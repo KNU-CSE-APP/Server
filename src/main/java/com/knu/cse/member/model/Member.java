@@ -37,7 +37,7 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private MemberRole role = MemberRole.ROLE_NOT_PERMITTED;
+    @Builder.Default private MemberRole role = MemberRole.ROLE_NOT_PERMITTED;
 
     public void changeRole(MemberRole memberRole){
         this.role = memberRole;
