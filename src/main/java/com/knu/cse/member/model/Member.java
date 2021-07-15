@@ -5,20 +5,18 @@ import com.knu.cse.board.domain.WriteBoard;
 import com.knu.cse.comment.domain.WriteComment;
 import java.util.List;
 import javax.persistence.*;
-
 import com.knu.cse.reservation.domain.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 @Entity
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-@Getter @Setter
+@Getter
 public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue
@@ -41,6 +39,9 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private MemberRole role = MemberRole.ROLE_NOT_PERMITTED;
 
+    public void changeRole(MemberRole memberRole){
+        this.role = memberRole;
+    }
 
     @OneToMany(mappedBy = "member")
     private List<Reservation> reservations;
@@ -50,5 +51,4 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy="member")
     private List<WriteComment> commentList;
-
 }
