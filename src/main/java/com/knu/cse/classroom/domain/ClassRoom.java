@@ -3,7 +3,6 @@ package com.knu.cse.classroom.domain;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.reservation.domain.Reservation;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
+@ToString(of = {"id","number","building","totalSeats"})
 public class ClassRoom {
 
     @Id @GeneratedValue
@@ -27,8 +27,12 @@ public class ClassRoom {
 
     private Long totalSeats;
 
-//    @OneToMany(mappedBy = "classRoom",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @OneToMany(mappedBy = "classRoom")
-    private List<ClassSeat> classSeats;
+    private List<ClassSeat> classSeats = new ArrayList<ClassSeat>();
 
+    public ClassRoom(Long number,Building building, Long totalSeats){
+        this.number = number;
+        this.building = building;
+        this. totalSeats = totalSeats;
+    }
 }
