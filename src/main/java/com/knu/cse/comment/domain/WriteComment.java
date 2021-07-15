@@ -29,7 +29,7 @@ public class WriteComment extends BaseTimeEntity {
 
     public void setMember(Member member){
         if(member.getId()!=null){
-            member.getCommentList().remove(this);
+            this.member.getCommentList().remove(this);
         }
         this.member=member;
         member.getCommentList().add(this);
@@ -37,7 +37,7 @@ public class WriteComment extends BaseTimeEntity {
 
     public void setComment(Comment comment){
         if(comment.getId()!=null){
-            comment.getCommenterList().remove(this);
+            this.comment.getCommenterList().remove(this);
         }
         this.comment=comment;
         comment.getCommenterList().add(this);
