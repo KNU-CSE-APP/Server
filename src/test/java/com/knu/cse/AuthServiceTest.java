@@ -1,4 +1,4 @@
-/*package com.knu.cse;
+package com.knu.cse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,12 +12,16 @@ import com.knu.cse.email.service.AuthService;
 import com.knu.cse.email.service.EmailService;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Base64.Decoder;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -104,4 +108,21 @@ public class AuthServiceTest {
         System.out.println(encoder.encodeToString(bytes));
     }
 
-}*/
+    @Test
+    public void 로그인한_유저_찾기_테스트() throws Exception {
+        //given
+        this.member = authService.signUpMember(signUpForm);
+        SignInForm loginUser = new SignInForm(this.member.getEmail(), "12345678");
+
+        //when
+        try {
+            authService.loginUser(loginUser);
+            System.out.println("이메일!!!!!!!" + loginUser.getEmail());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //then
+        assertThat(this.member.getLastModifiedBy()).isEqualTo("ggolong");
+    }
+}

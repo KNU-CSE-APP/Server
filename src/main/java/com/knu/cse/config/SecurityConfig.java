@@ -10,15 +10,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .mvcMatchers("/", "/user/signIn", "/user/signUp", "**/*", "/swagger-ui.html",
-                "/user/**").permitAll()
+            .mvcMatchers("/**", "/swagger-ui.html", "/user/**").permitAll()
             .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
             .anyRequest().authenticated();
 

@@ -1,5 +1,6 @@
 package com.knu.cse.member.model;
 
+import com.knu.cse.base.BaseEntity;
 import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.board.domain.WriteBoard;
 import com.knu.cse.comment.domain.WriteComment;
@@ -17,7 +18,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 @Getter
-public class Member extends BaseTimeEntity {
+public class Member extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "member_id")
