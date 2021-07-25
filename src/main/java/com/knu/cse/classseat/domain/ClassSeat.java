@@ -18,7 +18,7 @@ public class ClassSeat extends BaseEntity {
     @Column(name = "seat_id")
     private Long id;
 
-    private Integer number;
+    private Long number;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -30,6 +30,16 @@ public class ClassSeat extends BaseEntity {
     @OneToOne(mappedBy = "classSeat")
     private Reservation reservation;
 
+    public void changeReserved(){
+        this.status = Status.RESERVED;
+        this.classRoom.DownTotalSeats();
+    }
+    public void changeUnReserved(){
+        this.status = Status.UNRESERVED;
+        this.classRoom.UpTotalSeats();
+    }
+
+
 
     public void setClassRoom(ClassRoom classRoom){
         if (this.classRoom != null){
@@ -39,7 +49,7 @@ public class ClassSeat extends BaseEntity {
         classRoom.getClassSeats().add(this);
     }
 
-    public ClassSeat(Integer number, Status status, ClassRoom classRoom){
+    public ClassSeat(Long number, Status status, ClassRoom classRoom){
         this.number = number;
         this.status = status;
         setClassRoom(classRoom);
