@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import static com.knu.cse.utils.ApiUtils.success;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,7 +56,7 @@ public class MemberController {
         res.addCookie(refreshToken);
         LoginSuccessDto lsd = new LoginSuccessDto(member.getId(), member.getNickname());
         log.info("발급받은 토큰 : " + token);
-        return ApiUtils.success(lsd);
+        return success(lsd);
     }
 
     @ApiOperation(value = "회원가입", notes = "회원가입 메소드")
@@ -63,7 +64,7 @@ public class MemberController {
     public ApiResult<String> signUpSubmit(@Valid @RequestBody SignUpForm signUpForm, Errors errors) throws NotFoundException {
         Member savedMember = authService.signUpMember(signUpForm);
         authService.sendVerificationMail(savedMember);
-        return ApiUtils.success("회원가입을 성공적으로 완료했습니다.");
+        return success("회원가입을 성공적으로 완료했습니다.");
     }
 
     @ApiOperation(value = "이메일 인증", notes = "회원가입 시 이메일 인증을 수행하는 메소드")
@@ -71,20 +72,20 @@ public class MemberController {
     public ApiResult<String> verify(@RequestBody RequestVerifyEmail requestVerifyEmail) throws NotFoundException {
         Member member = authService.findByEmail(requestVerifyEmail.getEmail());
         authService.sendVerificationMail(member);
-        return ApiUtils.success("성공적으로 인증메일을 보냈습니다.");
+        return success("성공적으로 인증메일을 보냈습니다.");
     }
 
     @ApiOperation(value = "이메일 인증", notes="회원가입 시 이메일로 전송한 인증 링크를 확인하는 메소드")
     @GetMapping("/verify/{key}")
     public ApiResult<String> getVerify(@PathVariable String key) throws NotFoundException{
         authService.verifyEmail(key);
-        return ApiUtils.success("성공적으로 인증메일을 확인했습니다.");
+        return success("성공적으로 인증메일을 확인했습니다.");
     }
 
     @ApiOperation(value = "회원 E-mail과 Nickname, userId 반환", notes="현재 로그인한 유저의 정보(닉네임, 이메일, 회원 번호)을 반환하는 메소드")
     @GetMapping("/getUserEmailNickname")
     public ApiResult<MemberDto> getEmailNickname(HttpServletRequest req){
         Long userId = authService.getUserIdFromJWT(req);
-        return ApiUtils.success(new MemberDto(memberRepository.findById(userId).orElseThrow(()-> new NotFoundException ("존재하지 않는 회원입니다."))));
+        return success(new MemberDto(memberRepository.findById(userId).orElseThrow(()-> new NotFoundException ("존재하지 않는 회원입니다."))));
     }
 }

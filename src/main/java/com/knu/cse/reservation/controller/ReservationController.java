@@ -13,8 +13,8 @@ import com.knu.cse.utils.ApiUtils;
 import com.knu.cse.utils.ApiUtils.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
+import static com.knu.cse.utils.ApiUtils.success;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class ReservationController {
     @PostMapping("/delete")
     public ApiResult<String> deleteReservation(@Valid @RequestBody RequestVerifyEmail email) throws NotFoundException {
         reservationService.unreserved(email.getEmail());
-        return ApiUtils.success("좌석을 반납했습니다.");
+        return success("좌석을 반납했습니다.");
     }
 
     //예약하기
@@ -39,7 +39,7 @@ public class ReservationController {
         Member member = authService.findByEmail(reservationDTO.getEmail());
         ClassSeat classSeat = classRoomService.findClassSeatByBuildingAndRoomAndSeatNum(reservationDTO.getBuilding(), reservationDTO.getRoomNumber(), reservationDTO.getSeatNumber());
         reservationService.reservationSeat(member.getId(),classSeat.getId());
-        return ApiUtils.success("자리 예약에 성공했습니다.");
+        return success("자리 예약에 성공했습니다.");
     }
 
     //현재 예약상태 찾기
@@ -54,13 +54,13 @@ public class ReservationController {
             member.getReservations().get(0).getClassSeat().getNumber()
         );
 
-        return ApiUtils.success(findReservationDTO);
+        return success(findReservationDTO);
     }
 
     @PostMapping("/extension")
     public ApiResult<Long> extension(@Valid @RequestBody RequestVerifyEmail email) throws Exception{
         Member member = authService.findByEmail(email.getEmail());
         Long extensionNumber = reservationService.extensionSeat(member.getId());
-        return ApiUtils.success(extensionNumber);
+        return success(extensionNumber);
     }
 }

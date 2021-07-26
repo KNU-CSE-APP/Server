@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
+import static com.knu.cse.utils.ApiUtils.success;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class ClassRoomController {
     public ApiResult<String> reservation(@Valid @RequestBody ClassRoomDTO classRoomDTO) throws NotFoundException {
 
         classRoomService.RegistrationClassRoom(classRoomDTO.getBuilding(), classRoomDTO.getRoomNumber(), classRoomDTO.getTotalSeatNumber());
-        return ApiUtils.success("강의실을 생성했습니다.");
+        return success("강의실을 생성했습니다.");
     }
 
 }
