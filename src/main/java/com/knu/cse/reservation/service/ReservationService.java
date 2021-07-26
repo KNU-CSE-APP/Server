@@ -4,13 +4,13 @@ import com.knu.cse.classroom.repository.ClassRoomRepository;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.classseat.domain.Status;
 import com.knu.cse.classseat.repository.ClassSeatRepository;
+import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.model.MemberRole;
 import com.knu.cse.member.repository.MemberRepository;
 import com.knu.cse.reservation.domain.Reservation;
 import com.knu.cse.reservation.repository.ReservationRepository;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,13 +34,17 @@ public class ReservationService {
      * 좌석 반납
      */
     @Transactional
-    public void unreserved(String email){
-        Member member = memberRepository.findByEmail(email);
+    public void unreserved(String email) throws NotFoundException{
+        Member member = memberRepository.findByEmail(email).orElseThrow(()->
+            new NotFoundException("회원이 존재하지 않습니다.")
+        );
 
-        Reservation reservation = reservationRepository.findByMemberId(member.getId());
+        Reservation reservation = reservationRepository.findByMemberId(member.getId()).orElseThrow(()->
+            new NotFoundException("예약이 존재하지 않습니다.")
+        );
+
         reservation.getClassSeat().changeUnReserved();
         reservationRepository.save(reservation);
-
         reservationRepository.deleteByMemberId(member.getId());
     }
 
@@ -53,7 +57,7 @@ public class ReservationService {
     public void reservationSeat(Long memberId, Long seatId) throws Exception {
 
         if (reservationRepository.existsByMemberId(memberId)){
-            throw new Exception("이미 자리예약을 했습니다.");
+            throw new IllegalStateException("이미 예약된 자리입니다.");
         }
 
         //엔티티 조회
@@ -71,30 +75,23 @@ public class ReservationService {
      * @param memberId
      */
     @Transactional
-    public Long extensionSeat(Long memberId){
+    public Long extensionSeat(Long memberId) throws Exception {
 
         Optional<Member> findMember = memberRepository.findById(memberId);
+        //있으면
+        if (reservationRepository.existsByMemberId(memberId)) {
+            Reservation byMemberId = reservationRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new NotFoundException("예약이 존재하지 않습니다."));
 
-        try{
-            //있으면
-            if (reservationRepository.existsByMemberId(memberId)) {
-                Reservation byMemberId = reservationRepository.findByMemberId(memberId);
-                Long extensionNum = byMemberId.getExtensionNum();
-
-                if (extensionNum < 3) {
-                    byMemberId.upExtensionNum();
-                    byMemberId.updateTime();
-                    return byMemberId.getExtensionNum();
-                }//없으면
-                else{
-                    return -1L;
-                }
+            Long extensionNum = byMemberId.getExtensionNum();
+            if (extensionNum < 3) {
+                byMemberId.upExtensionNum();
+                byMemberId.updateTime();
+                return byMemberId.getExtensionNum();
             }
-        }catch (Exception e){
-            return -1L;
         }
+        // 없으면
+        new IllegalStateException("연장 횟수를 초과했습니다.");
         return -1L;
     }
-
-
 }

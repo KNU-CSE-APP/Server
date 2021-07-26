@@ -6,6 +6,7 @@ import com.knu.cse.classroom.repository.ClassRoomRepository;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.classseat.domain.Status;
 import com.knu.cse.classseat.repository.ClassSeatRepository;
+import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.model.MemberRole;
@@ -25,17 +26,19 @@ public class ClassRoomService {
     private final ClassSeatRepository classSeatRepository;
 
     public ClassRoom LookupClassRoom(Long number, Building building){
-        return classRoomRepository.findClassRoomByNumberAndBuilding(number, building);
+        return classRoomRepository.findClassRoomByNumberAndBuilding(number, building).orElseThrow(()->
+            new NotFoundException("잘못된 접근입니다.")
+        );
     }
 
     /**
      * 강의실 및 좌석 등록하기
      */
-    public ClassRoom RegistrationClassRoom(Building building,Long roomNumber,Long totalSeat){
+    public ClassRoom RegistrationClassRoom(Building building,Long roomNumber,Long totalSeat) throws NotFoundException {
         ClassRoom classRoom = new ClassRoom(roomNumber, building, totalSeat);
         ClassRoom saveClassRoom = classRoomRepository.save(classRoom);
         for(Long i=0L; i<totalSeat;i++){
-            ClassSeat classSeat = new ClassSeat(i, Status.UNRESERVED,saveClassRoom);
+            ClassSeat classSeat = new ClassSeat(i, Status.UNRESERVED, saveClassRoom);
             classSeatRepository.save(classSeat);
         }
         return saveClassRoom;
@@ -49,7 +52,9 @@ public class ClassRoomService {
      * @return 좌석 정보, 없다면 null
      */
     public ClassSeat findClassSeatByBuildingAndRoomAndSeatNum(Building building, Long roomNumber, Long SeatNumber){
-        ClassRoom findRoom = classRoomRepository.findClassRoomByNumberAndBuilding(roomNumber, building);
+        ClassRoom findRoom = classRoomRepository.findClassRoomByNumberAndBuilding(roomNumber, building).orElseThrow(()->
+            new NotFoundException("좌석이 존재하지 않습니다.")
+        );
 
         List<ClassSeat> classSeats = findRoom.getClassSeats();
         for (ClassSeat classSeat : classSeats) {
@@ -92,10 +97,10 @@ public class ClassRoomService {
 
 
     @Transactional
-    public ClassRoom classRoom(Building building, Long roomNumber, Long totalSeats) throws Exception {
+    public ClassRoom classRoom(Building building, Long roomNumber, Long totalSeats) throws IllegalStateException {
 
         if(!isAlreadyCreatedRoom(building, roomNumber)){
-            throw new Exception("이미 만들어진 강의실 입니다.");
+            throw new IllegalStateException("이미 만들어진 강의실 입니다.");
         }
 
         ClassRoom classRoom = new ClassRoom(roomNumber, building, totalSeats);
