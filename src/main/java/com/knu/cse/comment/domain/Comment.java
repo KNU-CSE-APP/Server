@@ -2,6 +2,7 @@ package com.knu.cse.comment.domain;
 
 import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.board.domain.Board;
+import com.knu.cse.member.model.Member;
 import com.knu.cse.reply.domain.Reply;
 import java.util.List;
 import javax.persistence.Column;
@@ -34,14 +35,23 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name="board_id")
     private Board board;
 
-    @OneToMany(mappedBy = "comment")
-    private List<WriteComment> commenterList;
+    @ManyToOne
+    @JoinColumn(name="member_id")
+    private Member member;
 
     @OneToMany(mappedBy = "comment")
     private List<Reply> replyList;
 
+    public void setMember(Member member){
+        if(this.member!=null){
+            this.member.getCommentList().remove(this);
+        }
+        this.member=member;
+        member.getCommentList().add(this);
+    }
+
     public void setBoard(Board board){
-        if(board.getId()!=null){
+        if(this.board!=null){
             this.board.getCommentList().remove(this);
         }
         this.board=board;
