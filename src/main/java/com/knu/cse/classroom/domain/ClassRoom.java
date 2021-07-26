@@ -30,6 +30,13 @@ public class ClassRoom {
     @OneToMany(mappedBy = "classRoom")
     private List<ClassSeat> classSeats = new ArrayList<ClassSeat>();
 
+    public void DownTotalSeats(){
+        this.totalSeats -= 1;
+    }
+    public void UpTotalSeats(){
+        this.totalSeats += 1;
+    }
+
     public ClassRoom(Long number,Building building, Long totalSeats){
         this.number = number;
         this.building = building;
