@@ -54,4 +54,6 @@ public class SignUpForm {
         this.gender = gender;
         this.major = major;
     }
+
+    public SignUpForm() {}
 }
