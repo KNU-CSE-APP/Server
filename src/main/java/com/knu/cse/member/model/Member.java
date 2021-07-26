@@ -6,7 +6,7 @@ import com.knu.cse.board.domain.Board;
 import com.knu.cse.comment.domain.Comment;
 import java.util.List;
 import javax.persistence.*;
-import com.knu.cse.reservation.domain.Reservation;
+//import com.knu.cse.reservation.domain.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,8 +42,8 @@ public class Member extends BaseEntity {
         this.role = memberRole;
     }
 
-    @OneToMany(mappedBy = "member")
-    private List<Reservation> reservations;
+    //@OneToMany(mappedBy = "member")
+    //private List<Reservation> reservations;
 
     @OneToMany(mappedBy="member")
     private List<Board> boardList;

@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -39,48 +40,46 @@ public class AuthServiceTest {
     private MemberRepository memberRepository;
 
     Member member;
-    SignUpForm signUpForm;
+    SignUpForm signUpForm1 = new SignUpForm("ggolong2", "ggolong5@knu.ac.kr", "1234", "권현수", "2020202020", Gender.MALE, Major.ADVANCED);
+    SignUpForm signUpForm2 = new SignUpForm("kcm0147", "ggolong2@knu.ac.kr", "1234", "김창묵", "2020202020", Gender.MALE, Major.ADVANCED);
+    SignUpForm signUpForm3 = new SignUpForm("billbillbillbill", "ggolong3@knu.ac.kr", "1234", "이현섭", "2020202020", Gender.MALE, Major.ADVANCED);
+    SignUpForm signUpForm4 = new SignUpForm("HyunMin", "ggolong4@knu.ac.kr", "1234", "한현민", "2020202020", Gender.MALE, Major.ADVANCED);
 
-    @BeforeEach()
-    public void initMember(){
-        this.signUpForm = SignUpForm.builder()
-                .email("ggolong@knu.ac.kr")
-                .password("12345678")
-                .username("권현수")
-                .nickname("ggolong")
-                .gender(Gender.MALE)
-                .major(Major.ADVANCED)
-                .studentId("2020202020")
-                .build();
+    @BeforeEach
+    public void initDB() throws Exception{
+        Member member1 = authService.signUpMember(signUpForm1);
+        //Member member2 = authService.signUpMember(signUpForm2);
+        //Member member3 = authService.signUpMember(signUpForm3);
+        //Member member4 = authService.signUpMember(signUpForm4);
     }
 
     @DisplayName("회원가입 테스트")
     @Test
     public void 회원가입_유효한_이메일_테스트() throws Exception {
-        this.member = authService.signUpMember(signUpForm);
-        Member findMember = memberRepository.findByEmail(signUpForm.getEmail());
-        assertThat(this.member).isEqualTo(findMember);
+        this.member = authService.signUpMember(signUpForm4);
+        Optional<Member> findMember = memberRepository.findByEmail(signUpForm4.getEmail());
+        assertThat(this.member).isEqualTo(findMember.get());
     }
 
     @DisplayName("회원가입 테스트")
     @Test
     public void 회원가입_유효하지_않은_이메일_테스트() {
-        signUpForm.setEmail("ggolong@naver.com");
+        signUpForm1.setEmail("ggolong@naver.com");
         try {
-            this.member = authService.signUpMember(signUpForm);
+            this.member = authService.signUpMember(signUpForm1);
         } catch (Exception e){
             System.out.println("회원가입 실패 : " + e.getMessage());
             return;
         }
         // 다음 로직은 수행되지 않아야함.
-        Member findMember = memberRepository.findByEmail(signUpForm.getEmail());
-        assertThat(this.member).isEqualTo(findMember);
+        Optional<Member> findMember = memberRepository.findByEmail(signUpForm1.getEmail());
+        assertThat(this.member).isEqualTo(findMember.get());
     }
 
     @DisplayName("로그인 테스트")
     @Test
     public void 로그인_테스트() throws Exception {
-        this.member = authService.signUpMember(signUpForm);
+        this.member = authService.signUpMember(signUpForm3);
         System.out.println("Member : " + this.member.getEmail());
         SignInForm loginUser = new SignInForm(this.member.getEmail(), "12345678");
         System.out.println("로그인 폼 : " + loginUser.getEmail());
@@ -95,7 +94,7 @@ public class AuthServiceTest {
     @DisplayName("이메일 전송 테스트")
     @Test
     public void 이메일_전송_테스트(){
-        emailService.sendMail(this.member.getEmail(),"테스트메일입니다.","이메일 본문 전송");
+        emailService.sendMail(signUpForm1.getEmail(),"테스트메일입니다.","이메일 본문 전송");
     }
 
     @Test
@@ -111,8 +110,8 @@ public class AuthServiceTest {
     @Test
     public void 로그인한_유저_찾기_테스트() throws Exception {
         //given
-        this.member = authService.signUpMember(signUpForm);
-        SignInForm loginUser = new SignInForm(this.member.getEmail(), "12345678");
+        this.member = authService.signUpMember(signUpForm2);
+        SignInForm loginUser = new SignInForm(this.member.getEmail(), "1234");
 
         //when
         try {
@@ -123,6 +122,6 @@ public class AuthServiceTest {
         }
 
         //then
-        assertThat(this.member.getLastModifiedBy()).isEqualTo("ggolong");
+        assertThat(this.member.getNickname()).isEqualTo("kcm0147");
     }
 }

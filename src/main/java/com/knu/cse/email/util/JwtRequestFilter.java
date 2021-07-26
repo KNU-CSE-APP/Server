@@ -1,6 +1,5 @@
 package com.knu.cse.email.util;
 
-import com.knu.cse.member.model.Member;
 import com.knu.cse.email.service.MemberDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.io.IOException;

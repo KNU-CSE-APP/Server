@@ -1,6 +1,7 @@
 package com.knu.cse.email.service;
 
 import com.knu.cse.email.util.RedisUtil;
+import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.model.MemberRole;
 import com.knu.cse.member.dto.SignInForm;
@@ -8,10 +9,8 @@ import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.member.repository.MemberRepository;
 import java.util.Base64;
 import java.util.UUID;
-import javassist.NotFoundException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,13 +28,16 @@ public class AuthService {
     private final RedisUtil redisUtil;
 
     @Transactional
-    public Member signUpMember(SignUpForm signUpForm) throws Exception {
+    public Member signUpMember(SignUpForm signUpForm) throws IllegalStateException, IllegalArgumentException {
 
         if(!isKnuStudent(signUpForm.getEmail())){
-            throw new Exception("경북대학교 이메일(knu.ac.kr)만 가입이 가능합니다.");
+            throw new IllegalArgumentException("경북대학교 이메일(knu.ac.kr)만 가입이 가능합니다.");
         }
         if(isDuplicateMember(signUpForm.getEmail())){
-            throw new Exception("이미 가입된 회원입니다.");
+            throw new IllegalStateException("이미 가입된 이메일 회원입니다.");
+        }
+        if(isDuplicateNickName(signUpForm.getNickname())){
+            throw new IllegalStateException("닉네임 중복되었습니다. 다른 닉네임으로 해주세요.");
         }
 
         Member member = Member.builder()
@@ -52,6 +54,8 @@ public class AuthService {
         return memberRepository.save(member);
     }
 
+    private boolean isDuplicateNickName(String nickName) { return memberRepository.existsByNickname(nickName); }
+
     private boolean isDuplicateMember(String email) {
         return memberRepository.existsByEmail(email);
     }
@@ -61,15 +65,16 @@ public class AuthService {
         return emailAddress.equals("knu.ac.kr");
     }
 
-    public Member loginUser(SignInForm signInForm) throws Exception{
-        Member member = memberRepository.findByEmail(signInForm.getEmail());
-        if(member==null) throw new Exception ("멤버가 조회되지 않음");
+    public Member loginUser(SignInForm signInForm) throws NotFoundException{
+        if(!isKnuStudent(signInForm.getEmail())) throw new IllegalArgumentException("경북대학교 학생이 아닙니다.");
+        Member member = memberRepository.findByEmail(signInForm.getEmail()).orElseThrow(()->
+            new NotFoundException("유저가 존재하지 않습니다."));
         log.info("플레인 비밀번호" + signInForm.getPassword());
-        log.info("인코딩된 비밀번호" + member.getPassword());;
+        log.info("인코딩된 비밀번호" + member.getPassword());
 
         boolean matcheResult = passwordEncoder.matches(signInForm.getPassword(), member.getPassword());
         if(!matcheResult)
-            throw new Exception ("비밀번호가 틀립니다.");
+            throw new NotFoundException("비밀번호가 틀립니다.");
         return member;
     }
 
@@ -85,8 +90,8 @@ public class AuthService {
 
     public void verifyEmail(String key) throws NotFoundException {
         String email = redisUtil.getData(key);
-        Member member = memberRepository.findByEmail(email);
-        if(member==null) throw new NotFoundException("멤버가 조회되지않음");
+        Member member = memberRepository.findByEmail(email).orElseThrow(()->
+            new NotFoundException("이메일 인증에 실패하였습니다."));
         modifyUserRole(member, MemberRole.ROLE_USER);
         redisUtil.deleteData(key);
     }
@@ -96,9 +101,9 @@ public class AuthService {
         memberRepository.save(member);
     }
 
-
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public Member findByEmail(String email) throws NotFoundException {
+        return memberRepository.findByEmail(email).orElseThrow(()->
+            new NotFoundException("존재하지 않는 이메일입니다."));
     }
 
     public Long getUserIdFromJWT(HttpServletRequest req) throws NotFoundException {
