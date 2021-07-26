@@ -3,18 +3,25 @@ package com.knu.cse.member.controller;
 import com.knu.cse.email.util.CookieUtil;
 import com.knu.cse.email.util.JwtUtil;
 import com.knu.cse.email.util.RedisUtil;
+import com.knu.cse.errors.NotFoundException;
+import com.knu.cse.member.dto.LoginSuccessDto;
+import com.knu.cse.member.dto.MemberDto;
 import com.knu.cse.member.model.Member;
-import com.knu.cse.ApiResult.Response;
 import com.knu.cse.member.dto.RequestVerifyEmail;
 import com.knu.cse.member.dto.SignInForm;
 import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.email.service.AuthService;
 
+import com.knu.cse.member.repository.MemberRepository;
+import com.knu.cse.utils.ApiUtils;
+import com.knu.cse.utils.ApiUtils.ApiResult;
+import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,71 +33,58 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("user")
+@Slf4j
 public class MemberController {
 
     private final AuthService authService;
+    private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
     private final RedisUtil redisUtil;
 
+    @ApiOperation(value = "로그인", notes = "회원정보를 입력해 로그인을 수행하고 JWT 토큰 발급")
     @PostMapping("/signIn")
-    public Response signIn(@Valid @RequestBody SignInForm signInForm, HttpServletRequest req, HttpServletResponse res) throws Exception {
-        try {
-            final Member member = authService.loginUser(signInForm);
-            final String token = jwtUtil.generateToken(member.getUsername());
-            final String refreshJwt = jwtUtil.generateRefreshToken(member);
-            Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
-            Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
-            redisUtil.setDataExpire(refreshJwt, member.getUsername(), JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
-            res.addCookie(accessToken);
-            res.addCookie(refreshToken);
-            return new Response("success", "로그인에 성공했습니다.", token);
-        } catch (Exception e) {
-            return new Response("error", "로그인에 실패했습니다.", e.getMessage());
-        }
+    public ApiResult<LoginSuccessDto> signIn(@Valid @RequestBody SignInForm signInForm, HttpServletResponse res) throws Exception {
+        final Member member = authService.loginUser(signInForm);
+        final String token = jwtUtil.generateToken(member.getEmail());
+        final String refreshJwt = jwtUtil.generateRefreshToken(member);
+        Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
+        Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
+        redisUtil.setDataExpire(refreshJwt, member.getEmail(), JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
+        res.addCookie(accessToken);
+        res.addCookie(refreshToken);
+        LoginSuccessDto lsd = new LoginSuccessDto(member.getId(), member.getNickname());
+        log.info("발급받은 토큰 : " + token);
+        return ApiUtils.success(lsd);
     }
 
+    @ApiOperation(value = "회원가입", notes = "회원가입 메소드")
     @PostMapping("/signUp")
-    public Response signUpSubmit(@Valid @RequestBody SignUpForm signUpForm, Errors errors) {
-        Response response = new Response();
-
-        try{
-            Member savedMember = authService.signUpMember(signUpForm);
-            response.setResponse("success");
-            response.setMessage("회원가입을 성공적으로 완료했습니다.");
-            authService.sendVerificationMail(savedMember);
-        }
-        catch(Exception e){
-            response.setResponse("failed");
-            response.setMessage("회원가입을 하는 도중 오류가 발생했습니다.");
-            response.setData(e.toString());
-        }
-        return response;
+    public ApiResult<String> signUpSubmit(@Valid @RequestBody SignUpForm signUpForm, Errors errors) throws NotFoundException {
+        Member savedMember = authService.signUpMember(signUpForm);
+        authService.sendVerificationMail(savedMember);
+        return ApiUtils.success("회원가입을 성공적으로 완료했습니다.");
     }
 
+    @ApiOperation(value = "이메일 인증", notes = "회원가입 시 이메일 인증을 수행하는 메소드")
     @PostMapping("/verify")
-    public Response verify(@RequestBody RequestVerifyEmail requestVerifyEmail, HttpServletRequest req, HttpServletResponse res) {
-        Response response;
-        try {
-            Member member = authService.findByEmail(requestVerifyEmail.getEmail());
-            authService.sendVerificationMail(member);
-            response = new Response("success", "성공적으로 인증메일을 보냈습니다.", null);
-        } catch (Exception exception) {
-            response = new Response("error", "인증메일을 보내는데 문제가 발생했습니다.", exception);
-        }
-        return response;
+    public ApiResult<String> verify(@RequestBody RequestVerifyEmail requestVerifyEmail) throws NotFoundException {
+        Member member = authService.findByEmail(requestVerifyEmail.getEmail());
+        authService.sendVerificationMail(member);
+        return ApiUtils.success("성공적으로 인증메일을 보냈습니다.");
     }
 
+    @ApiOperation(value = "이메일 인증", notes="회원가입 시 이메일로 전송한 인증 링크를 확인하는 메소드")
     @GetMapping("/verify/{key}")
-    public Response getVerify(@PathVariable String key) {
-        Response response;
-        try {
-            authService.verifyEmail(key);
-            response = new Response("success", "성공적으로 인증메일을 확인했습니다.", null);
+    public ApiResult<String> getVerify(@PathVariable String key) throws NotFoundException{
+        authService.verifyEmail(key);
+        return ApiUtils.success("성공적으로 인증메일을 확인했습니다.");
+    }
 
-        } catch (Exception e) {
-            response = new Response("error", "인증메일을 확인하는데 실패했습니다.", null);
-        }
-        return response;
+    @ApiOperation(value = "회원 E-mail과 Nickname, userId 반환", notes="현재 로그인한 유저의 정보(닉네임, 이메일, 회원 번호)을 반환하는 메소드")
+    @GetMapping("/getUserEmailNickname")
+    public ApiResult<MemberDto> getEmailNickname(HttpServletRequest req){
+        Long userId = authService.getUserIdFromJWT(req);
+        return ApiUtils.success(new MemberDto(memberRepository.findById(userId).orElseThrow(()-> new NotFoundException ("존재하지 않는 회원입니다."))));
     }
 }

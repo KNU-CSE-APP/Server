@@ -15,7 +15,7 @@ spring:
     type: redis
 
   jwt:
-    secret: secretKey
+    secret: secretkey
 
   mail:
     host: smtp.gmail.com
@@ -28,6 +28,12 @@ spring:
           auth: true
           starttls:
             enable: true
+
+management:
+  endpoint:
+    health:
+      show-details: always
+
 logging.level:
   org.hibernate.SQL: debug
 ---
