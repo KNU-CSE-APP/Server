@@ -9,6 +9,7 @@ import com.knu.cse.member.repository.MemberRepository;
 import java.util.Base64;
 import java.util.UUID;
 import javassist.NotFoundException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -100,11 +101,21 @@ public class AuthService {
         return memberRepository.findByEmail(email);
     }
 
-    public String getEmailFromJWT(HttpServletRequest req, HttpServletResponse res){
-        String claim = req.getCookies()[0].getValue();
+    public Long getUserIdFromJWT(HttpServletRequest req) throws NotFoundException {
+        String claim = "";
+        for (Cookie cookie : req.getCookies()) {
+            if(cookie.getName().equals("accessToken")){
+                claim = cookie.getValue();
+                break;
+            }
+        }
         int start = claim.indexOf(".") + 1;
         int end = claim.lastIndexOf(".");
+        if(start == -1 || end == -1){
+            throw new NotFoundException("아직 JWT 토큰을 발급받지 않은 상태입니다." + claim);
+        }
         String encodedPayload = claim.substring(start, end);
-        return new String(Base64.getDecoder().decode(encodedPayload)).split("\"")[3];
+        String email = new String(Base64.getDecoder().decode(encodedPayload)).split("\"")[3];
+        return findByEmail(email).getId();
     }
 }

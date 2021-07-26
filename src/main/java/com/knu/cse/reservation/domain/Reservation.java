@@ -2,16 +2,20 @@ package com.knu.cse.reservation.domain;
 
 import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.classseat.domain.ClassSeat;
+import com.knu.cse.classseat.domain.Status;
 import com.knu.cse.member.model.Member;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import lombok.NoArgsConstructor;
+
 
 @Entity
 @Getter
-@NoArgsConstructor
 public class Reservation extends BaseTimeEntity {
 
     @Id @GeneratedValue
@@ -37,11 +41,36 @@ public class Reservation extends BaseTimeEntity {
         member.getReservations().add(this);
     }
 
-    public Reservation(Long extensionNum, ClassSeat classSeat, Member member){
-        this.dueDate = LocalDateTime.now().plusHours(6);
-        this.extensionNum = extensionNum;
+    public void setClassSeat(ClassSeat classSeat){
         this.classSeat = classSeat;
-        setMember(member);
     }
+
+    public Reservation(){
+        this.dueDate = LocalDateTime.now().plusHours(6);
+        this.extensionNum = 0L;
+    }
+
+    public void updateTime(){
+        this.dueDate = LocalDateTime.now().plusHours(6);
+    }
+
+    public void upExtensionNum(){
+        this.extensionNum += 1;
+    }
+    public void downExtensionNum(){
+        this.extensionNum -= 1;
+    }
+
+    public static Reservation createReservation(Member member, ClassSeat classSeat){
+        Reservation reservation = new Reservation();
+
+        classSeat.changeReserved();
+        reservation.setMember(member);
+        reservation.setClassSeat(classSeat);
+
+        return reservation;
+    }
+
+
 
 }

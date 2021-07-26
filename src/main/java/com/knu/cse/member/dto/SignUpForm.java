@@ -10,7 +10,6 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 @Data
-@Builder
 public class SignUpForm {
 
     @NotNull
@@ -39,4 +38,6 @@ public class SignUpForm {
 
     @NotNull
     private Major major;
+
+    public SignUpForm(){}
 }
