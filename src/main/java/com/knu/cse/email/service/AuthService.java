@@ -92,8 +92,6 @@ public class AuthService {
         memberRepository.save(member);
     }
 
-
-
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
