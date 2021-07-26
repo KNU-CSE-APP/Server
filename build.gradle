@@ -50,6 +50,9 @@ dependencies {
 
 	//redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	//commons-lang3
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 }
 
 test {
