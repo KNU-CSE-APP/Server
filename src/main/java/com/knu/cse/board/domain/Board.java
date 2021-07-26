@@ -2,6 +2,7 @@ package com.knu.cse.board.domain;
 
 import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.comment.domain.Comment;
+import com.knu.cse.member.model.Member;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,9 +38,19 @@ public class Board extends BaseTimeEntity {
 
     private String author;
 
-    @OneToMany(mappedBy="board")
-    private List<WriteBoard> writerList;
+    @ManyToOne
+    @JoinColumn(name="member_id")
+    private Member member;
 
     @OneToMany(mappedBy="board")
     private List<Comment> commentList;
+
+
+    public void setMember(Member member){
+        if(this.member!=null){
+            this.member.getBoardList().remove(this);
+        }
+        this.member=member;
+        member.getBoardList().add(this);
+    }
 }

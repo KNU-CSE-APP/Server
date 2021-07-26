@@ -2,8 +2,8 @@ package com.knu.cse.member.model;
 
 import com.knu.cse.base.BaseEntity;
 import com.knu.cse.base.BaseTimeEntity;
-import com.knu.cse.board.domain.WriteBoard;
-import com.knu.cse.comment.domain.WriteComment;
+import com.knu.cse.board.domain.Board;
+import com.knu.cse.comment.domain.Comment;
 import java.util.List;
 import javax.persistence.*;
 import com.knu.cse.reservation.domain.Reservation;
@@ -11,8 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import java.util.List;
 
 @Entity
 @Builder
@@ -48,8 +46,8 @@ public class Member extends BaseEntity {
     private List<Reservation> reservations;
 
     @OneToMany(mappedBy="member")
-    private List<WriteBoard> boardList;
+    private List<Board> boardList;
 
     @OneToMany(mappedBy="member")
-    private List<WriteComment> commentList;
+    private List<Comment> commentList;
 }
