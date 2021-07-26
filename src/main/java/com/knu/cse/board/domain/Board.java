@@ -1,6 +1,7 @@
 package com.knu.cse.board.domain;
 
 import com.knu.cse.base.BaseTimeEntity;
+import com.knu.cse.board.dto.BoardForm;
 import com.knu.cse.comment.domain.Comment;
 import com.knu.cse.member.model.Member;
 import java.util.List;
@@ -45,6 +46,13 @@ public class Board extends BaseTimeEntity {
     @OneToMany(mappedBy="board")
     private List<Comment> commentList;
 
+    public void edit(BoardForm boardForm){
+        content = changedInfo(content, boardForm.getContent());
+    }
+
+    private String changedInfo(String original, String changed){
+        return (changed == null || changed.equals("")) ? original : changed;
+    }
 
     public void setMember(Member member){
         if(this.member!=null){
@@ -52,5 +60,18 @@ public class Board extends BaseTimeEntity {
         }
         this.member=member;
         member.getBoardList().add(this);
+    }
+
+    public static Board createBoard(Member member,BoardForm boardForm){
+        Board board =Board.builder()
+            .category(boardForm.getCategory())
+            .title(boardForm.getTitle())
+            .content(boardForm.getContent())
+            .author(member.getNickname())
+            .build();
+
+        board.setMember(member);
+
+        return board;
     }
 }
