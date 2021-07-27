@@ -9,6 +9,7 @@ import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.model.MemberRole;
 import com.knu.cse.member.repository.MemberRepository;
+import com.knu.cse.reservation.domain.FindReservationDTO;
 import com.knu.cse.reservation.domain.Reservation;
 import com.knu.cse.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,12 +58,13 @@ public class ReservationService {
     public void reservationSeat(Long memberId, Long seatId) throws Exception {
 
         if (reservationRepository.existsByMemberId(memberId)){
-            throw new IllegalStateException("이미 예약된 자리입니다.");
+            throw new IllegalStateException("이미 자리가 예약된 상태입니다.");
         }
 
         //엔티티 조회
         Optional<Member> findMember = memberRepository.findById(memberId);
-        Optional<ClassSeat> findSeat = classSeatRepository.findById(seatId);
+        Optional<ClassSeat> findSeat = Optional.ofNullable(classSeatRepository.findById(seatId).orElseThrow(
+                () -> new NotFoundException("좌석이 존재하지 않습니다.")));
 
         //Reservation 정보 생성
         Reservation reservation = Reservation.createReservation(findMember.get(), findSeat.get());
@@ -89,9 +91,25 @@ public class ReservationService {
                 byMemberId.updateTime();
                 return byMemberId.getExtensionNum();
             }
+            else{
+                throw new IllegalStateException("연장 횟수를 초과 했습니다.");
+            }
         }
         // 없으면
-        new IllegalStateException("연장 횟수를 초과했습니다.");
-        return -1L;
+        throw new NotFoundException("예약된 자리가 없습니다.");
+    }
+
+    @Transactional
+    public FindReservationDTO findReservation(Long memberId){
+        Optional<Member> member = memberRepository.findById(memberId);
+        if (member.get().getReservations().size() == 0) {
+            throw new NotFoundException("예약된 좌석을 찾을 수 없습니다.");
+        }
+        ClassSeat classSeat = member.get().getReservations().get(0).getClassSeat();
+        return new FindReservationDTO(
+                classSeat.getClassRoom().getBuilding(),
+                classSeat.getClassRoom().getNumber(),
+                classSeat.getNumber()
+        );
     }
 }

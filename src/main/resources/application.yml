@@ -21,13 +21,29 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: 6360879@gmail.com
-    password: 공대구호관!
+    password: rhdeornghrhks!
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+
+cloud:
+  aws:
+    s3:
+      bucket: knu-cse-app-images
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      accessKey: AKIAX3QF3Q5ODPALR6XH
+      secretKey: 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
+
+my:
+  tempFilePath: src/main/resources/
+
 
 management:
   endpoint:
@@ -36,6 +52,7 @@ management:
 
 logging.level:
   org.hibernate.SQL: debug
+
 ---
 --- # prod 환경
 spring:
