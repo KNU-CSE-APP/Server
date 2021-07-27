@@ -12,14 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Builder
 public class Comment extends BaseTimeEntity {
 
     @Id
@@ -30,6 +30,9 @@ public class Comment extends BaseTimeEntity {
     private String content;
 
     private String author;
+
+    @Setter
+    private Long parentId;
 
     @ManyToOne
     @JoinColumn(name="board_id")
@@ -56,5 +59,27 @@ public class Comment extends BaseTimeEntity {
         }
         this.board=board;
         board.getCommentList().add(this);
+    }
+
+    public static Comment setComment(Member member,Board board, CommentDTO commentDTO){
+        Comment comment = Comment.builder()
+                .content(commentDTO.getContent())
+                .author(commentDTO.getAuthor())
+                .build();
+//        comment.setParentId(comment.id);
+        comment.setBoard(board);
+        comment.setMember(member);
+        return comment;
+    }
+
+    public static Comment setReply(Member member,Comment comment, ReplyDTO replyDTO){
+        Comment reply = Comment.builder()
+                .content(replyDTO.getContent())
+                .author(replyDTO.getAuthor())
+                .build();
+        reply.setParentId(comment.id);
+        reply.setMember(member);
+        reply.setBoard(comment.getBoard());
+        return reply;
     }
 }

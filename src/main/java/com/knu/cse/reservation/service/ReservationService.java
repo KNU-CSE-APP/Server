@@ -35,6 +35,9 @@ public class ReservationService {
      */
     @Transactional
     public void unreserved(String email) throws NotFoundException{
+
+
+
         Member member = memberRepository.findByEmail(email).orElseThrow(()->
             new NotFoundException("회원이 존재하지 않습니다.")
         );

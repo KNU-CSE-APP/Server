@@ -1,11 +1,13 @@
 package com.knu.cse.reservation.controller;
 
+import com.knu.cse.classroom.domain.ClassRoom;
 import com.knu.cse.classroom.service.ClassRoomService;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.email.service.AuthService;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.member.dto.RequestVerifyEmail;
 import com.knu.cse.member.model.Member;
+import com.knu.cse.member.repository.MemberRepository;
 import com.knu.cse.reservation.domain.FindReservationDTO;
 import com.knu.cse.reservation.domain.ReservationDTO;
 import com.knu.cse.reservation.service.ReservationService;
@@ -14,7 +16,9 @@ import com.knu.cse.utils.ApiUtils.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,12 +28,16 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final AuthService authService;
     private final ClassRoomService classRoomService;
+    private final MemberRepository memberRepository;
 
 
     //반납하기
     @PostMapping("/delete")
-    public ApiResult<String> deleteReservation(@Valid @RequestBody RequestVerifyEmail email) throws NotFoundException {
-        reservationService.unreserved(email.getEmail());
+    public ApiResult<String> deleteReservation(HttpServletRequest request) throws NotFoundException {
+        Long userId = authService.getUserIdFromJWT(request);
+        Optional<Member> member = memberRepository.findById(userId);
+
+        reservationService.unreserved(member.get().getEmail());
         return ApiUtils.success("좌석을 반납했습니다.");
     }
 
@@ -43,24 +51,27 @@ public class ReservationController {
     }
 
     //현재 예약상태 찾기
-    @GetMapping("/findReservation")
-    public ApiResult<FindReservationDTO> findReservation(@Valid @RequestBody RequestVerifyEmail email) {
-
-        Member member = authService.findByEmail(email.getEmail());
+    @PostMapping("/findReservation")
+    public ApiResult<FindReservationDTO> findReservation(HttpServletRequest request) {
+        Long userId = authService.getUserIdFromJWT(request);
+        Optional<Member> member = memberRepository.findById(userId);
+        ClassSeat classSeat = member.get().getReservations().get(0).getClassSeat();
 
         FindReservationDTO findReservationDTO = new FindReservationDTO(
-            member.getReservations().get(0).getClassSeat().getClassRoom().getBuilding(),
-            member.getReservations().get(0).getClassSeat().getClassRoom().getNumber(),
-            member.getReservations().get(0).getClassSeat().getNumber()
+                classSeat.getClassRoom().getBuilding(),
+                classSeat.getClassRoom().getNumber(),
+                classSeat.getNumber()
         );
 
         return ApiUtils.success(findReservationDTO);
     }
 
     @PostMapping("/extension")
-    public ApiResult<Long> extension(@Valid @RequestBody RequestVerifyEmail email) throws Exception{
-        Member member = authService.findByEmail(email.getEmail());
-        Long extensionNumber = reservationService.extensionSeat(member.getId());
+    public ApiResult<Long> extension(HttpServletRequest request) throws Exception{
+        Long userId = authService.getUserIdFromJWT(request);
+        Optional<Member> member = memberRepository.findById(userId);
+
+        Long extensionNumber = reservationService.extensionSeat(member.get().getId());
         return ApiUtils.success(extensionNumber);
     }
 }
