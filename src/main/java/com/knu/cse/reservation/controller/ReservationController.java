@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
+import javax.validation.Valid;
+import static com.knu.cse.utils.ApiUtils.success;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,6 +41,7 @@ public class ReservationController {
 
         reservationService.unreserved(member.get().getEmail());
         return ApiUtils.success("좌석을 반납했습니다.");
+
     }
 
     //예약하기
@@ -47,6 +50,7 @@ public class ReservationController {
         Long userId = authService.getUserIdFromJWT(request);
         Optional<Member> member = memberRepository.findById(userId);
         ClassSeat classSeat = classRoomService.findClassSeatByBuildingAndRoomAndSeatNum(reservationDTO.getBuilding(), reservationDTO.getRoomNumber(), reservationDTO.getSeatNumber());
+
         reservationService.reservationSeat(member.get().getId(),classSeat.getId());
         return ApiUtils.success("자리 예약에 성공했습니다.");
     }
@@ -64,7 +68,7 @@ public class ReservationController {
                 classSeat.getNumber()
         );
 
-        return ApiUtils.success(findReservationDTO);
+        return success(findReservationDTO);
     }
 
     @PostMapping("/extension")
