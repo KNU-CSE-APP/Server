@@ -80,4 +80,4 @@ fix : 매주 수요일 19시 30분
 
 ## Server Architecture
 
-![image](https://user-images.githubusercontent.com/51476083/126072379-9245f99b-030e-4b67-965a-0f9742087757.png)
+![image](https://user-images.githubusercontent.com/51476083/127125991-5b9007ae-2470-45ec-a04b-a5d9cefbca67.png)
