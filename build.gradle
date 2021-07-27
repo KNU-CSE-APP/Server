@@ -53,6 +53,9 @@ dependencies {
 
 	//commons-lang3
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+
+	//s3
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.1.RELEASE'
 }
 
 test {

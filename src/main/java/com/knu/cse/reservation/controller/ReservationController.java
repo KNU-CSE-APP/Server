@@ -16,9 +16,12 @@ import com.knu.cse.utils.ApiUtils.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
+import javax.validation.Valid;
+import static com.knu.cse.utils.ApiUtils.success;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,6 +42,7 @@ public class ReservationController {
 
         reservationService.unreserved(member.get().getEmail());
         return ApiUtils.success("좌석을 반납했습니다.");
+
     }
 
     //예약하기
@@ -47,7 +51,7 @@ public class ReservationController {
         Member member = authService.findByEmail(reservationDTO.getEmail());
         ClassSeat classSeat = classRoomService.findClassSeatByBuildingAndRoomAndSeatNum(reservationDTO.getBuilding(), reservationDTO.getRoomNumber(), reservationDTO.getSeatNumber());
         reservationService.reservationSeat(member.getId(),classSeat.getId());
-        return ApiUtils.success("자리 예약에 성공했습니다.");
+        return success("자리 예약에 성공했습니다.");
     }
 
     //현재 예약상태 찾기
@@ -63,7 +67,7 @@ public class ReservationController {
                 classSeat.getNumber()
         );
 
-        return ApiUtils.success(findReservationDTO);
+        return success(findReservationDTO);
     }
 
     @PostMapping("/extension")
