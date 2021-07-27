@@ -37,7 +37,7 @@ public class ClassRoomService {
     public ClassRoom RegistrationClassRoom(Building building,Long roomNumber,Long totalSeat) throws NotFoundException {
         ClassRoom classRoom = new ClassRoom(roomNumber, building, totalSeat);
         ClassRoom saveClassRoom = classRoomRepository.save(classRoom);
-        for(Long i=0L; i<totalSeat;i++){
+        for(Long i=1L; i<=totalSeat;i++){
             ClassSeat classSeat = new ClassSeat(i, Status.UNRESERVED, saveClassRoom);
             classSeatRepository.save(classSeat);
         }

@@ -12,16 +12,13 @@ import javax.validation.constraints.NotNull;
 public class ReservationDTO {
 
     @NotNull
-    String email;
-    @NotNull
     Building building;
     @NotNull
     Long roomNumber;
     @NotNull
     Long seatNumber;
 
-    public ReservationDTO(String email, Building building, Long roomNumber, Long seatNumber){
-        this.email = email;
+    public ReservationDTO(Building building, Long roomNumber, Long seatNumber){
         this.building = building;
         this.roomNumber = roomNumber;
         this.seatNumber = seatNumber;

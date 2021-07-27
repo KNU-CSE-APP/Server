@@ -53,7 +53,6 @@ public class ClassSeat extends BaseEntity {
         this.number = number;
         this.status = status;
         setClassRoom(classRoom);
-
     }
 
 

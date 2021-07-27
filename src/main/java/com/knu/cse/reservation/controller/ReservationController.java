@@ -43,10 +43,11 @@ public class ReservationController {
 
     //예약하기
     @PostMapping("/reservation")
-    public ApiResult<String> reservation(@Valid @RequestBody ReservationDTO reservationDTO) throws Exception{
-        Member member = authService.findByEmail(reservationDTO.getEmail());
+    public ApiResult<String> reservation(@Valid @RequestBody ReservationDTO reservationDTO, HttpServletRequest request) throws Exception{
+        Long userId = authService.getUserIdFromJWT(request);
+        Optional<Member> member = memberRepository.findById(userId);
         ClassSeat classSeat = classRoomService.findClassSeatByBuildingAndRoomAndSeatNum(reservationDTO.getBuilding(), reservationDTO.getRoomNumber(), reservationDTO.getSeatNumber());
-        reservationService.reservationSeat(member.getId(),classSeat.getId());
+        reservationService.reservationSeat(member.get().getId(),classSeat.getId());
         return ApiUtils.success("자리 예약에 성공했습니다.");
     }
 

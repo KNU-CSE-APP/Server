@@ -27,8 +27,9 @@ public class ClassRoom {
 
     private Long totalSeats;
 
-    @Builder.Default @OneToMany(mappedBy = "classRoom")
-    private List<ClassSeat> classSeats = new ArrayList<ClassSeat>();
+    @Builder.Default
+    @OneToMany(mappedBy = "classRoom")
+    private List<ClassSeat> classSeats = new ArrayList<>();
 
     public void DownTotalSeats(){
         this.totalSeats -= 1;
