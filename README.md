@@ -72,7 +72,7 @@ fix : 매주 수요일 19시 30분
 
 ## ER Diagram
 
-![image](https://user-images.githubusercontent.com/51476083/126072364-43d5aa47-1170-4c20-a1aa-32f3e6c40a68.png)
+![knucseapp (1)](https://user-images.githubusercontent.com/51476083/127291522-064db17b-6ef8-444c-b5cd-417d5d2b8d58.png)
 
 <br/> <br/>
 
