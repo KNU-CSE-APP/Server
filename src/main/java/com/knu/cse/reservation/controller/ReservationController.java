@@ -4,12 +4,10 @@ import com.knu.cse.classroom.service.ClassRoomService;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.email.service.AuthService;
 import com.knu.cse.errors.NotFoundException;
-import com.knu.cse.member.dto.RequestVerifyEmail;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.reservation.domain.FindReservationDTO;
 import com.knu.cse.reservation.domain.ReservationDTO;
 import com.knu.cse.reservation.service.ReservationService;
-import com.knu.cse.utils.ApiUtils;
 import com.knu.cse.utils.ApiUtils.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +26,8 @@ public class ReservationController {
 
     //반납하기
     @PostMapping("/delete")
-    public ApiResult<String> deleteReservation(@Valid @RequestBody RequestVerifyEmail email) throws NotFoundException {
-        reservationService.unreserved(email.getEmail());
+    public ApiResult<String> deleteReservation(@Valid @RequestBody String email) throws NotFoundException {
+        reservationService.unreserved(email);
         return success("좌석을 반납했습니다.");
     }
 
@@ -44,9 +42,9 @@ public class ReservationController {
 
     //현재 예약상태 찾기
     @GetMapping("/findReservation")
-    public ApiResult<FindReservationDTO> findReservation(@Valid @RequestBody RequestVerifyEmail email) {
+    public ApiResult<FindReservationDTO> findReservation(@Valid @RequestBody String email) {
 
-        Member member = authService.findByEmail(email.getEmail());
+        Member member = authService.findByEmail(email);
 
         FindReservationDTO findReservationDTO = new FindReservationDTO(
             member.getReservations().get(0).getClassSeat().getClassRoom().getBuilding(),
@@ -58,8 +56,8 @@ public class ReservationController {
     }
 
     @PostMapping("/extension")
-    public ApiResult<Long> extension(@Valid @RequestBody RequestVerifyEmail email) throws Exception{
-        Member member = authService.findByEmail(email.getEmail());
+    public ApiResult<Long> extension(@Valid @RequestBody String email) throws Exception{
+        Member member = authService.findByEmail(email);
         Long extensionNumber = reservationService.extensionSeat(member.getId());
         return success(extensionNumber);
     }

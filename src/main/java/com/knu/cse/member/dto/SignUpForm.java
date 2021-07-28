@@ -39,13 +39,17 @@ public class SignUpForm {
     @NotNull
     private Major major;
 
+    @NotNull
+    private String permissionCode;
+
     public SignUpForm(
         @NotNull @Length(min = 3, max = 20) @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9_-]{3,20}$") String nickname,
         @Email @NotNull String email,
         @NotNull @Length(min = 8, max = 20) String password,
         @NotNull String username, @NotNull String studentId,
         @NotNull Gender gender,
-        @NotNull Major major) {
+        @NotNull Major major,
+        @NotNull String permissionCode) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
@@ -53,6 +57,7 @@ public class SignUpForm {
         this.studentId = studentId;
         this.gender = gender;
         this.major = major;
+        this.permissionCode = permissionCode;
     }
 
     public SignUpForm() {}

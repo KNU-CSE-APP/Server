@@ -6,14 +6,13 @@ import com.knu.cse.email.util.RedisUtil;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.member.dto.LoginSuccessDto;
 import com.knu.cse.member.dto.MemberDto;
+import com.knu.cse.member.dto.VerifyEmailDto;
 import com.knu.cse.member.model.Member;
-import com.knu.cse.member.dto.RequestVerifyEmail;
 import com.knu.cse.member.dto.SignInForm;
 import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.email.service.AuthService;
 
 import com.knu.cse.member.repository.MemberRepository;
-import com.knu.cse.utils.ApiUtils;
 import com.knu.cse.utils.ApiUtils.ApiResult;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.Cookie;
@@ -59,30 +58,28 @@ public class MemberController {
         return success(lsd);
     }
 
-    @ApiOperation(value = "회원가입", notes = "회원가입 메소드")
+    @ApiOperation(value = "회원가입", notes = "회원가입 API")
     @PostMapping("/signUp")
-    public ApiResult<String> signUpSubmit(@Valid @RequestBody SignUpForm signUpForm, Errors errors) throws NotFoundException {
+    public ApiResult<String> signUpSubmit(@Valid @RequestBody SignUpForm signUpForm) throws NotFoundException {
         Member savedMember = authService.signUpMember(signUpForm);
-        authService.sendVerificationMail(savedMember);
         return success("회원가입을 성공적으로 완료했습니다.");
     }
 
-    @ApiOperation(value = "이메일 인증", notes = "회원가입 시 이메일 인증을 수행하는 메소드")
-    @PostMapping("/verify")
-    public ApiResult<String> verify(@RequestBody RequestVerifyEmail requestVerifyEmail) throws NotFoundException {
-        Member member = authService.findByEmail(requestVerifyEmail.getEmail());
-        authService.sendVerificationMail(member);
+    @ApiOperation(value = "이메일 인증 번호 요청", notes = "회원가입 시 이메일 인증 번호를 요청하는 API")
+    @GetMapping("/verify/{requestEmail}")
+    public ApiResult<String> verify(@PathVariable("requestEmail") String requestEmail) throws NotFoundException {
+        authService.sendVerificationMail(requestEmail);
         return success("성공적으로 인증메일을 보냈습니다.");
     }
 
-    @ApiOperation(value = "이메일 인증", notes="회원가입 시 이메일로 전송한 인증 링크를 확인하는 메소드")
-    @GetMapping("/verify/{key}")
-    public ApiResult<String> getVerify(@PathVariable String key) throws NotFoundException{
-        authService.verifyEmail(key);
-        return success("성공적으로 인증메일을 확인했습니다.");
+    @ApiOperation(value = "이메일 인증", notes="회원가입 시 이메일로 전송한 인증 번호를 확인하는 API")
+    @PostMapping("/verify/")
+    public ApiResult<String> getVerify(@RequestBody VerifyEmailDto verifyEmailDto) throws IllegalStateException{
+        String permissionCode = authService.verifyEmail(verifyEmailDto);
+        return success(permissionCode);
     }
 
-    @ApiOperation(value = "회원 E-mail과 Nickname, userId 반환", notes="현재 로그인한 유저의 정보(닉네임, 이메일, 회원 번호)을 반환하는 메소드")
+    @ApiOperation(value = "회원 E-mail과 Nickname, userId 반환", notes="현재 로그인한 유저의 정보(닉네임, 이메일, 회원 번호)을 반환하는 API")
     @GetMapping("/getUserEmailNickname")
     public ApiResult<MemberDto> getEmailNickname(HttpServletRequest req){
         Long userId = authService.getUserIdFromJWT(req);
