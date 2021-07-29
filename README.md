@@ -72,7 +72,7 @@ fix : 매주 수요일 19시 30분
 
 ## ER Diagram
 
-![image](https://user-images.githubusercontent.com/51476083/126072364-43d5aa47-1170-4c20-a1aa-32f3e6c40a68.png)
+![knucseapp (1)](https://user-images.githubusercontent.com/51476083/127291522-064db17b-6ef8-444c-b5cd-417d5d2b8d58.png)
 
 <br/> <br/>
 
@@ -80,4 +80,4 @@ fix : 매주 수요일 19시 30분
 
 ## Server Architecture
 
-![image](https://user-images.githubusercontent.com/51476083/126072379-9245f99b-030e-4b67-965a-0f9742087757.png)
+![image](https://user-images.githubusercontent.com/51476083/127125991-5b9007ae-2470-45ec-a04b-a5d9cefbca67.png)

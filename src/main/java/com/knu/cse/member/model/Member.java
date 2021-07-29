@@ -44,12 +44,18 @@ public class Member extends BaseEntity {
 
     @Builder.Default @OneToMany(mappedBy = "member")
     private List<Reservation> reservations = new ArrayList<Reservation>();
-//    @OneToOne(mappedBy = "member")
-//    private Reservation reservation;
+
+    @OneToOne(mappedBy = "member")
+    private Reservation reservation;
 
     @Builder.Default @OneToMany(mappedBy="member")
     private List<Board> boardList = new ArrayList<Board>();
 
     @Builder.Default @OneToMany(mappedBy="member")
     private List<Comment> commentList = new ArrayList<Comment>();
+
+    public void setReservation(Reservation reservation){
+        reservation.setMember(this);
+        this.reservation = reservation;
+    }
 }
