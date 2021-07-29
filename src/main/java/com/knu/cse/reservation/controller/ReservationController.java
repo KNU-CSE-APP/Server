@@ -62,7 +62,6 @@ public class ReservationController {
     }
 
     //현재 예약상태 찾기
-<<<<<<< HEAD
     @ApiOperation(value = "현재 예약한 좌석 보기", notes="로그인된 세션의 유저의 예약 현황 보여줌")
     @PostMapping("/findReservation")
     public ApiResult<FindReservationDTO> findReservation(HttpServletRequest request) {
@@ -73,7 +72,6 @@ public class ReservationController {
 
     @ApiOperation(value = "좌석 연장하기", notes="로그인된 세션의 유저의 좌석 연장함(최대3번)")
     @PostMapping("/extension")
-<<<<<<< HEAD
     public ApiResult<Long> extension(HttpServletRequest request) throws Exception{
         Long userId = authService.getUserIdFromJWT(request);
         Optional<Member> member = Optional.ofNullable(memberRepository.findById(userId).orElseThrow(
