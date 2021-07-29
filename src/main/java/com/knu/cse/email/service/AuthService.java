@@ -2,13 +2,13 @@ package com.knu.cse.email.service;
 
 import com.knu.cse.email.util.RedisUtil;
 import com.knu.cse.errors.NotFoundException;
+import com.knu.cse.member.dto.VerifyEmailDto;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.model.MemberRole;
 import com.knu.cse.member.dto.SignInForm;
 import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.member.repository.MemberRepository;
 import java.util.Base64;
-import java.util.UUID;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +38,11 @@ public class AuthService {
         }
         if(isDuplicateNickName(signUpForm.getNickname())){
             throw new IllegalStateException("닉네임 중복되었습니다. 다른 닉네임으로 해주세요.");
+        }
+
+        String permittedEmail = redisUtil.getData(signUpForm.getPermissionCode());
+        if(permittedEmail == null || !permittedEmail.equals(signUpForm.getEmail())){
+            throw new IllegalArgumentException("이메일 인증이 올바르게 수행되지 않았습니다.");
         }
 
         Member member = Member.builder()
@@ -78,27 +83,26 @@ public class AuthService {
         return member;
     }
 
-    public void sendVerificationMail(Member member) throws NotFoundException {
-        String VERIFICATION_LINK = "http://localhost:8080/user/verify/";
-        if(member==null) throw new NotFoundException("멤버가 조회되지 않음");
-        UUID uuid = UUID.randomUUID();
-        String content = "다음의 링크를 통해 인증을 완료해주세요. \n" + VERIFICATION_LINK+uuid.toString() ;
-        redisUtil.setDataExpire(uuid.toString(),member.getEmail(), 60 * 30L);
-        emailService.sendMail(member.getEmail(), "[경북대학교 컴퓨터학부 APP] 회원가입 인증메일입니다.", content);
+    public void sendVerificationMail(String email) throws NotFoundException {
+        int authentication = (int)(Math.random()*1000000);
+        String content = "다음의 인증 번호를 입력해 인증을 완료해주세요. \n" + authentication ;
+        redisUtil.setDataExpire(authentication+"",email, 60 * 3L);
+        emailService.sendMail(email, "[경북대학교 컴퓨터학부 APP] 회원가입 인증메일입니다.", content);
         log.info(content);
     }
 
-    public void verifyEmail(String key) throws NotFoundException {
-        String email = redisUtil.getData(key);
-        Member member = memberRepository.findByEmail(email).orElseThrow(()->
-            new NotFoundException("이메일 인증에 실패하였습니다."));
-        modifyUserRole(member, MemberRole.ROLE_USER);
-        redisUtil.deleteData(key);
-    }
-
-    public void modifyUserRole(Member member, MemberRole userRole){
-        member.changeRole(userRole);
-        memberRepository.save(member);
+    public String verifyEmail(VerifyEmailDto verifyEmailDto) throws IllegalStateException {
+        String email = redisUtil.getData(verifyEmailDto.getCode());
+        if(email == null) throw new IllegalStateException("인증번호가 올바르지 않습니다.");
+        if(email.equals(verifyEmailDto.getEmail())) {
+            int permissionCode = (int)(Math.random()*1000000);
+            redisUtil.setDataExpire(permissionCode+"",verifyEmailDto.getEmail(), 60 * 3L);
+            return permissionCode+"";
+        }
+        else {
+            redisUtil.deleteData(verifyEmailDto.getCode());
+            throw new IllegalStateException("인증번호가 올바르지 않습니다.");
+        }
     }
 
     public Member findByEmail(String email) throws NotFoundException {

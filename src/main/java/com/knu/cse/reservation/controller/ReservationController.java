@@ -5,7 +5,6 @@ import com.knu.cse.classroom.service.ClassRoomService;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.email.service.AuthService;
 import com.knu.cse.errors.NotFoundException;
-import com.knu.cse.member.dto.RequestVerifyEmail;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
 import com.knu.cse.reservation.domain.FindReservationDTO;
@@ -39,11 +38,12 @@ public class ReservationController {
     @PostMapping("/delete")
     public ApiResult<String> deleteReservation(HttpServletRequest request) throws NotFoundException {
         Long userId = authService.getUserIdFromJWT(request);
-        Optional<Member> member = memberRepository.findById(userId);
+        Optional<Member> member = Optional.ofNullable(memberRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("등록된 회원이 아닙니다.")
+        ));
 
         reservationService.unreserved(member.get().getEmail());
         return ApiUtils.success("좌석을 반납했습니다.");
-
     }
 
     //예약하기
@@ -62,6 +62,7 @@ public class ReservationController {
     }
 
     //현재 예약상태 찾기
+<<<<<<< HEAD
     @ApiOperation(value = "현재 예약한 좌석 보기", notes="로그인된 세션의 유저의 예약 현황 보여줌")
     @PostMapping("/findReservation")
     public ApiResult<FindReservationDTO> findReservation(HttpServletRequest request) {
@@ -72,6 +73,7 @@ public class ReservationController {
 
     @ApiOperation(value = "좌석 연장하기", notes="로그인된 세션의 유저의 좌석 연장함(최대3번)")
     @PostMapping("/extension")
+<<<<<<< HEAD
     public ApiResult<Long> extension(HttpServletRequest request) throws Exception{
         Long userId = authService.getUserIdFromJWT(request);
         Optional<Member> member = Optional.ofNullable(memberRepository.findById(userId).orElseThrow(
