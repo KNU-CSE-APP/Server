@@ -35,7 +35,7 @@ class CommentServiceTest {
 
 
     @Test
-    @Rollback(value=true)
+    @Rollback(value=false)
     public void 댓글작성테스트(){
         SignUpForm signUpForm1 = new SignUpForm("Girin", "nun2580@knu.ac.kr", "samsung159!", "김기현", "2016113934", Gender.MALE, Major.ADVANCED);
         SignUpForm signUpForm2 = new SignUpForm("Daegu", "k3832580@knu.ac.kr", "samsung159!", "김기현222", "2016113934", Gender.FEMALE, Major.GLOBAL);

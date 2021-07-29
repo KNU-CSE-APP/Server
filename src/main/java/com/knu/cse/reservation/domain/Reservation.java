@@ -32,6 +32,9 @@ public class Reservation extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+//    @OneToOne
+//    @JoinColumn(name = "member_id")
+//    private Member member;
 
     public void setMember(Member member){
         if (this.member != null){
@@ -40,6 +43,9 @@ public class Reservation extends BaseTimeEntity {
         this.member = member;
         member.getReservations().add(this);
     }
+//    public void setMember(Member member) {
+//        this.member = member;
+//    }
 
     public void setClassSeat(ClassSeat classSeat){
         this.classSeat = classSeat;

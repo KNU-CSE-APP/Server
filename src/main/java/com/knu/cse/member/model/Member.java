@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 //import com.knu.cse.reservation.domain.Reservation;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
@@ -47,6 +44,8 @@ public class Member extends BaseEntity {
 
     @Builder.Default @OneToMany(mappedBy = "member")
     private List<Reservation> reservations = new ArrayList<Reservation>();
+//    @OneToOne(mappedBy = "member")
+//    private Reservation reservation;
 
     @Builder.Default @OneToMany(mappedBy="member")
     private List<Board> boardList = new ArrayList<Board>();

@@ -62,7 +62,9 @@ public class ReservationService {
         }
 
         //엔티티 조회
-        Optional<Member> findMember = memberRepository.findById(memberId);
+        Optional<Member> findMember = Optional.ofNullable(memberRepository.findById(memberId).orElseThrow(
+                () -> new NotFoundException("member가 존재하지 않습니다.")));
+
         Optional<ClassSeat> findSeat = Optional.ofNullable(classSeatRepository.findById(seatId).orElseThrow(
                 () -> new NotFoundException("좌석이 존재하지 않습니다.")));
 
@@ -101,11 +103,14 @@ public class ReservationService {
 
     @Transactional
     public FindReservationDTO findReservation(Long memberId){
-        Optional<Member> member = memberRepository.findById(memberId);
+        Optional<Member> member = Optional.ofNullable(memberRepository.findById(memberId).orElseThrow(
+                () -> new NotFoundException("member를 찾을 수 없습니다.")));
         if (member.get().getReservations().size() == 0) {
+//        if (member.get().getReservation() == null){
             throw new NotFoundException("예약된 좌석을 찾을 수 없습니다.");
         }
         ClassSeat classSeat = member.get().getReservations().get(0).getClassSeat();
+//        ClassSeat classSeat = member.get().getReservation().getClassSeat();
         return new FindReservationDTO(
                 classSeat.getClassRoom().getBuilding(),
                 classSeat.getClassRoom().getNumber(),
