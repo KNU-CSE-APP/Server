@@ -106,10 +106,10 @@ public class ReservationService {
         Optional<Member> member = Optional.ofNullable(memberRepository.findById(memberId).orElseThrow(
                 () -> new NotFoundException("등록된 회원이 아닙니다.")
         ));
-        if (member.get().getReservations().size() == 0) {
+        if (member.get().getReservation() == null){
             throw new NotFoundException("예약된 좌석을 찾을 수 없습니다.");
         }
-        ClassSeat classSeat = member.get().getReservations().get(0).getClassSeat();
+        ClassSeat classSeat = member.get().getReservation().getClassSeat();
         return new FindReservationDTO(
                 classSeat.getClassRoom().getBuilding(),
                 classSeat.getClassRoom().getNumber(),

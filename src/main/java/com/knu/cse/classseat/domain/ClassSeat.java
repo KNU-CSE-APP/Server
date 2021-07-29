@@ -41,6 +41,10 @@ public class ClassSeat extends BaseEntity {
         this.classRoom.UpTotalSeats();
     }
 
+    public void setReservation(Reservation reservation){
+        reservation.setClassSeat(this);
+        this.reservation = reservation;
+    }
 
 
     public void setClassRoom(ClassRoom classRoom){

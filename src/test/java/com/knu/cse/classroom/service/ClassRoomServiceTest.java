@@ -16,12 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class ClassRoomServiceTest {
 
-    @Autowired private ClassRoomService classRoomService;
-
-    @Test
-    @Rollback(value=true)
-    public void 강의실등록_Test(){
-        ClassRoom classRoom = classRoomService.RegistrationClassRoom(Building.IT4, 104L, 20L);
-    }
+//    @Autowired private ClassRoomService classRoomService;
+//
+//    @Test
+//    @Rollback(value=true)
+//    public void 강의실등록_Test(){
+//        ClassRoom classRoom = classRoomService.RegistrationClassRoom(Building.IT4, 104L, 20L);
+//    }
 
 }
