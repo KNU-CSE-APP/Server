@@ -13,9 +13,9 @@ import com.knu.cse.reservation.domain.ReservationDTO;
 import com.knu.cse.reservation.service.ReservationService;
 import com.knu.cse.utils.ApiUtils;
 import com.knu.cse.utils.ApiUtils.ApiResult;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -35,6 +35,7 @@ public class ReservationController {
 
 
     //반납하기
+    @ApiOperation(value = "예약한 좌석 반납하기", notes="로그인 된 세션을 바탕으로 좌석 반납함.")
     @PostMapping("/delete")
     public ApiResult<String> deleteReservation(HttpServletRequest request) throws NotFoundException {
         Long userId = authService.getUserIdFromJWT(request);
@@ -46,34 +47,36 @@ public class ReservationController {
     }
 
     //예약하기
+    @ApiOperation(value = "좌석 예약하기", notes="건물, 강의실 번호, 좌석 번호를 넘겨주면 로그인된 세션의 유저로 좌석을 예약함.")
     @PostMapping("/reservation")
-    public ApiResult<String> reservation(@Valid @RequestBody ReservationDTO reservationDTO) throws Exception{
-        Member member = authService.findByEmail(reservationDTO.getEmail());
+    public ApiResult<String> reservation(@Valid @RequestBody ReservationDTO reservationDTO, HttpServletRequest request) throws Exception{
+        Long userId = authService.getUserIdFromJWT(request);
+        Optional<Member> member = Optional.ofNullable(memberRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("등록된 회원이 아닙니다")
+        ));
+
         ClassSeat classSeat = classRoomService.findClassSeatByBuildingAndRoomAndSeatNum(reservationDTO.getBuilding(), reservationDTO.getRoomNumber(), reservationDTO.getSeatNumber());
-        reservationService.reservationSeat(member.getId(),classSeat.getId());
-        return success("자리 예약에 성공했습니다.");
+
+        reservationService.reservationSeat(member.get().getId(),classSeat.getId());
+        return ApiUtils.success("자리 예약에 성공했습니다.");
     }
 
     //현재 예약상태 찾기
+    @ApiOperation(value = "현재 예약한 좌석 보기", notes="로그인된 세션의 유저의 예약 현황 보여줌")
     @PostMapping("/findReservation")
     public ApiResult<FindReservationDTO> findReservation(HttpServletRequest request) {
         Long userId = authService.getUserIdFromJWT(request);
-        Optional<Member> member = memberRepository.findById(userId);
-        ClassSeat classSeat = member.get().getReservations().get(0).getClassSeat();
-
-        FindReservationDTO findReservationDTO = new FindReservationDTO(
-                classSeat.getClassRoom().getBuilding(),
-                classSeat.getClassRoom().getNumber(),
-                classSeat.getNumber()
-        );
-
+        FindReservationDTO findReservationDTO = reservationService.findReservation(userId);
         return success(findReservationDTO);
     }
 
+    @ApiOperation(value = "좌석 연장하기", notes="로그인된 세션의 유저의 좌석 연장함(최대3번)")
     @PostMapping("/extension")
     public ApiResult<Long> extension(HttpServletRequest request) throws Exception{
         Long userId = authService.getUserIdFromJWT(request);
-        Optional<Member> member = memberRepository.findById(userId);
+        Optional<Member> member = Optional.ofNullable(memberRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("등록된 회원이 아닙니다.")
+        ));
 
         Long extensionNumber = reservationService.extensionSeat(member.get().getId());
         return ApiUtils.success(extensionNumber);
