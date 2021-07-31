@@ -9,10 +9,12 @@ public class MemberDto {
     private Long userId;
     private String email;
     private String nickname;
+    private String imagePath;
 
     public MemberDto(Member member) {
         this.userId = member.getId();
         this.email = member.getEmail();
         this.nickname = member.getNickname();
+        this.imagePath = member.getProfileImageUrl();
     }
 }
