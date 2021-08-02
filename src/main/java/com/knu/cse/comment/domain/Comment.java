@@ -3,8 +3,6 @@ package com.knu.cse.comment.domain;
 import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.board.domain.Board;
 import com.knu.cse.member.model.Member;
-import com.knu.cse.reply.domain.Reply;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,9 +40,6 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name="member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "comment")
-    private List<Reply> replyList;
-
     public void setMember(Member member){
         if(this.member!=null){
             this.member.getCommentList().remove(this);
@@ -61,7 +56,7 @@ public class Comment extends BaseTimeEntity {
         board.getCommentList().add(this);
     }
 
-    public static Comment setComment(Member member,Board board, CommentDTO commentDTO){
+    public static Comment createComment(Member member,Board board, CommentDTO commentDTO){
         Comment comment = Comment.builder()
                 .content(commentDTO.getContent())
                 .author(commentDTO.getAuthor())
@@ -72,7 +67,7 @@ public class Comment extends BaseTimeEntity {
         return comment;
     }
 
-    public static Comment setReply(Member member,Comment comment, ReplyDTO replyDTO){
+    public static Comment createReply(Member member,Comment comment, ReplyDTO replyDTO){
         Comment reply = Comment.builder()
                 .content(replyDTO.getContent())
                 .author(replyDTO.getAuthor())
