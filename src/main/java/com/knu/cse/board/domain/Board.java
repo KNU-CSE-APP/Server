@@ -4,6 +4,8 @@ import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.board.dto.BoardForm;
 import com.knu.cse.comment.domain.Comment;
 import com.knu.cse.member.model.Member;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,8 +45,8 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name="member_id")
     private Member member;
 
-    @OneToMany(mappedBy="board")
-    private List<Comment> commentList;
+    @Builder.Default @OneToMany(mappedBy="board")
+    private List<Comment> commentList = new ArrayList<Comment>();
 
     public void edit(BoardForm boardForm){
         content = changedInfo(content, boardForm.getContent());

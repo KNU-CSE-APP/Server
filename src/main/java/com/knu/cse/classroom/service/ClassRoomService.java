@@ -4,6 +4,7 @@ import com.knu.cse.classroom.domain.Building;
 import com.knu.cse.classroom.domain.ClassRoom;
 import com.knu.cse.classroom.repository.ClassRoomRepository;
 import com.knu.cse.classseat.domain.ClassSeat;
+import com.knu.cse.classseat.domain.ClassSeatDTO;
 import com.knu.cse.classseat.domain.Status;
 import com.knu.cse.classseat.repository.ClassSeatRepository;
 import com.knu.cse.errors.NotFoundException;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,20 +27,38 @@ public class ClassRoomService {
     private final ClassRoomRepository classRoomRepository;
     private final ClassSeatRepository classSeatRepository;
 
-    public ClassRoom LookupClassRoom(Long number, Building building){
-        return classRoomRepository.findClassRoomByNumberAndBuilding(number, building).orElseThrow(()->
-            new NotFoundException("잘못된 접근입니다.")
-        );
+    public List<ClassSeatDTO> LookupClassRoom(Long number, Building building){
+        ClassRoom classRoom = classRoomRepository.findClassRoomByNumberAndBuilding(number, building).orElseThrow(() ->
+                new NotFoundException("해당 강의실이 존재하지 않습니다."));
+        List<ClassSeatDTO> classSeats = new ArrayList<ClassSeatDTO>();
+        for (ClassSeat classSeat : classRoom.getClassSeats()) {
+            Long seatNumber = classSeat.getNumber();
+            Status status = classSeat.getStatus();
+            classSeats.add(new ClassSeatDTO(seatNumber, status));
+        }
+        return classSeats;
     }
 
     /**
      * 강의실 및 좌석 등록하기
      */
     public ClassRoom RegistrationClassRoom(Building building,Long roomNumber,Long totalSeat) throws NotFoundException {
-        ClassRoom classRoom = new ClassRoom(roomNumber, building, totalSeat);
+        ClassRoom classRoom = ClassRoom.builder()
+                .number(roomNumber)
+                .building(building)
+                .totalSeats(totalSeat)
+                .build();
+        if(classRoomRepository.existsByBuildingAndNumber(building, roomNumber)){
+            throw new IllegalStateException("이미 강의실이 존재합니다,");
+        }
         ClassRoom saveClassRoom = classRoomRepository.save(classRoom);
-        for(Long i=0L; i<totalSeat;i++){
-            ClassSeat classSeat = new ClassSeat(i, Status.UNRESERVED, saveClassRoom);
+        for(Long i=1L; i<=totalSeat;i++){
+            ClassSeat classSeat = ClassSeat.builder()
+                    .number(i)
+                    .status(Status.UNRESERVED)
+                    .build();
+            classSeat.setClassRoom(saveClassRoom);
+
             classSeatRepository.save(classSeat);
         }
         return saveClassRoom;
@@ -53,7 +73,7 @@ public class ClassRoomService {
      */
     public ClassSeat findClassSeatByBuildingAndRoomAndSeatNum(Building building, Long roomNumber, Long SeatNumber){
         ClassRoom findRoom = classRoomRepository.findClassRoomByNumberAndBuilding(roomNumber, building).orElseThrow(()->
-            new NotFoundException("좌석이 존재하지 않습니다.")
+            new NotFoundException("해당 강의실이 존재하지 않습니다.")
         );
 
         List<ClassSeat> classSeats = findRoom.getClassSeats();
@@ -64,7 +84,7 @@ public class ClassRoomService {
         }
 
         //예외
-        return null;
+        throw new NotFoundException("강의실은 있지만, 좌석이 존재하지 않습니다.");
     }
 
     /**

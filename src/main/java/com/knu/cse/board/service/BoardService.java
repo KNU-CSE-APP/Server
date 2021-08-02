@@ -39,32 +39,36 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public List<Board> findByTitle(String title){
-        Optional<List<Board>> byTitle = boardRepository.findByTitle(title);
-        if(byTitle.get().size()==0) throw new NotFoundException("Title : "+title+"에 해당하는 Board를 찾을 수 없습니다");
+        Optional<List<Board>> byTitle = Optional.ofNullable(boardRepository.findByTitle(title).orElseThrow(
+                () -> new NotFoundException("Title : " + title + "에 해당하는 Board를 찾을 수 없습니다")
+        ));
 
         return byTitle.get();
     }
 
     @Transactional(readOnly = true)
     public List<Board> findByAuthor(String author){
-        Optional<List<Board>> byAuthor = boardRepository.findByAuthor(author);
-        if(byAuthor.get().size()==0) throw new NotFoundException("Author :"+author+" 해당하는 Board를 찾을 수 없습니다");
+        Optional<List<Board>> byAuthor = Optional.ofNullable(boardRepository.findByAuthor(author).orElseThrow(
+                () -> new NotFoundException("Author :" + author + " 해당하는 Board를 찾을 수 없습니다")
+        ));
 
         return byAuthor.get();
     }
 
     @Transactional(readOnly = true)
     public List<Board> findByCategory(Category category){
-        Optional<List<Board>> byCategory = boardRepository.findByCategory(category);
-        if(byCategory.get().size()==0) throw new NotFoundException("Category :" +category+" 해당하는 Board를 찾을 수 없습니다");
+        Optional<List<Board>> byCategory = Optional.ofNullable(boardRepository.findByCategory(category).orElseThrow(
+                () -> new NotFoundException("Category :" + category + " 해당하는 Board를 찾을 수 없습니다")
+        ));
 
         return byCategory.get();
     }
 
     @Transactional(readOnly = true)
     public List<Board> findByContent(String content){
-        Optional<List<Board>> byContent = boardRepository.findByContent(content);
-        if(byContent.get().size()==0) throw new NotFoundException("Content :"+content+" 해당하는 Board를 찾을 수 없습니다");
+        Optional<List<Board>> byContent = Optional.ofNullable(boardRepository.findByContent(content).orElseThrow(
+                () -> new NotFoundException("Content :" + content + " 해당하는 Board를 찾을 수 없습니다")
+        ));
 
         return byContent.get();
     }

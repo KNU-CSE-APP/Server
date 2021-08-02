@@ -10,7 +10,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "CLASS_SEAT")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
+@Builder
 @ToString(of = {"id","number","status"})
 public class ClassSeat extends BaseEntity {
 
@@ -39,6 +41,10 @@ public class ClassSeat extends BaseEntity {
         this.classRoom.UpTotalSeats();
     }
 
+    public void setReservation(Reservation reservation){
+        reservation.setClassSeat(this);
+        this.reservation = reservation;
+    }
 
 
     public void setClassRoom(ClassRoom classRoom){
@@ -53,7 +59,6 @@ public class ClassSeat extends BaseEntity {
         this.number = number;
         this.status = status;
         setClassRoom(classRoom);
-
     }
 
 

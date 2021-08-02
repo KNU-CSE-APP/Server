@@ -29,17 +29,24 @@ public class Reservation extends BaseTimeEntity {
     @JoinColumn(name = "seat_id")
     private ClassSeat classSeat;
 
-    @ManyToOne
+//    @ManyToOne
+//    @JoinColumn(name = "member_id")
+//    private Member member;
+    @OneToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
+//    public void setMember(Member member){
+//        if (this.member != null){
+//            this.member.getReservations().remove(this);
+//        }
+//        this.member = member;
+//        member.getReservations().add(this);
+//    }
     public void setMember(Member member){
-        if (this.member != null){
-            this.member.getReservations().remove(this);
-        }
-        this.member = member;
-        member.getReservations().add(this);
-    }
+    this.member = member;
+}
+
 
     public void setClassSeat(ClassSeat classSeat){
         this.classSeat = classSeat;
@@ -67,6 +74,8 @@ public class Reservation extends BaseTimeEntity {
         classSeat.changeReserved();
         reservation.setMember(member);
         reservation.setClassSeat(classSeat);
+        member.setReservation(reservation);
+        classSeat.setReservation(reservation);
 
         return reservation;
     }

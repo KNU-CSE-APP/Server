@@ -5,6 +5,8 @@ import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.board.domain.Board;
 import com.knu.cse.comment.domain.Comment;
 import com.knu.cse.reservation.domain.Reservation;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 //import com.knu.cse.reservation.domain.Reservation;
@@ -44,14 +46,22 @@ public class Member extends BaseEntity {
         this.role = memberRole;
     }
 
-    @OneToMany(mappedBy = "member")
-    private List<Reservation> reservations;
+//    @Builder.Default @OneToMany(mappedBy = "member")
+//    private List<Reservation> reservations = new ArrayList<Reservation>();
+    @OneToOne(mappedBy = "member")
+    private Reservation reservation;
 
-    @OneToMany(mappedBy="member")
-    private List<Board> boardList;
+    @Builder.Default @OneToMany(mappedBy="member")
+    private List<Board> boardList = new ArrayList<Board>();
 
-    @OneToMany(mappedBy="member")
-    private List<Comment> commentList;
+    @Builder.Default @OneToMany(mappedBy="member")
+    private List<Comment> commentList = new ArrayList<Comment>();
+
+
+    public void setReservation(Reservation reservation){
+        reservation.setMember(this);
+        this.reservation = reservation;
+
 
     public void changeProfileImage(String imagePath){
         this.profileImageUrl = imagePath;
