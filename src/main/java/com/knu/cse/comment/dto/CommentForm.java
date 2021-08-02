@@ -1,4 +1,4 @@
-package com.knu.cse.comment.domain;
+package com.knu.cse.comment.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,10 +7,9 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
-public class CommentDTO {
+public class CommentForm {
 
-    @NotNull
-    private Long memberId;
+
     @NotNull
     private Long boardId;
     @NotNull
@@ -18,8 +17,7 @@ public class CommentDTO {
     @NotNull
     private String author;
 
-    public CommentDTO(Long memberId, Long boardId, String content, String author){
-        this.memberId = memberId;
+    public CommentForm(Long boardId, String content, String author){
         this.boardId = boardId;
         this.content= content;
         this.author= author;

@@ -1,27 +1,8 @@
 package com.knu.cse.comment.service;
 
-import com.knu.cse.board.domain.Board;
-import com.knu.cse.board.domain.Category;
-import com.knu.cse.board.repository.BoardRepository;
-import com.knu.cse.comment.domain.Comment;
-import com.knu.cse.comment.domain.CommentDTO;
-import com.knu.cse.comment.domain.ReplyDTO;
-import com.knu.cse.email.service.AuthService;
-import com.knu.cse.member.dto.SignUpForm;
-import com.knu.cse.member.model.Gender;
-import com.knu.cse.member.model.Major;
-import com.knu.cse.member.model.Member;
-import com.knu.cse.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 @SpringBootTest
 @Slf4j

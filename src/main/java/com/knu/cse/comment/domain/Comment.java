@@ -2,6 +2,8 @@ package com.knu.cse.comment.domain;
 
 import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.board.domain.Board;
+import com.knu.cse.comment.dto.CommentForm;
+import com.knu.cse.comment.dto.ReplyForm;
 import com.knu.cse.member.model.Member;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import lombok.*;
 
@@ -56,21 +57,20 @@ public class Comment extends BaseTimeEntity {
         board.getCommentList().add(this);
     }
 
-    public static Comment createComment(Member member,Board board, CommentDTO commentDTO){
+    public static Comment createComment(Member member,Board board, CommentForm commentForm){
         Comment comment = Comment.builder()
-                .content(commentDTO.getContent())
-                .author(commentDTO.getAuthor())
+                .content(commentForm.getContent())
+                .author(commentForm.getAuthor())
                 .build();
-//        comment.setParentId(comment.id);
         comment.setBoard(board);
         comment.setMember(member);
         return comment;
     }
 
-    public static Comment createReply(Member member,Comment comment, ReplyDTO replyDTO){
+    public static Comment createReply(Member member,Comment comment, ReplyForm replyForm){
         Comment reply = Comment.builder()
-                .content(replyDTO.getContent())
-                .author(replyDTO.getAuthor())
+                .content(replyForm.getContent())
+                .author(replyForm.getAuthor())
                 .build();
         reply.setParentId(comment.id);
         reply.setMember(member);
