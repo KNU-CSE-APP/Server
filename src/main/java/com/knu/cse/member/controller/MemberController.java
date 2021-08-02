@@ -13,6 +13,7 @@ import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.email.service.AuthService;
 
 import com.knu.cse.member.repository.MemberRepository;
+import com.knu.cse.member.service.MemberService;
 import com.knu.cse.utils.ApiUtils.ApiResult;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.Cookie;
@@ -21,13 +22,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import static com.knu.cse.utils.ApiUtils.success;
 
 @RestController
@@ -38,6 +42,7 @@ public class MemberController {
 
     private final AuthService authService;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
     private final RedisUtil redisUtil;
@@ -79,10 +84,19 @@ public class MemberController {
         return success(permissionCode);
     }
 
-    @ApiOperation(value = "회원 E-mail과 Nickname, userId 반환", notes="현재 로그인한 유저의 정보(닉네임, 이메일, 회원 번호)을 반환하는 API")
+    @ApiOperation(value = "(E-mail, Nickname, userId, 프로필 이미지) 반환", notes="현재 로그인한 유저의 정보(닉네임, 이메일, 회원 번호, 프로필 이미지)를 반환하는 API")
     @GetMapping("/getUserEmailNickname")
     public ApiResult<MemberDto> getEmailNickname(HttpServletRequest req){
         Long userId = authService.getUserIdFromJWT(req);
         return success(new MemberDto(memberRepository.findById(userId).orElseThrow(()-> new NotFoundException ("존재하지 않는 회원입니다."))));
     }
+
+    @ApiOperation(value = "프로필 이미지 변경", notes = "프로필 이미지를 파일 형태로 전송하여 저장할 수 있다.")
+    @PutMapping("/profileImage")
+    public ApiResult<String> uploadProfileImage(@RequestParam MultipartFile file, HttpServletRequest req)
+        throws Exception {
+        Long userId = authService.getUserIdFromJWT(req);
+        return success(memberService.updateProfileImage(file, userId));
+    }
+
 }
