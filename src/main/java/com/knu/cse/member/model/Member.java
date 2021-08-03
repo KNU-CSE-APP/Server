@@ -58,10 +58,10 @@ public class Member extends BaseEntity {
     private List<Comment> commentList = new ArrayList<Comment>();
 
 
-    public void setReservation(Reservation reservation){
+    public void setReservation(Reservation reservation) {
         reservation.setMember(this);
         this.reservation = reservation;
-
+    }
 
     public void changeProfileImage(String imagePath){
         this.profileImageUrl = imagePath;
