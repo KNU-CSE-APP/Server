@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Getter
 public class Board extends BaseTimeEntity {
 
@@ -46,7 +45,7 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name="member_id")
     private Member member;
 
-    @Builder.Default @OneToMany(mappedBy="board", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy="board", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<Comment>();
 
     public void edit(BoardForm boardForm){
@@ -65,16 +64,12 @@ public class Board extends BaseTimeEntity {
         member.getBoardList().add(this);
     }
 
-    public static Board createBoard(Member member,BoardForm boardForm){
-        Board board =Board.builder()
-            .category(boardForm.getCategory())
-            .title(boardForm.getTitle())
-            .content(boardForm.getContent())
-            .author(member.getNickname())
-            .build();
-
-        board.setMember(member);
-
-        return board;
+    @Builder
+    public Board (Member member, BoardForm boardForm){
+        this.author = member.getNickname();
+        this.category = boardForm.getCategory();
+        this.title = boardForm.getTitle();
+        this.content = boardForm.getContent();
+        this.setMember(member);
     }
 }
