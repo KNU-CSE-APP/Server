@@ -46,8 +46,6 @@ public class Member extends BaseEntity {
         this.role = memberRole;
     }
 
-//    @Builder.Default @OneToMany(mappedBy = "member")
-//    private List<Reservation> reservations = new ArrayList<Reservation>();
     @OneToOne(mappedBy = "member")
     private Reservation reservation;
 
