@@ -60,7 +60,7 @@ public class Comment extends BaseTimeEntity {
     public static Comment createComment(Member member,Board board, CommentForm commentForm){
         Comment comment = Comment.builder()
                 .content(commentForm.getContent())
-                .author(commentForm.getAuthor())
+                .author(member.getNickname())
                 .build();
         comment.setBoard(board);
         comment.setMember(member);
@@ -70,11 +70,19 @@ public class Comment extends BaseTimeEntity {
     public static Comment createReply(Member member,Comment comment, ReplyForm replyForm){
         Comment reply = Comment.builder()
                 .content(replyForm.getContent())
-                .author(replyForm.getAuthor())
+                .author(member.getNickname())
                 .build();
         reply.setParentId(comment.id);
         reply.setMember(member);
         reply.setBoard(comment.getBoard());
         return reply;
+    }
+
+    public void edit(CommentForm commentForm){
+        content = changedInfo(content, commentForm.getContent());
+    }
+
+    private String changedInfo(String original, String changed){
+        return (changed == null || changed.equals("")) ? original : changed;
     }
 }

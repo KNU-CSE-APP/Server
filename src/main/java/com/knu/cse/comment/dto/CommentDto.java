@@ -7,7 +7,12 @@ import lombok.Getter;
 @Getter
 public class CommentDto {
 
+
+    private Long boardId;
+
     private Long commentId;
+
+    private Long parentId;
 
     private String author;
 
@@ -16,10 +21,12 @@ public class CommentDto {
     private LocalDateTime time;
 
     public CommentDto(Comment comment){
+        this.boardId=comment.getBoard().getId();
         this.commentId = comment.getId();
         this.author=comment.getAuthor();
         this.content=comment.getContent();
         this.time=comment.getLastModifiedDate();
+        this.parentId=comment.getParentId();
     }
 
 }

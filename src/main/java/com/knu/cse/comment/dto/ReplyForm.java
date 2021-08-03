@@ -15,14 +15,12 @@ public class ReplyForm {
     private Long commentId;
     @NotNull
     private String content;
-    @NotNull
-    private String author;
 
-    public ReplyForm(Long boardId,Long commentId, String content, String author){
+
+    public ReplyForm(Long boardId,Long commentId, String content){
         this.boardId = boardId;
         this.commentId = commentId;
         this.content= content;
-        this.author= author;
     }
 
 }

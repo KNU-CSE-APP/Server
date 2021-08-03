@@ -14,12 +14,9 @@ public class CommentForm {
     private Long boardId;
     @NotNull
     private String content;
-    @NotNull
-    private String author;
 
-    public CommentForm(Long boardId, String content, String author){
+    public CommentForm(Long boardId, String content){
         this.boardId = boardId;
         this.content= content;
-        this.author= author;
     }
 }
