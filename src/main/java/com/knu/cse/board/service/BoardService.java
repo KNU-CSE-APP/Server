@@ -2,6 +2,7 @@ package com.knu.cse.board.service;
 
 import com.knu.cse.board.domain.Board;
 import com.knu.cse.board.domain.Category;
+import com.knu.cse.board.dto.BoardDto;
 import com.knu.cse.board.dto.BoardForm;
 import com.knu.cse.board.repository.BoardRepository;
 import com.knu.cse.errors.NotFoundException;
@@ -9,6 +10,7 @@ import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class BoardService {
         Member member = memberRepository.findById(userId).orElseThrow(
             ()-> new NotFoundException("해당 Member를 찾을 수 없습니다"));
 
-        Board board = Board.createBoard(member,boardForm);
+        Board board = new Board(member, boardForm);
         boardRepository.save(board);
 
         return board;
@@ -82,4 +84,10 @@ public class BoardService {
         board.edit(boardForm);
     }
 
+    @Transactional(readOnly = true)
+    public List<BoardDto> findMyBoards(Long id){
+        return boardRepository.findByMember_Id(id).orElseThrow(()->
+            new NotFoundException("존재하지 않는 회원입니다."))
+            .stream().map(BoardDto::new).collect(Collectors.toList());
+    }
 }

@@ -23,4 +23,5 @@ public interface BoardRepository extends JpaRepository<Board,Long> {
     @Query("select b from Board b where b.content LIKE %:content%")
     Optional<List<Board>> findByContent(@Param(value="content") String content);
 
+    Optional<List<Board>> findByMember_Id(Long memberId);
 }
