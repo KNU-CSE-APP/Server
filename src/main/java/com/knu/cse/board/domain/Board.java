@@ -7,6 +7,7 @@ import com.knu.cse.member.model.Member;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,13 +17,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
 public class Board extends BaseTimeEntity {
@@ -45,7 +46,7 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name="member_id")
     private Member member;
 
-    @Builder.Default @OneToMany(mappedBy="board")
+    @Builder.Default @OneToMany(mappedBy="board", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<Comment>();
 
     public void edit(BoardForm boardForm){
