@@ -2,16 +2,15 @@ package com.knu.cse.comment.domain;
 
 import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.board.domain.Board;
+import com.knu.cse.comment.dto.CommentForm;
+import com.knu.cse.comment.dto.ReplyForm;
 import com.knu.cse.member.model.Member;
-import com.knu.cse.reply.domain.Reply;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import lombok.*;
 
@@ -42,9 +41,6 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name="member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "comment")
-    private List<Reply> replyList;
-
     public void setMember(Member member){
         if(this.member!=null){
             this.member.getCommentList().remove(this);
@@ -61,25 +57,32 @@ public class Comment extends BaseTimeEntity {
         board.getCommentList().add(this);
     }
 
-    public static Comment setComment(Member member,Board board, CommentDTO commentDTO){
+    public static Comment createComment(Member member,Board board, CommentForm commentForm){
         Comment comment = Comment.builder()
-                .content(commentDTO.getContent())
-                .author(commentDTO.getAuthor())
+                .content(commentForm.getContent())
+                .author(member.getNickname())
                 .build();
-//        comment.setParentId(comment.id);
         comment.setBoard(board);
         comment.setMember(member);
         return comment;
     }
 
-    public static Comment setReply(Member member,Comment comment, ReplyDTO replyDTO){
+    public static Comment createReply(Member member,Comment comment, ReplyForm replyForm){
         Comment reply = Comment.builder()
-                .content(replyDTO.getContent())
-                .author(replyDTO.getAuthor())
+                .content(replyForm.getContent())
+                .author(member.getNickname())
                 .build();
         reply.setParentId(comment.id);
         reply.setMember(member);
         reply.setBoard(comment.getBoard());
         return reply;
+    }
+
+    public void edit(CommentForm commentForm){
+        content = changedInfo(content, commentForm.getContent());
+    }
+
+    private String changedInfo(String original, String changed){
+        return (changed == null || changed.equals("")) ? original : changed;
     }
 }
