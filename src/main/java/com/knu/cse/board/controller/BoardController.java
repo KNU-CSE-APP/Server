@@ -10,6 +10,7 @@ import com.knu.cse.board.service.BoardService;
 import com.knu.cse.email.service.AuthService;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.utils.ApiUtils.ApiResult;
+import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -68,4 +69,10 @@ public class BoardController {
             .map(BoardDto::new).collect(Collectors.toList()));
     }
 
+    @ApiOperation(value = "내가 작성한 게시물 조회", notes = "내가 작성한 모든 게시물을 조회한다.")
+    @GetMapping("/findMyBoards")
+    public ApiResult<List<BoardDto>> findMyBoards(HttpServletRequest req){
+        Long memId = authService.getUserIdFromJWT(req);
+        return success(boardService.findMyBoards(memId));
+    }
 }

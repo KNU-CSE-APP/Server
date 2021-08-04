@@ -7,6 +7,7 @@ import com.knu.cse.member.model.Member;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,14 +17,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor @AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Board extends BaseTimeEntity {
 
@@ -45,7 +45,7 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name="member_id")
     private Member member;
 
-    @Builder.Default @OneToMany(mappedBy="board")
+    @OneToMany(mappedBy="board", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<Comment>();
 
     public void edit(BoardForm boardForm){
@@ -64,16 +64,12 @@ public class Board extends BaseTimeEntity {
         member.getBoardList().add(this);
     }
 
-    public static Board createBoard(Member member,BoardForm boardForm){
-        Board board =Board.builder()
-            .category(boardForm.getCategory())
-            .title(boardForm.getTitle())
-            .content(boardForm.getContent())
-            .author(member.getNickname())
-            .build();
-
-        board.setMember(member);
-
-        return board;
+    @Builder
+    public Board (Member member, BoardForm boardForm){
+        this.author = member.getNickname();
+        this.category = boardForm.getCategory();
+        this.title = boardForm.getTitle();
+        this.content = boardForm.getContent();
+        this.setMember(member);
     }
 }
