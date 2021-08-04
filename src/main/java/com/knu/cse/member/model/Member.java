@@ -46,8 +46,6 @@ public class Member extends BaseEntity {
         this.role = memberRole;
     }
 
-//    @Builder.Default @OneToMany(mappedBy = "member")
-//    private List<Reservation> reservations = new ArrayList<Reservation>();
     @OneToOne(mappedBy = "member")
     private Reservation reservation;
 
@@ -62,6 +60,7 @@ public class Member extends BaseEntity {
         reservation.setMember(this);
         this.reservation = reservation;
     }
+
 
     public void changeProfileImage(String imagePath){
         this.profileImageUrl = imagePath;
