@@ -57,7 +57,6 @@ public class Member extends BaseEntity {
 
 
     public void setReservation(Reservation reservation) {
-        reservation.setMember(this);
         this.reservation = reservation;
     }
 
