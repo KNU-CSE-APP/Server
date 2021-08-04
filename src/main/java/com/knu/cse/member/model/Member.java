@@ -27,6 +27,7 @@ public class Member extends BaseEntity {
     private String username;
     private String nickname;
     private String studentId;
+    private String profileImageUrl;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -54,8 +55,13 @@ public class Member extends BaseEntity {
     @Builder.Default @OneToMany(mappedBy="member")
     private List<Comment> commentList = new ArrayList<Comment>();
 
-    public void setReservation(Reservation reservation){
+
+    public void setReservation(Reservation reservation) {
         reservation.setMember(this);
         this.reservation = reservation;
+    }
+
+    public void changeProfileImage(String imagePath){
+        this.profileImageUrl = imagePath;
     }
 }

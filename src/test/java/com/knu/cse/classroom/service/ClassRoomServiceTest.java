@@ -1,7 +1,17 @@
 package com.knu.cse.classroom.service;
 
+import com.knu.cse.board.repository.BoardRepository;
 import com.knu.cse.classroom.domain.Building;
 import com.knu.cse.classroom.domain.ClassRoom;
+import com.knu.cse.classseat.domain.ClassSeat;
+import com.knu.cse.comment.service.CommentService;
+import com.knu.cse.email.service.AuthService;
+import com.knu.cse.member.model.Gender;
+import com.knu.cse.member.model.Major;
+import com.knu.cse.member.model.Member;
+import com.knu.cse.member.model.MemberRole;
+import com.knu.cse.member.repository.MemberRepository;
+import com.knu.cse.reservation.service.ReservationService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +27,39 @@ import static org.junit.jupiter.api.Assertions.*;
 class ClassRoomServiceTest {
 
 //    @Autowired private ClassRoomService classRoomService;
+//    @Autowired private AuthService authService;
+//    @Autowired private CommentService commentService;
+//    @Autowired private BoardRepository boardRepository;
+//    @Autowired private MemberRepository memberRepository;
+//    @Autowired private ReservationService reservationService;
 //
 //    @Test
-//    @Rollback(value=true)
-//    public void 강의실등록_Test(){
-//        ClassRoom classRoom = classRoomService.RegistrationClassRoom(Building.IT4, 104L, 20L);
+//    @Rollback(value=false)
+//    public void 강의실_삭제_Text() throws Exception {
+//        Member member1 = Member.builder()
+//        .email("nun2580@knu.ac.kr")
+//        .password("samsung159!")
+//        .username("김기현")
+//        .nickname("Girin")
+//        .studentId("2016113934")
+//        .gender(Gender.MALE)
+//        .major(Major.ADVANCED)
+//        .role(MemberRole.ROLE_NOT_PERMITTED)
+//        .build();
+//
+//        memberRepository.save(member1);
+//
+//        ClassRoom classRoom = classRoomService.RegistrationClassRoom(Building.IT5, 104L, 20L);
+//
+//        System.out.println("classRoom.toString() = " + classRoom.toString());
+//        ClassSeat classSeat = classRoomService.findClassSeatByBuildingAndRoomAndSeatNum(Building.IT5, 104L, 5L);
+//
+//        reservationService.reservationSeat(member1.getId(),classSeat.getId());
+//
+//        classRoomService.DeleteClassRoom(Building.IT5,104L);
+//
+//
+//
 //    }
 
 }

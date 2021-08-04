@@ -29,16 +29,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 @Transactional
 class ReservationServiceTest {
-    @Autowired private AuthService authService;
-    @Autowired private CommentService commentService;
-    @Autowired private BoardRepository boardRepository;
-    @Autowired private MemberRepository memberRepository;
-    @Autowired private ClassRoomService classRoomService;
-    @Autowired private ReservationService reservationService;
 
-    @Test
-    @Rollback(value=false)
-    public void 예약기록확인() throws Exception {
+//    @Autowired private AuthService authService;
+//    @Autowired private CommentService commentService;
+//    @Autowired private BoardRepository boardRepository;
+//    @Autowired private MemberRepository memberRepository;
+//    @Autowired private ClassRoomService classRoomService;
+//    @Autowired private ReservationService reservationService;
+//
+//    @Test
+//    @Rollback(value=false)
+//    public void 예약기록확인() throws Exception {
 //        Member member1 = Member.builder()
 //                .email("nun2580@knu.ac.kr")
 //                .password("samsung159!")
@@ -61,6 +62,6 @@ class ReservationServiceTest {
 
 
 
-    }
+//    }
 
 }
