@@ -45,6 +45,8 @@
 - Spring Boot
 - JPA  
 - MySQL
+- Redis
+- JWT
 
 **DevOps**
 
