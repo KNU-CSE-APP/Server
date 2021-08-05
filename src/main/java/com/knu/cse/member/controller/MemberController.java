@@ -13,7 +13,6 @@ import com.knu.cse.member.service.MemberService;
 import com.knu.cse.utils.ApiUtils.ApiResult;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import static com.knu.cse.utils.ApiUtils.success;
 
 @RestController
@@ -82,14 +80,14 @@ public class MemberController {
 
     @ApiOperation(value = "(E-mail, Nickname, userId, 프로필 이미지) 반환", notes="현재 로그인한 유저의 정보(닉네임, 이메일, 회원 번호, 프로필 이미지)를 반환하는 API")
     @GetMapping("/getUserEmailNickname")
-    public ApiResult<MemberDto> getEmailNickname(HttpServletRequest req){
+    public ApiResult<MemberDto> getEmailNickname(){
         Long userId = authService.getUserIdFromJWT();
         return success(new MemberDto(memberRepository.findById(userId).orElseThrow(()-> new NotFoundException ("존재하지 않는 회원입니다."))));
     }
 
     @ApiOperation(value = "프로필 이미지 변경", notes = "프로필 이미지를 파일 형태로 전송하여 저장할 수 있다.")
     @PutMapping("/profileImage")
-    public ApiResult<String> uploadProfileImage(@RequestParam MultipartFile file, HttpServletRequest req)
+    public ApiResult<String> uploadProfileImage(@RequestParam MultipartFile file)
         throws Exception {
         Long userId = authService.getUserIdFromJWT();
         return success(memberService.updateProfileImage(file, userId));
@@ -97,8 +95,8 @@ public class MemberController {
 
     @ApiOperation(value = "비밀번호 변경", notes = "changePassword(String) : 변경하고자하는 비밀번호, currentPassword(String) : 현재 비밀번호 를 넘겨주면 validation 후 비밀번호 변경.")
     @PutMapping("/changePassword")
-    public ApiResult<String> changePassword(@Valid @RequestBody ChangePasswordForm changePasswordForm, HttpServletRequest req){
-        String encodedPassword = authService.getPasswordFromJWT(req);
+    public ApiResult<String> changePassword(@Valid @RequestBody ChangePasswordForm changePasswordForm){
+        String encodedPassword = authService.getPasswordFromJwt();
         Long userId = authService.getUserIdFromJWT();
         authService.comparePassword(changePasswordForm.getCurrentPassword(),encodedPassword);
         memberService.changePassword(changePasswordForm.getChangePassword(), userId);
