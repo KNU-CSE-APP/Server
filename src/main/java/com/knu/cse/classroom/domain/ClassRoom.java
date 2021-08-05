@@ -8,10 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "CLASS_ROOM")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 @Getter
 @ToString(of = {"id","number","building","totalSeats"})
 public class ClassRoom {
@@ -27,7 +24,6 @@ public class ClassRoom {
 
     private Long totalSeats;
 
-    @Builder.Default
     @OneToMany(mappedBy = "classRoom")
     private List<ClassSeat> classSeats = new ArrayList<>();
 
@@ -38,9 +34,10 @@ public class ClassRoom {
         this.totalSeats += 1;
     }
 
+    @Builder
     public ClassRoom(Long number,Building building, Long totalSeats){
         this.number = number;
         this.building = building;
-        this. totalSeats = totalSeats;
+        this.totalSeats = totalSeats;
     }
 }
