@@ -18,7 +18,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -65,7 +64,6 @@ public class Board extends BaseTimeEntity {
         member.getBoardList().add(this);
     }
 
-    @Builder
     public Board (Member member, BoardForm boardForm){
         this.author = member.getNickname();
         this.category = boardForm.getCategory();

@@ -8,11 +8,8 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "CLASS_SEAT")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Getter
-@Builder
 @ToString(of = {"id","number","status"})
 public class ClassSeat extends BaseEntity {
 
@@ -55,13 +52,11 @@ public class ClassSeat extends BaseEntity {
         classRoom.getClassSeats().add(this);
     }
 
+    @Builder
     public ClassSeat(Long number, Status status, ClassRoom classRoom){
         this.number = number;
         this.status = status;
         setClassRoom(classRoom);
     }
-
-
-
 }
 
