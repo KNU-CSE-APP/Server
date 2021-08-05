@@ -38,9 +38,9 @@ public class BoardController {
 
     @ApiOperation(value = "게시물 글 작성", notes = "로그인을 한 유저가 게시물에 글을 작성 할 수 있다.")
     @PostMapping("/write")
-    public ApiResult<BoardDto> writeBoard(@RequestBody BoardForm boardForm, HttpServletRequest req)
+    public ApiResult<BoardDto> writeBoard(@RequestBody BoardForm boardForm)
         throws NotFoundException {
-        Long userId = authService.getUserIdFromJWT(req);
+        Long userId = authService.getUserIdFromJWT();
         return success(new BoardDto(boardService.writeBoard(userId, boardForm)));
     }
 
@@ -52,9 +52,9 @@ public class BoardController {
 
     @ApiOperation(value = "게시물 기본키로 글 삭제", notes = "게시물을 작성한 사람은 게시물을 삭제 할 수 있다.")
     @DeleteMapping("/{boardId}")
-    public ApiResult<String> deleteBoard(@PathVariable("boardId") Long boardId,HttpServletRequest req) throws NotFoundException{
+    public ApiResult<String> deleteBoard(@PathVariable("boardId") Long boardId) throws NotFoundException{
         try{
-            Long userId = authService.getUserIdFromJWT(req);
+            Long userId = authService.getUserIdFromJWT();
             boardService.deleteBoard(userId,boardId);
             return success("게시물이 성공적으로 삭제되었습니다.");
         }
@@ -68,9 +68,9 @@ public class BoardController {
 
     @ApiOperation(value = "게시물 기본키로 글 수정", notes = "게시물을 작성한 사람은 게시물을 수정 할 수 있다. 제목이나 내용 중 수정하지 않으려는 것은 null이나 빈문자열로 보내야 한다")
     @PutMapping("/{boardId}")
-    public ApiResult<String> editBoard(@PathVariable("boardId") Long boardId,@RequestBody BoardForm boardForm,HttpServletRequest req) throws NotFoundException{
+    public ApiResult<String> editBoard(@PathVariable("boardId") Long boardId,@RequestBody BoardForm boardForm) throws NotFoundException{
         try{
-            Long userId = authService.getUserIdFromJWT(req);
+            Long userId = authService.getUserIdFromJWT();
             boardService.updateBoard(userId,boardId,boardForm);
             return success("게시물이 성공적으로 수정되었습니다.");
         }
@@ -112,8 +112,8 @@ public class BoardController {
 
     @ApiOperation(value = "내가 작성한 게시물 조회", notes = "내가 작성한 모든 게시물을 조회한다.")
     @GetMapping("/findMyBoards")
-    public ApiResult<List<BoardDto>> findMyBoards(HttpServletRequest req){
-        Long userId = authService.getUserIdFromJWT(req);
-        return success(boardService.findMyBoards(userId));
+    public ApiResult<List<BoardDto>> findMyBoards(){
+        Long memId = authService.getUserIdFromJWT();
+        return success(boardService.findMyBoards(memId));
     }
 }

@@ -37,7 +37,7 @@ public class ReservationController {
     @ApiOperation(value = "예약한 좌석 반납하기", notes="로그인 된 세션을 바탕으로 좌석 반납함.")
     @PostMapping("/delete")
     public ApiResult<String> deleteReservation(HttpServletRequest request) throws NotFoundException {
-        Long userId = authService.getUserIdFromJWT(request);
+        Long userId = authService.getUserIdFromJWT();
         Optional<Member> member = Optional.ofNullable(memberRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("등록된 회원이 아닙니다.")
         ));
@@ -50,7 +50,7 @@ public class ReservationController {
     @ApiOperation(value = "좌석 예약하기", notes="건물, 강의실 번호, 좌석 번호를 넘겨주면 로그인된 세션의 유저로 좌석을 예약함.")
     @PostMapping("/reservation")
     public ApiResult<String> reservation(@Valid @RequestBody ReservationDTO reservationDTO, HttpServletRequest request) throws Exception{
-        Long userId = authService.getUserIdFromJWT(request);
+        Long userId = authService.getUserIdFromJWT();
         Optional<Member> member = Optional.ofNullable(memberRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("등록된 회원이 아닙니다")
         ));
@@ -65,7 +65,7 @@ public class ReservationController {
     @ApiOperation(value = "현재 예약한 좌석 보기", notes="로그인된 세션의 유저의 예약 현황 보여줌")
     @PostMapping("/findReservation")
     public ApiResult<FindReservationDTO> findReservation(HttpServletRequest request) {
-        Long userId = authService.getUserIdFromJWT(request);
+        Long userId = authService.getUserIdFromJWT();
         FindReservationDTO findReservationDTO = reservationService.findReservation(userId);
         return success(findReservationDTO);
     }
@@ -73,7 +73,7 @@ public class ReservationController {
     @ApiOperation(value = "좌석 연장하기", notes="로그인된 세션의 유저의 좌석 연장함(최대3번)")
     @PostMapping("/extension")
     public ApiResult<Long> extension(HttpServletRequest request) throws Exception{
-        Long userId = authService.getUserIdFromJWT(request);
+        Long userId = authService.getUserIdFromJWT();
         Optional<Member> member = Optional.ofNullable(memberRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("등록된 회원이 아닙니다.")
         ));
