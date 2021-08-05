@@ -127,8 +127,8 @@ public class AuthService {
     }
 
     public boolean comparePassword(String rawPassword, String encodedPassword) throws NotFoundException{
-        boolean matcheResult = passwordEncoder.matches(rawPassword, encodedPassword);
-        if(!matcheResult)
+        boolean matchResult = passwordEncoder.matches(rawPassword, encodedPassword);
+        if(!matchResult)
             throw new NotFoundException("비밀번호가 틀립니다.");
         return true;
     }
