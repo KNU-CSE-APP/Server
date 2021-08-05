@@ -23,7 +23,6 @@ public class GeneralExceptionHandler {
      *  주로 @RequestBody, @RequestPart 어노테이션에서 발생
      */
     @ExceptionHandler({
-        MethodArgumentNotValidException.class,
         BindException.class,
         MethodArgumentTypeMismatchException.class
     })
@@ -32,6 +31,18 @@ public class GeneralExceptionHandler {
         log.error(e.getMessage());
         return ApiUtils.error(e, HttpStatus.BAD_REQUEST);
     }
+
+    /**
+     * Valid에 만족하지 않을 경우 발생
+     */
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ResponseBody
+    protected ApiUtils.ApiResult handleHttpRequestMethodNotValid(MethodArgumentNotValidException e) {
+        log.error(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return ApiUtils.error(e.getBindingResult().getAllErrors().get(0).getDefaultMessage(),
+            HttpStatus.BAD_REQUEST);
+    }
+
 
     /**
      * 지원하지 않은 HTTP method 호출 할 경우 발생
