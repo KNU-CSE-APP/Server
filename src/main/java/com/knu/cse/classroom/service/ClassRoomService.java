@@ -58,7 +58,6 @@ public class ClassRoomService {
                     .status(Status.UNRESERVED)
                     .classRoom(saveClassRoom)
                     .build();
-//            classSeat.setClassRoom(saveClassRoom);
 
             classSeatRepository.save(classSeat);
         }

@@ -52,7 +52,7 @@ public class ClassSeat extends BaseEntity {
         classRoom.getClassSeats().add(this);
     }
 
-        @Builder
+    @Builder
     public ClassSeat(Long number, Status status, ClassRoom classRoom){
         this.number = number;
         this.status = status;
