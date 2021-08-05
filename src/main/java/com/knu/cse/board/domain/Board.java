@@ -48,6 +48,7 @@ public class Board extends BaseTimeEntity {
     private List<Comment> commentList = new ArrayList<Comment>();
 
     public void edit(BoardForm boardForm){
+        title=changedInfo(title,boardForm.getTitle());
         content = changedInfo(content, boardForm.getContent());
     }
 

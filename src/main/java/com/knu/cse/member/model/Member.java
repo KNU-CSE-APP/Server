@@ -75,4 +75,6 @@ public class Member extends BaseEntity {
         this.major = major;
         this.role = role;
     }
+  
+    public void changePassword(String password){this.password = password;}
 }

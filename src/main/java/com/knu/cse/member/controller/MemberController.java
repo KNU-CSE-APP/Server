@@ -4,12 +4,8 @@ import com.knu.cse.email.util.CookieUtil;
 import com.knu.cse.email.util.JwtUtil;
 import com.knu.cse.email.util.RedisUtil;
 import com.knu.cse.errors.NotFoundException;
-import com.knu.cse.member.dto.LoginSuccessDto;
-import com.knu.cse.member.dto.MemberDto;
-import com.knu.cse.member.dto.VerifyEmailDto;
+import com.knu.cse.member.dto.*;
 import com.knu.cse.member.model.Member;
-import com.knu.cse.member.dto.SignInForm;
-import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.email.service.AuthService;
 
 import com.knu.cse.member.repository.MemberRepository;
@@ -98,6 +94,16 @@ public class MemberController {
         Long userId = authService.getUserIdFromJWT(req);
         log.info("입력받은 테스트용 네임 : " + name);
         return success(memberService.updateProfileImage(file, userId));
+    }
+
+    @ApiOperation(value = "비밀번호 변경", notes = "changePassword(String) : 변경하고자하는 비밀번호, currentPassword(String) : 현재 비밀번호 를 넘겨주면 validation 후 비밀번호 변경.")
+    @PutMapping("/changePassword")
+    public ApiResult<String> changePassword(@Valid @RequestBody ChangePasswordForm changePasswordForm, HttpServletRequest req){
+        String encodedPassword = authService.getPasswordFromJWT(req);
+        Long userId = authService.getUserIdFromJWT(req);
+        authService.comparePassword(changePasswordForm.getCurrentPassword(),encodedPassword);
+        memberService.changePassword(changePasswordForm.getChangePassword(), userId);
+        return success("성공적으로 비밀번호를 변경했습니다.");
     }
 
 }

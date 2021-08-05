@@ -6,6 +6,7 @@ import com.knu.cse.board.dto.BoardDto;
 import com.knu.cse.board.dto.BoardForm;
 import com.knu.cse.board.repository.BoardRepository;
 import com.knu.cse.errors.NotFoundException;
+import com.knu.cse.errors.UnauthorizedException;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
 import java.util.List;
@@ -41,7 +42,7 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public List<Board> findByTitle(String title){
-        Optional<List<Board>> byTitle = Optional.ofNullable(boardRepository.findByTitle(title).orElseThrow(
+        Optional<List<Board>> byTitle = Optional.ofNullable(boardRepository.findByTitle(title.trim()).orElseThrow(
                 () -> new NotFoundException("Title : " + title + "에 해당하는 Board를 찾을 수 없습니다")
         ));
 
@@ -50,7 +51,7 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public List<Board> findByAuthor(String author){
-        Optional<List<Board>> byAuthor = Optional.ofNullable(boardRepository.findByAuthor(author).orElseThrow(
+        Optional<List<Board>> byAuthor = Optional.ofNullable(boardRepository.findByAuthor(author.trim()).orElseThrow(
                 () -> new NotFoundException("Author :" + author + " 해당하는 Board를 찾을 수 없습니다")
         ));
 
@@ -68,19 +69,28 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public List<Board> findByContent(String content){
-        Optional<List<Board>> byContent = Optional.ofNullable(boardRepository.findByContent(content).orElseThrow(
+        Optional<List<Board>> byContent = Optional.ofNullable(boardRepository.findByContent(content.trim()).orElseThrow(
                 () -> new NotFoundException("Content :" + content + " 해당하는 Board를 찾을 수 없습니다")
         ));
 
         return byContent.get();
     }
 
-    public void deleteBoard(Long boardId){
+
+    public void deleteBoard(Long userId,Long boardId){
+        Member member = memberRepository.findById(userId).orElseThrow(() -> new NotFoundException("해당 Member를 찾을 수 없습니다"));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("해당 Board를 찾을 수 없습니다"));
+
+        if(board.getMember().getId()!=member.getId()) throw new UnauthorizedException("게시물 삭제 권한이 없습니다");
         boardRepository.deleteById(boardId);
     }
 
+
     public void updateBoard(Long userId,Long boardId,BoardForm boardForm){
+        Member member = memberRepository.findById(userId).orElseThrow(() -> new NotFoundException("해당 Member를 찾을 수 없습니다"));
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("해당 Board를 찾을 수 없습니다"));
+
+        if(board.getMember().getId()!=member.getId()) throw new UnauthorizedException("게시물 수정 권한이 없습니다");
         board.edit(boardForm);
     }
 
