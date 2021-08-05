@@ -14,7 +14,7 @@ public class SignUpForm {
 
     @NotNull
     @Length(min = 3, max = 20)
-    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9_-]{3,20}$")
+    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9_-]{3,20}$")
     private String nickname;
 
     //@Email로 이메일 형식에 대한 모든 유효성을 체크할 수 없다! -> 어노테이션 내 구현된 isValid 메서드에서 null 을 허용함.
@@ -24,7 +24,7 @@ public class SignUpForm {
     private String email;
 
     @NotNull
-    @Length(min = 8, max = 20)
+    @Length(min = 8, max = 20,message = "비밀번호의 길이는 8에서 20사이여야 합니다!")
     private String password;
 
     @NotNull
@@ -43,7 +43,7 @@ public class SignUpForm {
     private String permissionCode;
 
     public SignUpForm(
-        @NotNull @Length(min = 3, max = 20) @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9_-]{3,20}$") String nickname,
+        @NotNull @Length(min = 3, max = 20) @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9_-]{3,20}$") String nickname,
         @Email @NotNull String email,
         @NotNull @Length(min = 8, max = 20) String password,
         @NotNull String username, @NotNull String studentId,
