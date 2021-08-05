@@ -64,7 +64,7 @@ public class CommentController {
     }
 
     @ApiOperation(value = "댓글 수정", notes = "댓글 아이디를 통해 특정 댓글을 수정한다.")
-    @PutMapping("/edit/{commentId}")
+    @PutMapping("/{commentId}")
     public ApiResult<String> editComment(@PathVariable("commentId") Long commentId, @RequestBody CommentForm commentForm,
         HttpServletRequest req) {
         try {
@@ -82,7 +82,7 @@ public class CommentController {
     }
 
     @ApiOperation(value = "댓글 삭제", notes = "댓글 아이디를 통해 특정 댓글을 삭제한다(답글을 포함)")
-    @DeleteMapping("/delete/{commentId}")
+    @DeleteMapping("/{commentId}")
     public ApiResult<String> deleteComment(@PathVariable("commentId")Long commentId,
         HttpServletRequest req){
 

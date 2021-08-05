@@ -16,9 +16,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,7 +51,7 @@ public class BoardController {
     }
 
     @ApiOperation(value = "게시물 기본키로 글 삭제", notes = "게시물을 작성한 사람은 게시물을 삭제 할 수 있다.")
-    @GetMapping("/delete/{boardId}")
+    @DeleteMapping("/{boardId}")
     public ApiResult<String> deleteBoard(@PathVariable("boardId") Long boardId,HttpServletRequest req) throws NotFoundException{
         try{
             Long userId = authService.getUserIdFromJWT(req);
@@ -65,7 +67,7 @@ public class BoardController {
     }
 
     @ApiOperation(value = "게시물 기본키로 글 수정", notes = "게시물을 작성한 사람은 게시물을 수정 할 수 있다. 제목이나 내용 중 수정하지 않으려는 것은 null이나 빈문자열로 보내야 한다")
-    @PostMapping("/edit/{boardId}")
+    @PutMapping("/{boardId}")
     public ApiResult<String> editBoard(@PathVariable("boardId") Long boardId,@RequestBody BoardForm boardForm,HttpServletRequest req) throws NotFoundException{
         try{
             Long userId = authService.getUserIdFromJWT(req);
