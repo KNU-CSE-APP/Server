@@ -40,7 +40,7 @@ public class BoardController {
     @PostMapping("/write")
     public ApiResult<BoardDto> writeBoard(@RequestBody BoardForm boardForm, HttpServletRequest req)
         throws NotFoundException {
-        Long userId = authService.getUserIdFromJWT(req);
+        Long userId = authService.getUserIdFromJWT();
         return success(new BoardDto(boardService.writeBoard(userId, boardForm)));
     }
 
@@ -113,7 +113,7 @@ public class BoardController {
     @ApiOperation(value = "내가 작성한 게시물 조회", notes = "내가 작성한 모든 게시물을 조회한다.")
     @GetMapping("/findMyBoards")
     public ApiResult<List<BoardDto>> findMyBoards(HttpServletRequest req){
-        Long userId = authService.getUserIdFromJWT(req);
-        return success(boardService.findMyBoards(userId));
+        Long memId = authService.getUserIdFromJWT();
+        return success(boardService.findMyBoards(memId));
     }
 }

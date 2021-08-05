@@ -36,7 +36,7 @@ public class CommentController {
     @PostMapping("/write")
     public ApiResult<CommentDto> writeComment(@RequestBody CommentForm commentForm,
         HttpServletRequest req) throws NotFoundException {
-        Long memberId = authService.getUserIdFromJWT(req);
+        Long memberId = authService.getUserIdFromJWT();
 
         return success(new CommentDto(commentService.writeComment(memberId, commentForm)));
     }
@@ -44,7 +44,7 @@ public class CommentController {
     @PostMapping("/reply/write")
     public ApiResult<CommentDto> writeReply(@RequestBody ReplyForm replyForm,
         HttpServletRequest req) throws NotFoundException {
-        Long memberId = authService.getUserIdFromJWT(req);
+        Long memberId = authService.getUserIdFromJWT();
 
         return success(new CommentDto(commentService.writeReply(memberId, replyForm)));
     }
@@ -52,7 +52,7 @@ public class CommentController {
     @ApiOperation(value = "내가 쓴 댓글 조회", notes = "내가 쓴 댓글을 모두 조회한다.")
     @GetMapping("/getAllComments")
     public ApiResult<List<CommentDto>> getMyAllWrite(HttpServletRequest req) throws NotFoundException {
-        Long memberId = authService.getUserIdFromJWT(req);
+        Long memberId = authService.getUserIdFromJWT();
         return success(commentService.findMyComments(memberId).stream().map(CommentDto::new)
             .collect(Collectors.toList()));
     }
@@ -68,7 +68,7 @@ public class CommentController {
     public ApiResult<String> editComment(@PathVariable("commentId") Long commentId, @RequestBody CommentForm commentForm,
         HttpServletRequest req) {
         try {
-            Long memberId = authService.getUserIdFromJWT(req);
+            Long memberId = authService.getUserIdFromJWT();
             commentService.updateComment(memberId,commentId,commentForm);
 
             return success("수정이 완료되었습니다.");
@@ -87,7 +87,7 @@ public class CommentController {
         HttpServletRequest req){
 
         try {
-            Long memberId = authService.getUserIdFromJWT(req);
+            Long memberId = authService.getUserIdFromJWT();
             commentService.deleteComment(memberId,commentId);
 
             return success("댓글 삭제가 완료되었니다.");

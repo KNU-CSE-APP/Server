@@ -8,11 +8,13 @@ import com.knu.cse.member.model.MemberRole;
 import com.knu.cse.member.dto.SignInForm;
 import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.member.repository.MemberRepository;
+import com.knu.cse.member.security.SecurityMember;
 import java.util.Base64;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,22 +112,11 @@ public class AuthService {
             new NotFoundException("존재하지 않는 이메일입니다."));
     }
 
-    public Long getUserIdFromJWT(HttpServletRequest req) throws NotFoundException {
-        String claim = "";
-        for (Cookie cookie : req.getCookies()) {
-            if(cookie.getName().equals("accessToken")){
-                claim = cookie.getValue();
-                break;
-            }
-        }
-        int start = claim.indexOf(".") + 1;
-        int end = claim.lastIndexOf(".");
-        if(start == -1 || end == -1){
-            throw new NotFoundException("아직 JWT 토큰을 발급받지 않은 상태입니다." + claim);
-        }
-        String encodedPayload = claim.substring(start, end);
-        String email = new String(Base64.getDecoder().decode(encodedPayload)).split("\"")[3];
-        return findByEmail(email).getId();
+    public Long getUserIdFromJWT() throws NotFoundException {
+        SecurityMember securityMember = (SecurityMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = securityMember.getEmail();
+        return memberRepository.findByEmail(email).orElseThrow(()->
+            new NotFoundException("존재하지 않는 회원입니다.")).getId();
     }
 
     public String getPasswordFromJWT(HttpServletRequest req) throws NotFoundException{
