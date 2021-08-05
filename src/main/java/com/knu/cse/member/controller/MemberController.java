@@ -93,9 +93,10 @@ public class MemberController {
 
     @ApiOperation(value = "프로필 이미지 변경", notes = "프로필 이미지를 파일 형태로 전송하여 저장할 수 있다.")
     @PutMapping("/profileImage")
-    public ApiResult<String> uploadProfileImage(@RequestParam MultipartFile file, HttpServletRequest req)
+    public ApiResult<String> uploadProfileImage(@RequestParam MultipartFile file, HttpServletRequest req, @RequestParam String name)
         throws Exception {
         Long userId = authService.getUserIdFromJWT(req);
+        log.info("입력받은 테스트용 네임 : " + name);
         return success(memberService.updateProfileImage(file, userId));
     }
 
