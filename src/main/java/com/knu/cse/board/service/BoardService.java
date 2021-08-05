@@ -76,7 +76,7 @@ public class BoardService {
         return byContent.get();
     }
 
-    @Transactional
+
     public void deleteBoard(Long userId,Long boardId){
         Member member = memberRepository.findById(userId).orElseThrow(() -> new NotFoundException("해당 Member를 찾을 수 없습니다"));
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("해당 Board를 찾을 수 없습니다"));
@@ -85,7 +85,7 @@ public class BoardService {
         boardRepository.deleteById(boardId);
     }
 
-    @Transactional
+
     public void updateBoard(Long userId,Long boardId,BoardForm boardForm){
         Member member = memberRepository.findById(userId).orElseThrow(() -> new NotFoundException("해당 Member를 찾을 수 없습니다"));
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("해당 Board를 찾을 수 없습니다"));
