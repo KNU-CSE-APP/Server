@@ -98,9 +98,7 @@ public class MemberController {
     @ApiOperation(value = "비밀번호 변경", notes = "changePassword(String) : 변경하고자하는 비밀번호, currentPassword(String) : 현재 비밀번호 를 넘겨주면 validation 후 비밀번호 변경.")
     @PutMapping("/changePassword")
     public ApiResult<String> changePassword(@Valid @RequestBody ChangePasswordForm changePasswordForm, HttpServletRequest req){
-        log.info("change : " + changePasswordForm.getChangePassword()+", current : "+changePasswordForm.getCurrentPassword());
         String encodedPassword = authService.getPasswordFromJWT(req);
-        log.info("password : " + encodedPassword);
         Long userId = authService.getUserIdFromJWT(req);
         authService.comparePassword(changePasswordForm.getCurrentPassword(),encodedPassword);
         memberService.changePassword(changePasswordForm.getChangePassword(), userId);
