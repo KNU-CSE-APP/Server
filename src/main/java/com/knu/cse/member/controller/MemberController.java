@@ -74,7 +74,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "이메일 인증", notes="회원가입 시 이메일로 전송한 인증 번호를 확인하는 API")
-    @PostMapping("/verify/")
+    @PostMapping("/verify")
     public ApiResult<String> getVerify(@RequestBody VerifyEmailDto verifyEmailDto) throws IllegalStateException{
         String permissionCode = authService.verifyEmail(verifyEmailDto);
         return success(permissionCode);
