@@ -15,10 +15,8 @@ import javax.persistence.ManyToOne;
 import lombok.*;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Builder
 public class Comment extends BaseTimeEntity {
 
     @Id
@@ -55,6 +53,12 @@ public class Comment extends BaseTimeEntity {
         }
         this.board=board;
         board.getCommentList().add(this);
+    }
+
+    @Builder
+    public Comment(String content, String author){
+        this.content = content;
+        this.author = author;
     }
 
     public static Comment createComment(Member member,Board board, CommentForm commentForm){

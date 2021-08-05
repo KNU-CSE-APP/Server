@@ -1,7 +1,6 @@
 package com.knu.cse.member.model;
 
 import com.knu.cse.base.BaseEntity;
-import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.board.domain.Board;
 import com.knu.cse.comment.domain.Comment;
 import com.knu.cse.reservation.domain.Reservation;
@@ -9,15 +8,13 @@ import com.knu.cse.reservation.domain.Reservation;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
-//import com.knu.cse.reservation.domain.Reservation;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Builder
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Member extends BaseEntity {
 
@@ -40,7 +37,7 @@ public class Member extends BaseEntity {
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    @Builder.Default private MemberRole role = MemberRole.ROLE_NOT_PERMITTED;
+    private MemberRole role = MemberRole.ROLE_NOT_PERMITTED;
 
     public void changeRole(MemberRole memberRole){
         this.role = memberRole;
@@ -49,22 +46,35 @@ public class Member extends BaseEntity {
     @OneToOne(mappedBy = "member")
     private Reservation reservation;
 
-    @Builder.Default @OneToMany(mappedBy="member")
+    @OneToMany(mappedBy="member")
     private List<Board> boardList = new ArrayList<Board>();
 
-    @Builder.Default @OneToMany(mappedBy="member")
+    @OneToMany(mappedBy="member")
     private List<Comment> commentList = new ArrayList<Comment>();
-
 
     public void setReservation(Reservation reservation) {
         reservation.setMember(this);
         this.reservation = reservation;
     }
 
-
     public void changeProfileImage(String imagePath){
         this.profileImageUrl = imagePath;
     }
 
+    @Builder
+    public Member(String email, String password, String username, String nickname,
+        String studentId, String profileImageUrl, Gender gender, Major major,
+        MemberRole role) {
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.nickname = nickname;
+        this.studentId = studentId;
+        this.profileImageUrl = profileImageUrl;
+        this.gender = gender;
+        this.major = major;
+        this.role = role;
+    }
+  
     public void changePassword(String password){this.password = password;}
 }

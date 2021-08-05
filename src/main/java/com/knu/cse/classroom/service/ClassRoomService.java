@@ -123,7 +123,11 @@ public class ClassRoomService {
             throw new IllegalStateException("이미 만들어진 강의실 입니다.");
         }
 
-        ClassRoom classRoom = new ClassRoom(roomNumber, building, totalSeats);
+        ClassRoom classRoom = ClassRoom.builder()
+            .number(roomNumber)
+            .totalSeats(totalSeats)
+            .building(building)
+            .build();
 
         return classRoomRepository.save(classRoom);
     }
