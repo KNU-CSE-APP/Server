@@ -127,4 +127,29 @@ public class AuthService {
         String email = new String(Base64.getDecoder().decode(encodedPayload)).split("\"")[3];
         return findByEmail(email).getId();
     }
+
+    public String getPasswordFromJWT(HttpServletRequest req) throws NotFoundException{
+        String claim = "";
+        for (Cookie cookie : req.getCookies()) {
+            if(cookie.getName().equals("accessToken")){
+                claim = cookie.getValue();
+                break;
+            }
+        }
+        int start = claim.indexOf(".") + 1;
+        int end = claim.lastIndexOf(".");
+        if(start == -1 || end == -1){
+            throw new NotFoundException("아직 JWT 토큰을 발급받지 않은 상태입니다." + claim);
+        }
+        String encodedPayload = claim.substring(start, end);
+        String email = new String(Base64.getDecoder().decode(encodedPayload)).split("\"")[3];
+        return findByEmail(email).getPassword();
+    }
+
+    public boolean comparePassword(String rawPassword, String encodedPassword) throws NotFoundException{
+        boolean matcheResult = passwordEncoder.matches(rawPassword, encodedPassword);
+        if(!matcheResult)
+            throw new NotFoundException("비밀번호가 틀립니다.");
+        return true;
+    }
 }
