@@ -16,6 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +48,17 @@ public class BoardController {
         throws NotFoundException {
         Long userId = authService.getUserIdFromJWT();
         return success(new BoardDto(boardService.writeBoard(userId, boardForm)));
+    }
+
+
+    @ApiOperation(value = "전체 게시물 조회", notes = "게시물의 page(0부터),size(페이지마다 보여줄 게시물 갯수),category에 맞춰서 게시물의 리스트가 전달된다.")
+    @GetMapping("/list")
+    public ApiResult<List<BoardDto>> findOneBoard(@RequestParam("category") Category category,
+        @RequestParam("page") Integer page,@RequestParam("size") Integer size) throws NotFoundException{
+        Pageable reqPage = PageRequest.of(page,size, Sort.by("id").descending());
+        return success(boardService.findAllByCategory(reqPage,category).stream()
+            .map(board-> new BoardDto(board)).collect(
+            Collectors.toList()));
     }
 
     @ApiOperation(value = "게시물 기본키 글 조회", notes = "게시물 기본키로 하나의 게시물 정보를 확인할 수 있다.")
