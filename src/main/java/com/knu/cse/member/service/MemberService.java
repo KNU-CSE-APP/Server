@@ -6,6 +6,7 @@ import com.knu.cse.image.S3UploadService;
 import com.knu.cse.member.dto.ChangePasswordForm;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,35 @@ public class MemberService {
     private final AuthService authService;
 
     @Transactional
-    public String updateProfileImage(MultipartFile file, Long userId) throws Exception {
+    public void updateProfileImageAndNickName(MultipartFile image,String newNickName,Long userId) throws Exception {
         Member member = memberRepository.findById(userId).orElseThrow(()->
             new NotFoundException("존재하지 않는 회원입니다."));
+
+
+       if(newNickName!=null && !changeNickName(newNickName,member)){
+           throw new IllegalStateException("닉네임이 중복되었습니다. 다른 닉네임을 사용해주세요");
+       }
+
+       if(image!=null) {
+           changeProfileImage(image,member);
+       }
+    }
+
+    @Transactional
+    public boolean changeNickName(String newNickName,Member member){
+        if(authService.isDuplicateNickName(newNickName)){
+            return false;
+        }
+
+        member.changeNickName(newNickName);
+        return true;
+    }
+
+    @Transactional
+    public boolean changeProfileImage(MultipartFile file,Member member) throws IOException {
         String imagePath = uploadService.upload(file, "static");
         member.changeProfileImage(imagePath);
-        return imagePath;
+        return true;
     }
 
     @Transactional

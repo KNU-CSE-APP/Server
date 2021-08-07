@@ -61,7 +61,7 @@ public class AuthService {
         return memberRepository.save(member);
     }
 
-    private boolean isDuplicateNickName(String nickName) { return memberRepository.existsByNickname(nickName); }
+    public boolean isDuplicateNickName(String nickName) { return memberRepository.existsByNickname(nickName); }
 
     private boolean isDuplicateMember(String email) {
         return memberRepository.existsByEmail(email);
