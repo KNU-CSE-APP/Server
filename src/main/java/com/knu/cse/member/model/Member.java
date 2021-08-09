@@ -40,6 +40,8 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberRole role = MemberRole.ROLE_NOT_PERMITTED;
 
+    private Boolean valid;
+
     public void changeRole(MemberRole memberRole){
         this.role = memberRole;
     }
@@ -72,6 +74,7 @@ public class Member extends BaseEntity {
         this.gender = gender;
         this.major = major;
         this.role = role;
+        this.valid = true;
     }
 
     public void changeProfileImage(String imagePath){
@@ -84,4 +87,16 @@ public class Member extends BaseEntity {
         this.nickname=nickname;
     }
 
+    public void deleteMember(){
+        this.email = null;
+        this.password = null;
+        this.username = null;
+        this.nickname = null;
+        this.studentId = null;
+        this.profileImageUrl = null;
+        this.gender = null;
+        this.major = null;
+        this.role = null;
+        this.valid = false;
+    }
 }

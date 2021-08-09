@@ -20,6 +20,8 @@ public class BoardDto {
 
     private LocalDateTime dateTime;
 
+    private Boolean valid;
+
     public BoardDto(){}
 
     public BoardDto(Board board){
@@ -29,6 +31,7 @@ public class BoardDto {
         this.content=board.getContent();
         this.author=board.getAuthor();
         this.dateTime=board.getCreatedDate();
+        this.valid = board.getMember().getValid();
     }
 
 }

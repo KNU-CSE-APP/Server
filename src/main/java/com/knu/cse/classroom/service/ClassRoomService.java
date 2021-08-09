@@ -56,8 +56,8 @@ public class ClassRoomService {
             ClassSeat classSeat = ClassSeat.builder()
                     .number(i)
                     .status(Status.UNRESERVED)
+                    .classRoom(saveClassRoom)
                     .build();
-            classSeat.setClassRoom(saveClassRoom);
 
             classSeatRepository.save(classSeat);
         }

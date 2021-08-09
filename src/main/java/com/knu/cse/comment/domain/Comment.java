@@ -89,4 +89,5 @@ public class Comment extends BaseTimeEntity {
     private String changedInfo(String original, String changed){
         return (changed == null || changed.equals("")) ? original : changed;
     }
+
 }

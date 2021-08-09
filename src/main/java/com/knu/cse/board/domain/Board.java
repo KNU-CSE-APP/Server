@@ -71,4 +71,5 @@ public class Board extends BaseTimeEntity {
         this.content = boardForm.getContent();
         this.setMember(member);
     }
+
 }

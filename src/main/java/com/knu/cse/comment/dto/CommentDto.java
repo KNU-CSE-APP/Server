@@ -20,6 +20,8 @@ public class CommentDto {
 
     private LocalDateTime time;
 
+    private Boolean valid;
+
     public CommentDto(Comment comment){
         this.boardId=comment.getBoard().getId();
         this.commentId = comment.getId();
@@ -27,6 +29,7 @@ public class CommentDto {
         this.content=comment.getContent();
         this.time=comment.getLastModifiedDate();
         this.parentId=comment.getParentId();
+        this.valid=comment.getMember().getValid();
     }
 
 }
