@@ -50,6 +50,13 @@ public class S3UploadService {
     }
 
     private File convert(MultipartFile file) throws IOException {
+        String abSolutePath =  System.getProperty("user.dir");
+        File dir = new File(abSolutePath+File.separator+TEMP_FILE_PATH);
+        log.info("dirname:",abSolutePath+File.separator+TEMP_FILE_PATH);
+        if(!dir.exists()){
+            dir.mkdirs();
+            log.info("디렉토리생성");
+        }
         File convertFile = new File(TEMP_FILE_PATH + file.getOriginalFilename());
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
