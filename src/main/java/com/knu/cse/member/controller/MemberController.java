@@ -85,22 +85,20 @@ public class MemberController {
         return success(new MemberDto(memberRepository.findById(userId).orElseThrow(()-> new NotFoundException ("존재하지 않는 회원입니다."))));
     }
 
-    @ApiOperation(value = "프로필 이미지 변경", notes = "프로필 이미지를 파일 형태로 전송하여 저장할 수 있다.")
-    @PutMapping("/profileImage")
-    public ApiResult<String> uploadProfileImage(@RequestParam MultipartFile file, @RequestParam String name)
+    @ApiOperation(value = "프로필 이미지 변경 / 닉네임 변경", notes = "변경사항이 있는 객체의 내용을 담아서 전송을 하면 유저의 정보가 변경.")
+    @PutMapping("/image/nickname")
+    public ApiResult<String> uploadProfileImage(@RequestParam(value = "image",required = false) MultipartFile image,@RequestParam(value="nickName",required = false) String nickName)
         throws Exception {
         Long userId = authService.getUserIdFromJWT();
-        log.info("입력받은 테스트용 네임 : " + name);
-        return success(memberService.updateProfileImage(file, userId));
+        memberService.updateProfileImageAndNickName(image,nickName,userId);
+        return success("성공적으로 수정이 되었습니다");
     }
 
     @ApiOperation(value = "비밀번호 변경", notes = "changePassword(String) : 변경하고자하는 비밀번호, currentPassword(String) : 현재 비밀번호 를 넘겨주면 validation 후 비밀번호 변경.")
     @PutMapping("/changePassword")
     public ApiResult<String> changePassword(@Valid @RequestBody ChangePasswordForm changePasswordForm){
-        String encodedPassword = authService.getPasswordFromJwt();
         Long userId = authService.getUserIdFromJWT();
-        authService.comparePassword(changePasswordForm.getCurrentPassword(),encodedPassword);
-        memberService.changePassword(changePasswordForm.getChangePassword(), userId);
+        memberService.changePassword(changePasswordForm, userId);
         return success("성공적으로 비밀번호를 변경했습니다.");
     }
 }

@@ -61,7 +61,7 @@ public class AuthService {
         return memberRepository.save(member);
     }
 
-    private boolean isDuplicateNickName(String nickName) { return memberRepository.existsByNickname(nickName); }
+    public boolean isDuplicateNickName(String nickName) { return memberRepository.existsByNickname(nickName); }
 
     private boolean isDuplicateMember(String email) {
         return memberRepository.existsByEmail(email);
@@ -127,8 +127,8 @@ public class AuthService {
     }
 
     public boolean comparePassword(String rawPassword, String encodedPassword) throws NotFoundException{
-        boolean matcheResult = passwordEncoder.matches(rawPassword, encodedPassword);
-        if(!matcheResult)
+        boolean matchResult = passwordEncoder.matches(rawPassword, encodedPassword);
+        if(!matchResult)
             throw new NotFoundException("비밀번호가 틀립니다.");
         return true;
     }
