@@ -2,6 +2,7 @@ package com.knu.cse.member.model;
 
 import com.knu.cse.base.BaseEntity;
 import com.knu.cse.board.domain.Board;
+import com.knu.cse.board.dto.BoardForm;
 import com.knu.cse.comment.domain.Comment;
 import com.knu.cse.reservation.domain.Reservation;
 
@@ -57,9 +58,6 @@ public class Member extends BaseEntity {
         this.reservation = reservation;
     }
 
-    public void changeProfileImage(String imagePath){
-        this.profileImageUrl = imagePath;
-    }
 
     @Builder
     public Member(String email, String password, String username, String nickname,
@@ -75,6 +73,15 @@ public class Member extends BaseEntity {
         this.major = major;
         this.role = role;
     }
+
+    public void changeProfileImage(String imagePath){
+        this.profileImageUrl = imagePath;
+    }
   
     public void changePassword(String password){this.password = password;}
+
+    public void changeNickName(String nickname){
+        this.nickname=nickname;
+    }
+
 }
