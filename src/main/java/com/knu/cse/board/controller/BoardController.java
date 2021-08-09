@@ -53,12 +53,11 @@ public class BoardController {
 
     @ApiOperation(value = "전체 게시물 조회", notes = "게시물의 page(0부터),size(페이지마다 보여줄 게시물 갯수),category에 맞춰서 게시물의 리스트가 전달된다.")
     @GetMapping("/list")
-    public ApiResult<List<BoardDto>> findOneBoard(@RequestParam("category") Category category,
+    public ApiResult<Page<BoardDto>> findOneBoard(@RequestParam("category") Category category,
         @RequestParam("page") Integer page,@RequestParam("size") Integer size) throws NotFoundException{
         Pageable reqPage = PageRequest.of(page,size, Sort.by("id").descending());
-        return success(boardService.findAllByCategory(reqPage,category).stream()
-            .map(board-> new BoardDto(board)).collect(
-            Collectors.toList()));
+        return success(boardService.findAllByCategory(reqPage,category)
+            .map(board-> new BoardDto(board)));
     }
 
     @ApiOperation(value = "게시물 기본키 글 조회", notes = "게시물 기본키로 하나의 게시물 정보를 확인할 수 있다.")

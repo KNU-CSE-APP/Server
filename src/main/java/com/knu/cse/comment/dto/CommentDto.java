@@ -2,6 +2,7 @@ package com.knu.cse.comment.dto;
 
 import com.knu.cse.comment.domain.Comment;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.Getter;
 
 @Getter
@@ -18,7 +19,7 @@ public class CommentDto {
 
     private String content;
 
-    private LocalDateTime time;
+    private String time;
 
     private Boolean valid;
 
@@ -27,7 +28,7 @@ public class CommentDto {
         this.commentId = comment.getId();
         this.author=comment.getAuthor();
         this.content=comment.getContent();
-        this.time=comment.getLastModifiedDate();
+        this.time=comment.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         this.parentId=comment.getParentId();
         this.valid=comment.getMember().getValid();
     }

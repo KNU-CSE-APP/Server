@@ -16,7 +16,7 @@ public interface BoardRepository extends JpaRepository<Board,Long> {
 
 
 
-    List<Board> findAllByCategory(Pageable pageable,Category category);
+    Page<Board> findAllByCategory(Pageable pageable,Category category);
 
     @Query("select b from Board b where b.title LIKE %:title%")
     Optional<List<Board>> findByTitle(@Param(value="title") String title);

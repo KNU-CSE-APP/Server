@@ -27,7 +27,7 @@ public class BoardService {
     private final MemberRepository memberRepository;
 
 
-    public List<Board> findAllByCategory(Pageable reqPage,Category category){
+    public Page<Board> findAllByCategory(Pageable reqPage,Category category){
         return boardRepository.findAllByCategory(reqPage,category);
     }
 
