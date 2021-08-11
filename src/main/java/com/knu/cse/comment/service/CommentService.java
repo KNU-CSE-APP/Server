@@ -11,6 +11,7 @@ import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.errors.UnauthorizedException;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -82,10 +83,34 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentDto> findContentsByBoardId(Long boardId) {
-        List<Comment> comments = commentRepository.findByBoard_Id(boardId).orElseThrow(() ->
-            new NotFoundException("게시물이 존재하지 않습니다.")
-        );
-        return comments.stream().map(CommentDto::new).collect(Collectors.toList());
+        List<CommentDto> contents = commentRepository.findByBoard_Id(boardId)
+            .orElseThrow(() ->
+            new NotFoundException("게시물이 존재하지 않습니다."))
+            .stream().map(CommentDto::new)
+            .collect(Collectors.toList());
+
+        List<CommentDto> commentList= new ArrayList<>();
+        List<CommentDto> replyList = new ArrayList<>();
+
+        for(CommentDto cur : contents){
+            if(cur.getParentId()==null){
+                commentList.add(cur);
+            }
+            else
+                replyList.add(cur);
+        }
+
+        for(CommentDto reply: replyList){
+            for(CommentDto comment : commentList){
+                if(reply.getParentId()==comment.getCommentId()){
+                    if(comment.getReplyList()==null) comment.allocateReplyList();
+                    comment.getReplyList().add(reply);
+                    break;
+                }
+            }
+        }
+
+        return commentList;
     }
 
 }
