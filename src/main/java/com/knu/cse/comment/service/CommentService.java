@@ -102,7 +102,7 @@ public class CommentService {
 
         for(CommentDto reply: replyList){
             for(CommentDto comment : commentList){
-                if(reply.getParentId()==comment.getCommentId()){
+                if(reply.getParentId().equals(comment.getCommentId())){
                     if(comment.getReplyList()==null) comment.allocateReplyList();
                     comment.getReplyList().add(reply);
                     break;
