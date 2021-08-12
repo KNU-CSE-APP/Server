@@ -14,6 +14,7 @@ import com.knu.cse.image.S3UploadService;
 import com.knu.cse.member.dto.ChangePasswordForm;
 import com.knu.cse.member.dto.DeleteForm;
 import com.knu.cse.member.dto.LoginSuccessDto;
+import com.knu.cse.member.dto.UpdateNickNameAndImageDto;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
 import java.io.IOException;
@@ -34,6 +35,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MemberService {
 
+
+    private final BoardService boardService;
+    private final CommentService commentService;
     private final MemberRepository memberRepository;
     private final S3UploadService uploadService;
     private final PasswordEncoder passwordEncoder;
@@ -43,18 +47,25 @@ public class MemberService {
     private final CookieUtil cookieUtil;
 
     @Transactional
-    public void updateProfileImageAndNickName(MultipartFile image,String newNickName,Long userId) throws Exception {
+    public UpdateNickNameAndImageDto updateProfileImageAndNickName(MultipartFile image,String newNickName,Long userId) throws Exception {
         Member member = memberRepository.findById(userId).orElseThrow(()->
             new NotFoundException("존재하지 않는 회원입니다."));
+        String imageUrl = null;
 
-
-       if(newNickName!=null && !changeNickName(newNickName,member)){
-           throw new IllegalStateException("닉네임이 중복되었습니다. 다른 닉네임을 사용해주세요");
+       if(newNickName!=null){
+           if(!changeNickName(newNickName,member)) {
+               throw new IllegalStateException("닉네임이 중복되었습니다. 다른 닉네임을 사용해주세요");
+           }
+           boardService.updateBoardAuthor(member,newNickName);
+           commentService.updateCommentAuthor(member,newNickName);
        }
+
 
        if(image!=null) {
-           changeProfileImage(image,member);
+           imageUrl = changeProfileImage(image, member);
        }
+
+       return new UpdateNickNameAndImageDto(newNickName,imageUrl);
     }
 
     @Transactional
@@ -68,10 +79,10 @@ public class MemberService {
     }
 
     @Transactional
-    public boolean changeProfileImage(MultipartFile file,Member member) throws IOException {
+    public String changeProfileImage(MultipartFile file,Member member) throws IOException {
         String imagePath = uploadService.upload(file, "static");
         member.changeProfileImage(imagePath);
-        return true;
+        return imagePath;
     }
 
     @Transactional

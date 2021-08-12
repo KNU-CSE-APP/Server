@@ -83,11 +83,10 @@ public class MemberController {
 
     @ApiOperation(value = "프로필 이미지 변경 / 닉네임 변경", notes = "변경사항이 있는 객체의 내용을 담아서 전송을 하면 유저의 정보가 변경.")
     @PutMapping("/image/nickname")
-    public ApiResult<String> uploadProfileImage(@RequestParam(value = "image",required = false) MultipartFile image,@RequestParam(value="nickName",required = false) String nickName)
+    public ApiResult<UpdateNickNameAndImageDto> uploadProfileImage(@RequestParam(value = "image",required = false) MultipartFile image,@RequestParam(value="nickName",required = false) String nickName)
         throws Exception {
         Long userId = authService.getUserIdFromJWT();
-        memberService.updateProfileImageAndNickName(image,nickName,userId);
-        return success("성공적으로 수정이 되었습니다");
+        return success(memberService.updateProfileImageAndNickName(image,nickName,userId));
     }
 
     @ApiOperation(value = "비밀번호 변경", notes = "changePassword(String) : 변경하고자하는 비밀번호, currentPassword(String) : 현재 비밀번호 를 넘겨주면 validation 후 비밀번호 변경.")
