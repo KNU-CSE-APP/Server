@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,6 +34,11 @@ public class CommentController {
     private final CommentService commentService;
 
     private final AuthService authService;
+
+    @GetMapping("/{commentId}")
+    public ApiResult<CommentDto> getComment(@RequestParam("commentId") Long commentId){
+        return success(new CommentDto(commentService.findContentsById(commentId)));
+    }
 
     @PostMapping("/write")
     public ApiResult<CommentDto> writeComment(@RequestBody CommentForm commentForm,
