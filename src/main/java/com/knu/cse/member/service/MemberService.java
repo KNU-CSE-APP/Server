@@ -129,4 +129,11 @@ public class MemberService {
         res.addCookie(refreshToken);
     }
 
+    @Transactional
+    public void deleteProfileImage(Long userId){
+        Member member = memberRepository.findById(userId).orElseThrow(
+            () -> new NotFoundException("존재하지 않는 회원입니다."));
+        member.deleteProfileImage();
+    }
+
 }

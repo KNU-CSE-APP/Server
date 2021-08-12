@@ -104,4 +104,12 @@ public class MemberController {
         memberService.deleteMember(userId,deleteForm,res);
         return success("회원탈퇴에 성공했습니다.");
     }
+
+    @ApiOperation(value = "프로필 이미지 초기화",notes = "유저의 프로필 이미지를 초기화 합니다.")
+    @DeleteMapping("/profileimage")
+    public ApiResult<String> deleteProfileImage(HttpServletResponse res){
+        Long userId = authService.getUserIdFromJWT();
+        memberService.deleteProfileImage(userId);
+        return success("프로필 이미지가 초기화 되었습니다.");
+    }
 }
