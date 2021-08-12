@@ -71,4 +71,10 @@ public class Board extends BaseTimeEntity {
         this.content = boardForm.getContent();
         this.setMember(member);
     }
+
+    public void deleteMember(){
+        this.member = null;
+        this.author = "탈퇴한 회원입니다.";
+    }
+
 }

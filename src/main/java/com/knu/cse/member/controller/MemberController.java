@@ -17,15 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
+
 import static com.knu.cse.utils.ApiUtils.success;
 
 @RestController
@@ -100,5 +96,13 @@ public class MemberController {
         Long userId = authService.getUserIdFromJWT();
         memberService.changePassword(changePasswordForm, userId);
         return success("성공적으로 비밀번호를 변경했습니다.");
+    }
+
+    @ApiOperation(value = "회원탈퇴",notes = "현재 비밀번호가 일치하면 회원 탈퇴를 합니다. 이때, 예약된 자리는 없어야합니다.")
+    @DeleteMapping("/deleteMember")
+    public ApiResult<String> deleteMember(@RequestBody DeleteForm deleteForm,HttpServletResponse res){
+        Long userId = authService.getUserIdFromJWT();
+        memberService.deleteMember(userId,deleteForm,res);
+        return success("회원탈퇴에 성공했습니다.");
     }
 }

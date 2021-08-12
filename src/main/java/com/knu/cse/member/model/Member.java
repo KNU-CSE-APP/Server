@@ -84,4 +84,15 @@ public class Member extends BaseEntity {
         this.nickname=nickname;
     }
 
+    public void deleteMember(){
+        this.email = null;
+        this.password = null;
+        this.username = null;
+        this.nickname = null;
+        this.studentId = null;
+        this.profileImageUrl = null;
+        this.gender = null;
+        this.major = null;
+        this.role = null;
+    }
 }
