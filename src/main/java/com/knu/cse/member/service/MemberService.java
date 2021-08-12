@@ -92,7 +92,6 @@ public class MemberService {
             throw new IllegalStateException("예약된 좌석이 있습니다. 좌석 반납 후 다시 진행해주세요.");
         }
 
-
         DeleteMember deleteMember = DeleteMember.builder()
                 .email(member.getEmail())
                 .password(member.getPassword())
@@ -105,7 +104,10 @@ public class MemberService {
                 .role(member.getRole())
                 .build();
         deleteMemberRepository.save(deleteMember);
-        member.deleteMember();
+
+        member.getBoardList().forEach(Board::deleteMember);
+        member.getCommentList().forEach(Comment::deleteMember);
+        memberRepository.delete(member);
 
         //세션 날리기
         Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, null);

@@ -3,6 +3,8 @@ package com.knu.cse.comment.dto;
 import com.knu.cse.comment.domain.Comment;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 
 @Getter
@@ -21,7 +23,7 @@ public class CommentDto {
 
     private String time;
 
-    private Boolean valid;
+    private List<CommentDto> replyList;
 
     public CommentDto(Comment comment){
         this.boardId=comment.getBoard().getId();
@@ -30,7 +32,8 @@ public class CommentDto {
         this.content=comment.getContent();
         this.time=comment.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         this.parentId=comment.getParentId();
-        this.valid=comment.getMember().getValid();
     }
+
+    public void allocateReplyList() {this.replyList=new ArrayList<>();}
 
 }

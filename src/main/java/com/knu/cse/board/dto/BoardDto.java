@@ -23,8 +23,6 @@ public class BoardDto {
 
     private Integer commentCnt;
 
-    private Boolean valid;
-
     public BoardDto(){}
 
     public BoardDto(Board board){
@@ -35,7 +33,6 @@ public class BoardDto {
         this.author=board.getAuthor();
         this.time=board.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         this.commentCnt=board.getCommentList().size();
-        this.valid = board.getMember().getValid();
     }
 
 }

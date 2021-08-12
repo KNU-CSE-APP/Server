@@ -40,8 +40,6 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberRole role = MemberRole.ROLE_NOT_PERMITTED;
 
-    private Boolean valid;
-
     public void changeRole(MemberRole memberRole){
         this.role = memberRole;
     }
@@ -74,7 +72,6 @@ public class Member extends BaseEntity {
         this.gender = gender;
         this.major = major;
         this.role = role;
-        this.valid = true;
     }
 
     public void changeProfileImage(String imagePath){
@@ -97,6 +94,5 @@ public class Member extends BaseEntity {
         this.gender = null;
         this.major = null;
         this.role = null;
-        this.valid = false;
     }
 }

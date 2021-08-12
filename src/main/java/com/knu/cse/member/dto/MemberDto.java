@@ -10,13 +10,15 @@ public class MemberDto {
     private String email;
     private String nickname;
     private String imagePath;
-    private Boolean valid;
+    private String username;
+    private String studentId;
 
     public MemberDto(Member member) {
         this.userId = member.getId();
         this.email = member.getEmail();
         this.nickname = member.getNickname();
         this.imagePath = member.getProfileImageUrl();
-        this.valid = member.getValid();
+        this.username = member.getUsername();
+        this.studentId = member.getStudentId();
     }
 }

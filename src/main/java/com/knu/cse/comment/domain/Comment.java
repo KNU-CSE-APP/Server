@@ -90,4 +90,9 @@ public class Comment extends BaseTimeEntity {
         return (changed == null || changed.equals("")) ? original : changed;
     }
 
+    public void deleteMember(){
+        this.member = null;
+        this.author = "탈퇴한 회원입니다.";
+    }
+
 }
