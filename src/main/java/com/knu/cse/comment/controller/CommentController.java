@@ -65,7 +65,7 @@ public class CommentController {
             .collect(Collectors.toList()));
     }
 
-    @ApiOperation(value = "내가 쓴 모든 댓글조회", notes = "내가 쓴 모든 댓글을 조회한다.")
+    @ApiOperation(value = "내가 쓴 모든 댓글 조회", notes = "내가 쓴 모든 댓글을 조회한다.")
     @GetMapping("/getComments")
     public ApiResult<List<CommentDto>> getMyComments() throws NotFoundException {
         Long memberId = authService.getUserIdFromJWT();

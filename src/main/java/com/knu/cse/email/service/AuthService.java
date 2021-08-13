@@ -140,7 +140,7 @@ public class AuthService {
         log.info(content);
     }
 
-    public void deleteAllTokens(HttpServletRequest req, HttpServletResponse res){
+    public void deleteAllTokens(HttpServletRequest req, HttpServletResponse res) throws NotFoundException{
         // 클라이언트 측 토큰 제거
         Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, null);
         Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, null);
@@ -151,6 +151,7 @@ public class AuthService {
 
         // 메모리에 저장된 RefreshToken 제거
         String storedRefreshToken = cookieUtil.getCookie(req, JwtUtil.REFRESH_TOKEN_NAME).getValue();
+        if(storedRefreshToken == null) throw new NotFoundException("로그인 상태가 아닙니다.");
         redisUtil.deleteData(storedRefreshToken);
         SecurityContextHolder.clearContext();
     }

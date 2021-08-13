@@ -109,7 +109,7 @@ public class MemberController {
 
     @ApiOperation(value = "프로필 이미지 초기화",notes = "유저의 프로필 이미지를 초기화 합니다.")
     @DeleteMapping("/profileimage")
-    public ApiResult<String> deleteProfileImage(HttpServletResponse res){
+    public ApiResult<String> deleteProfileImage(){
         Long userId = authService.getUserIdFromJWT();
         memberService.deleteProfileImage(userId);
         return success("프로필 이미지가 초기화 되었습니다.");
@@ -133,5 +133,12 @@ public class MemberController {
     @PostMapping("/changeValidatedPassword")
     public ApiResult<String> changeValidatedPassword(@Valid @RequestBody ValidatedPassowrdForm validatedPassowrdForm) throws NotFoundException{
         return success(memberService.changeValidatedPassword(validatedPassowrdForm));
+    }
+
+    @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")
+    @PostMapping("/logout")
+    public ApiResult<String> logout(HttpServletRequest req, HttpServletResponse res){
+        authService.deleteAllTokens(req, res);
+        return success("성공적으로 로그아웃 하였습니다.");
     }
 }
