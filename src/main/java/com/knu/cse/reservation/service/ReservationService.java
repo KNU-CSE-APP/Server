@@ -81,14 +81,14 @@ public class ReservationService {
 
         //있으면
         if (reservationRepository.existsByMemberId(memberId)) {
-            Reservation byMemberId = reservationRepository.findByMemberId(memberId)
+            Reservation reservation = reservationRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new NotFoundException("예약이 존재하지 않습니다."));
 
-            Long extensionNum = byMemberId.getExtensionNum();
+            Long extensionNum = reservation.getExtensionNum();
             if (extensionNum < 3) {
-                byMemberId.upExtensionNum();
-                byMemberId.updateTime();
-                return byMemberId.getExtensionNum();
+                reservation.upExtensionNum();
+                reservation.updateTime();
+                return reservation.getExtensionNum();
             }
             else{
                 throw new IllegalStateException("연장 횟수를 초과 했습니다.");
@@ -107,11 +107,6 @@ public class ReservationService {
             throw new NotFoundException("예약된 좌석을 찾을 수 없습니다.");
         }
 
-        ClassSeat classSeat = member.getReservation().getClassSeat();
-        return new FindReservationDTO(
-                classSeat.getClassRoom().getBuilding(),
-                classSeat.getClassRoom().getNumber(),
-                classSeat.getNumber()
-        );
+        return new FindReservationDTO(member.getReservation());
     }
 }
