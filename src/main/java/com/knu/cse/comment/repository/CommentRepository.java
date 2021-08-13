@@ -1,6 +1,7 @@
 package com.knu.cse.comment.repository;
 
 import com.knu.cse.comment.domain.Comment;
+import com.knu.cse.comment.dto.CommentDto;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,14 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     Optional<List<Comment>> findByBoard_Id(Long boardId);
 
     @Query("select m.commentList from Member m where m.id = :memId")
-    Optional<List<Comment>> findMyComments(@Param(value="memId") Long memId);
+    Optional<List<Comment>> findMyAllComments(@Param(value="memId") Long memId);
+
+    @Query("select new com.knu.cse.comment.dto.CommentDto(c) from Comment c where c.parentId = :parentId")
+    Optional<List<CommentDto>> findRepliesByParent_Id(@Param("parentId") Long parentId);
+
+    @Query("select c from Comment c where c.parentId is not null and c.member.id = :memId")
+    Optional<List<Comment>> findMyReplies(@Param("memId") Long memId);
+
+    @Query("select c from Comment c where c.parentId is null and c.member.id = :memId")
+    Optional<List<Comment>> findMyComments(@Param("memId") Long memId);
 }

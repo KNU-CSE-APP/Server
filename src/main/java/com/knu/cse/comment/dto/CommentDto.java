@@ -35,5 +35,5 @@ public class CommentDto {
     }
 
     public void allocateReplyList() {this.replyList=new ArrayList<>();}
-
+    public void allocateReplyList(List<CommentDto> replyList) {this.replyList= replyList;}
 }

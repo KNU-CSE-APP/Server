@@ -75,6 +75,13 @@ public class CommentService {
 
 
     @Transactional(readOnly = true)
+    public List<Comment> findMyAllComments(Long memId) {
+        return commentRepository.findMyAllComments(memId).orElseThrow(()->
+            new NotFoundException("작성한 댓글이 없습니다.")
+        );
+    }
+
+    @Transactional(readOnly = true)
     public List<Comment> findMyComments(Long memId) {
         return commentRepository.findMyComments(memId).orElseThrow(()->
             new NotFoundException("작성한 댓글이 없습니다.")
@@ -82,10 +89,24 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public Comment findContentsById(Long commentId) {
-        return commentRepository.findById(commentId).orElseThrow(()->
-            new NotFoundException("작성한 댓글이 없습니다.")
+    public List<Comment> findMyReplies(Long memId) {
+        return commentRepository.findMyReplies(memId).orElseThrow(()->
+            new NotFoundException("작성한 답글이 없습니다.")
         );
+    }
+
+    @Transactional(readOnly = true)
+    public CommentDto findContentsById(Long commentId) {
+        CommentDto commentDto = new CommentDto(commentRepository.findById(commentId).orElseThrow(() ->
+                new NotFoundException("작성한 댓글이 없습니다.")
+            ));
+        List<CommentDto> replyList = new ArrayList<>();
+        List<CommentDto> replies = commentRepository.findRepliesByParent_Id(commentId).orElseThrow(() -> new NotFoundException("포함하고 있는 답글이 없습니다."));
+        for (CommentDto reply : replies) {
+            replyList.add(reply);
+        }
+        commentDto.allocateReplyList(replyList);
+        return commentDto;
     }
 
     @Transactional(readOnly = true)
