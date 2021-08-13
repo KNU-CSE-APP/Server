@@ -15,6 +15,7 @@ import com.knu.cse.member.dto.ChangePasswordForm;
 import com.knu.cse.member.dto.DeleteForm;
 import com.knu.cse.member.dto.LoginSuccessDto;
 import com.knu.cse.member.dto.UpdateNickNameAndImageDto;
+import com.knu.cse.member.dto.ValidatedPassowrdForm;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
 import java.io.IOException;
@@ -136,4 +137,12 @@ public class MemberService {
         member.deleteProfileImage();
     }
 
+    @Transactional
+    public String changeValidatedPassword(ValidatedPassowrdForm validatedPassowrdForm) throws NotFoundException{
+        String email = validatedPassowrdForm.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+            () -> new NotFoundException("존재하지 않는 회원입니다."));
+        member.changePassword(passwordEncoder.encode(validatedPassowrdForm.getPassword()));
+        return "성공적으로 비밀번호를 변경하였습니다.";
+    }
 }

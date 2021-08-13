@@ -11,6 +11,7 @@ import com.knu.cse.email.service.AuthService;
 import com.knu.cse.member.repository.MemberRepository;
 import com.knu.cse.member.service.MemberService;
 import com.knu.cse.utils.ApiUtils.ApiResult;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -111,5 +112,24 @@ public class MemberController {
         Long userId = authService.getUserIdFromJWT();
         memberService.deleteProfileImage(userId);
         return success("프로필 이미지가 초기화 되었습니다.");
+    }
+
+    @ApiOperation(value = "비밀번호 찾기 인증번호 발급", notes = "회원 비밀번호를 찾기 위해 이메일로 임시 인증번호를 발급한다.")
+    @GetMapping("/findPassword/{requestEmail}")
+    public ApiResult<String> findPassword(@PathVariable("requestEmail") String email){
+        authService.sendPasswordChangeVerificationMail(email);
+        return success("성공적으로 인증 메일을 전송하였습니다.");
+    }
+
+    @ApiOperation(value = "비밀번호 찾기 인증번호 검증", notes = "회원 비밀번호를 찾기 위해 이메일로 발급한 임시 인증번호를 검증한다.")
+    @PostMapping("/verifyPassword")
+    public ApiResult<String> validateTemporalCode(@RequestBody VerifyEmailDto verifyEmailDto) throws IllegalStateException{
+        return success(authService.verifyPasswordChangeEmail(verifyEmailDto));
+    }
+
+    @ApiOperation(value = "비밀번호 찾기 검증 후 비밀번호 변경", notes = "이메일로 본인 인증을 거친 후 바로 비밀번호를 변경할 수 있다. \n email : 비밀번호를 바꾸려는 이메일\n password : 새로운 비밀번호")
+    @PostMapping("/changeValidatedPassword")
+    public ApiResult<String> changeValidatedPassword(@Valid @RequestBody ValidatedPassowrdForm validatedPassowrdForm) throws NotFoundException{
+        return success(memberService.changeValidatedPassword(validatedPassowrdForm));
     }
 }
