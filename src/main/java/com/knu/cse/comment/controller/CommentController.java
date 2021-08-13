@@ -38,7 +38,7 @@ public class CommentController {
     @ApiOperation(value = "댓글 조회", notes = "댓글의 기본키로 댓글 정보를 부를 수 있다.")
     @GetMapping("/{commentId}")
     public ApiResult<CommentDto> getComment(@PathVariable("commentId") Long commentId){
-        return success(new CommentDto(commentService.findContentsById(commentId)));
+        return success(commentService.findContentsById(commentId));
     }
 
     @ApiOperation(value = "댓글 작성", notes = "로그인을 한 유저가 댓글을 작성 할 수 있다.")
