@@ -29,6 +29,9 @@ public class ClassSeat extends BaseEntity {
     @OneToOne(mappedBy = "classSeat")
     private Reservation reservation;
 
+    @Version
+    private Integer version;
+
     public void changeReserved(){
         this.status = Status.RESERVED;
         this.classRoom.DownTotalSeats();
