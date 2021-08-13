@@ -9,9 +9,6 @@ import com.knu.cse.member.dto.SignInForm;
 import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.member.repository.MemberRepository;
 import com.knu.cse.member.security.SecurityMember;
-import java.util.Base64;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -136,13 +133,4 @@ public class AuthService {
         log.info(content);
     }
 
-    public String verifyPasswordChangeEmail(VerifyEmailDto verifyEmailDto) throws IllegalStateException{
-        String email = redisUtil.getData(verifyEmailDto.getCode());
-        if(email == null) throw new IllegalStateException("인증번호가 올바르지 않습니다.");
-        if(email.equals(verifyEmailDto.getEmail())) {
-            redisUtil.deleteData(verifyEmailDto.getCode());
-            return "인증을 성공적으로 수행하였습니다.";
-        }
-        throw new IllegalStateException("유효하지 않은 인증번호입니다.");
-    }
 }

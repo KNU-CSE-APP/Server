@@ -17,6 +17,8 @@ public class ValidatedPassowrdForm {
 
     private String email;
 
+    private String permissionCode;
+
     @NotNull
     @Length(min = 8, max = 20, message = "비밀번호의 길이는 8에서 20 사이여야 합니다!")
     private String password;
