@@ -1,5 +1,7 @@
 package com.knu.cse.email.service;
 
+import com.knu.cse.email.util.CookieUtil;
+import com.knu.cse.email.util.JwtUtil;
 import com.knu.cse.email.util.RedisUtil;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.member.dto.VerifyEmailDto;
@@ -9,6 +11,9 @@ import com.knu.cse.member.dto.SignInForm;
 import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.member.repository.MemberRepository;
 import com.knu.cse.member.security.SecurityMember;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +30,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final RedisUtil redisUtil;
+    private final CookieUtil cookieUtil;
 
     @Transactional
     public Member signUpMember(SignUpForm signUpForm) throws IllegalStateException, IllegalArgumentException {
@@ -97,6 +103,7 @@ public class AuthService {
         if(email == null) throw new IllegalStateException("인증번호가 올바르지 않습니다.");
         if(email.equals(verifyEmailDto.getEmail())) {
             int permissionCode = (int)(Math.random()*1000000);
+            redisUtil.deleteData(verifyEmailDto.getCode());
             redisUtil.setDataExpire(permissionCode+"",verifyEmailDto.getEmail(), 60 * 3L);
             return permissionCode+"";
         }
@@ -133,4 +140,18 @@ public class AuthService {
         log.info(content);
     }
 
+    public void deleteAllTokens(HttpServletRequest req, HttpServletResponse res){
+        // 클라이언트 측 토큰 제거
+        Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, null);
+        Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, null);
+        accessToken.setMaxAge(0);
+        refreshToken.setMaxAge(0);
+        res.addCookie(accessToken);
+        res.addCookie(refreshToken);
+
+        // 메모리에 저장된 RefreshToken 제거
+        String storedRefreshToken = cookieUtil.getCookie(req, JwtUtil.REFRESH_TOKEN_NAME).getValue();
+        redisUtil.deleteData(storedRefreshToken);
+        SecurityContextHolder.clearContext();
+    }
 }

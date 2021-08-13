@@ -14,6 +14,7 @@ import com.knu.cse.utils.ApiUtils.ApiResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -100,9 +101,9 @@ public class MemberController {
 
     @ApiOperation(value = "회원탈퇴",notes = "현재 비밀번호가 일치하면 회원 탈퇴를 합니다. 이때, 예약된 자리는 없어야합니다.")
     @DeleteMapping("/deleteMember")
-    public ApiResult<String> deleteMember(@RequestBody DeleteForm deleteForm,HttpServletResponse res){
+    public ApiResult<String> deleteMember(@RequestBody DeleteForm deleteForm, HttpServletRequest req,HttpServletResponse res){
         Long userId = authService.getUserIdFromJWT();
-        memberService.deleteMember(userId,deleteForm,res);
+        memberService.deleteMember(userId,deleteForm, req, res);
         return success("회원탈퇴에 성공했습니다.");
     }
 
