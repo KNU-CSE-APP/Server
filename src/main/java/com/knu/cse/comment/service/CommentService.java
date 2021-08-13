@@ -75,9 +75,23 @@ public class CommentService {
 
 
     @Transactional(readOnly = true)
+    public List<Comment> findMyAllComments(Long memId) {
+        return commentRepository.findMyAllComments(memId).orElseThrow(()->
+            new NotFoundException("작성한 댓글이 없습니다.")
+        );
+    }
+
+    @Transactional(readOnly = true)
     public List<Comment> findMyComments(Long memId) {
         return commentRepository.findMyComments(memId).orElseThrow(()->
             new NotFoundException("작성한 댓글이 없습니다.")
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<Comment> findMyReplies(Long memId) {
+        return commentRepository.findMyReplies(memId).orElseThrow(()->
+            new NotFoundException("작성한 답글이 없습니다.")
         );
     }
 

@@ -43,8 +43,7 @@ public class CommentController {
 
     @ApiOperation(value = "댓글 작성", notes = "로그인을 한 유저가 댓글을 작성 할 수 있다.")
     @PostMapping("/write")
-    public ApiResult<CommentDto> writeComment(@RequestBody CommentForm commentForm,
-        HttpServletRequest req) throws NotFoundException {
+    public ApiResult<CommentDto> writeComment(@RequestBody CommentForm commentForm) throws NotFoundException {
         Long memberId = authService.getUserIdFromJWT();
 
         return success(new CommentDto(commentService.writeComment(memberId, commentForm)));
@@ -52,18 +51,33 @@ public class CommentController {
 
     @ApiOperation(value = "답글 작성", notes = "로그인을 한 유저가 답글을 작성 할 수 있다.")
     @PostMapping("/reply/write")
-    public ApiResult<CommentDto> writeReply(@RequestBody ReplyForm replyForm,
-        HttpServletRequest req) throws NotFoundException {
+    public ApiResult<CommentDto> writeReply(@RequestBody ReplyForm replyForm) throws NotFoundException {
         Long memberId = authService.getUserIdFromJWT();
 
         return success(new CommentDto(commentService.writeReply(memberId, replyForm)));
     }
 
-    @ApiOperation(value = "내가 쓴 댓글 조회", notes = "내가 쓴 댓글을 모두 조회한다.")
+    @ApiOperation(value = "내가 쓴 모든 댓글/답글 조회", notes = "내가 쓴 모든 댓글/답글을 조회한다.")
     @GetMapping("/getAllComments")
-    public ApiResult<List<CommentDto>> getMyAllWrite(HttpServletRequest req) throws NotFoundException {
+    public ApiResult<List<CommentDto>> getMyAllWrite() throws NotFoundException {
+        Long memberId = authService.getUserIdFromJWT();
+        return success(commentService.findMyAllComments(memberId).stream().map(CommentDto::new)
+            .collect(Collectors.toList()));
+    }
+
+    @ApiOperation(value = "내가 쓴 모든 댓글조회", notes = "내가 쓴 모든 댓글을 조회한다.")
+    @GetMapping("/getComments")
+    public ApiResult<List<CommentDto>> getMyComments() throws NotFoundException {
         Long memberId = authService.getUserIdFromJWT();
         return success(commentService.findMyComments(memberId).stream().map(CommentDto::new)
+            .collect(Collectors.toList()));
+    }
+
+    @ApiOperation(value = "내가 쓴 모든 답글 조회", notes = "내가 쓴 모든 답글을 조회한다.")
+    @GetMapping("/getReplies")
+    public ApiResult<List<CommentDto>> getMyReplies() throws NotFoundException {
+        Long memberId = authService.getUserIdFromJWT();
+        return success(commentService.findMyReplies(memberId).stream().map(CommentDto::new)
             .collect(Collectors.toList()));
     }
 
@@ -93,14 +107,12 @@ public class CommentController {
 
     @ApiOperation(value = "댓글 삭제", notes = "댓글 아이디를 통해 특정 댓글을 삭제한다(답글을 포함)")
     @DeleteMapping("/{commentId}")
-    public ApiResult<String> deleteComment(@PathVariable("commentId")Long commentId,
-        HttpServletRequest req){
-
+    public ApiResult<String> deleteComment(@PathVariable("commentId")Long commentId){
         try {
             Long memberId = authService.getUserIdFromJWT();
             commentService.deleteComment(memberId,commentId);
 
-            return success("댓글 삭제가 완료되었니다.");
+            return success("댓글 삭제가 완료되었습니다.");
         }
         catch(NotFoundException e){
             throw new NotFoundException(e.getMessage());
