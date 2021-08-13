@@ -22,6 +22,7 @@ import com.knu.cse.member.repository.MemberRepository;
 import java.io.IOException;
 
 import com.knu.cse.reservation.service.ReservationService;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -96,7 +97,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(Long userId, DeleteForm deleteForm, HttpServletResponse res){
+    public void deleteMember(Long userId, DeleteForm deleteForm, HttpServletRequest req, HttpServletResponse res){
         Member member = memberRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("존재하지 않는 회원입니다."));
         authService.comparePassword(deleteForm.getPassword(), member.getPassword());
@@ -123,12 +124,7 @@ public class MemberService {
         memberRepository.delete(member);
 
         //세션 날리기
-        Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, null);
-        Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, null);
-        accessToken.setMaxAge(0);
-        refreshToken.setMaxAge(0);
-        res.addCookie(accessToken);
-        res.addCookie(refreshToken);
+        authService.deleteAllTokens(req, res);
     }
 
     @Transactional
