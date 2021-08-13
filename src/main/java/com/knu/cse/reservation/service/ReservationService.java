@@ -10,6 +10,7 @@ import com.knu.cse.reservation.domain.FindReservationDTO;
 import com.knu.cse.reservation.domain.Reservation;
 import com.knu.cse.reservation.domain.ReservationDTO;
 import com.knu.cse.reservation.repository.ReservationRepository;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -79,23 +80,25 @@ public class ReservationService {
     @Transactional
     public Long extensionSeat(Long memberId) throws Exception {
 
-        //있으면
-        if (reservationRepository.existsByMemberId(memberId)) {
-            Reservation reservation = reservationRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new NotFoundException("예약이 존재하지 않습니다."));
-
-            Long extensionNum = reservation.getExtensionNum();
-            if (extensionNum < 3) {
-                reservation.upExtensionNum();
-                reservation.updateTime();
-                return reservation.getExtensionNum();
-            }
-            else{
-                throw new IllegalStateException("연장 횟수를 초과 했습니다.");
-            }
+        if (!reservationRepository.existsByMemberId(memberId)) {
+            throw new NotFoundException("예약된 자리가 없습니다.");
         }
-        // 없으면
-        throw new NotFoundException("예약된 자리가 없습니다.");
+
+        Reservation reservation = reservationRepository.findByMemberId(memberId)
+            .orElseThrow(() -> new NotFoundException("예약이 존재하지 않습니다."));
+
+        LocalDateTime canExtensionTime = reservation.getDueDate().minusHours(2);
+        if(LocalDateTime.now().isBefore(canExtensionTime))
+            throw new IllegalAccessException("만료 시각 2시간 전부터 연장이 가능합니다.");
+
+        Long extensionNum = reservation.getExtensionNum();
+        if (extensionNum < 3) {
+            reservation.upExtensionNum();
+            reservation.updateTime();
+            return reservation.getExtensionNum();
+        } else {
+            throw new IllegalStateException("연장 횟수를 초과 했습니다.");
+        }
     }
 
     @Transactional(readOnly = true)
