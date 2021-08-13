@@ -40,9 +40,4 @@ public class ClassRoomController {
     public ApiResult<List<ClassSeatDTO>> searchAllSeatsInRoom(@PathVariable Building building, @PathVariable Long roomNumber){
         return success(classRoomService.LookupClassRoom(roomNumber, building));
     }
-
-
-//    @GetMapping("/verify/{key}")
-//    public ApiResult<String> getVerify(@PathVariable String key) throws NotFoundException{
-
 }
