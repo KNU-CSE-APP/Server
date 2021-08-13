@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
  *
  * [입력받는 파라미터]
  * 회원 이메일
+ * 인증번호 인증 시 서버로부터 받는 허락 코드
  * 새로운 비밀번호
  */
 
