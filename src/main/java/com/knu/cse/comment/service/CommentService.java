@@ -82,6 +82,13 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
+    public Comment findContentsById(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(()->
+            new NotFoundException("작성한 댓글이 없습니다.")
+        );
+    }
+
+    @Transactional(readOnly = true)
     public List<CommentDto> findContentsByBoardId(Long boardId) {
         List<CommentDto> contents = commentRepository.findByBoard_Id(boardId)
             .orElseThrow(() ->
