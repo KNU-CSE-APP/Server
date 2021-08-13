@@ -9,9 +9,6 @@ import com.knu.cse.member.dto.SignInForm;
 import com.knu.cse.member.dto.SignUpForm;
 import com.knu.cse.member.repository.MemberRepository;
 import com.knu.cse.member.security.SecurityMember;
-import java.util.Base64;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,6 +40,8 @@ public class AuthService {
         }
 
         String permittedEmail = redisUtil.getData(signUpForm.getPermissionCode());
+        redisUtil.deleteData(signUpForm.getPermissionCode());
+
         if(permittedEmail == null || !permittedEmail.equals(signUpForm.getEmail())){
             throw new IllegalArgumentException("이메일 인증이 올바르게 수행되지 않았습니다.");
         }
@@ -119,17 +118,19 @@ public class AuthService {
             new NotFoundException("존재하지 않는 회원입니다.")).getId();
     }
 
-    public String getPasswordFromJwt() throws NotFoundException {
-        SecurityMember securityMember = (SecurityMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = securityMember.getEmail();
-        return memberRepository.findByEmail(email).orElseThrow(()->
-            new NotFoundException("존재하지 않는 회원입니다.")).getPassword();
-    }
-
     public boolean comparePassword(String rawPassword, String encodedPassword) throws NotFoundException{
         boolean matchResult = passwordEncoder.matches(rawPassword, encodedPassword);
         if(!matchResult)
             throw new NotFoundException("비밀번호가 틀립니다.");
         return true;
     }
+
+    public void sendPasswordChangeVerificationMail(String email) throws NotFoundException {
+        int authentication = (int)(Math.random()*1000000);
+        String content = "다음의 인증 번호를 입력해 인증을 완료해주세요. \n" + authentication ;
+        redisUtil.setDataExpire(authentication+"",email, 60 * 3L);
+        emailService.sendMail(email, "[경북대학교 컴퓨터학부 APP] 비밀번호 변경 인증메일입니다.", content);
+        log.info(content);
+    }
+
 }

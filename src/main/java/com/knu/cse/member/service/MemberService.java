@@ -9,12 +9,14 @@ import com.knu.cse.deletemember.repository.DeleteMemberRepository;
 import com.knu.cse.email.service.AuthService;
 import com.knu.cse.email.util.CookieUtil;
 import com.knu.cse.email.util.JwtUtil;
+import com.knu.cse.email.util.RedisUtil;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.image.S3UploadService;
 import com.knu.cse.member.dto.ChangePasswordForm;
 import com.knu.cse.member.dto.DeleteForm;
 import com.knu.cse.member.dto.LoginSuccessDto;
 import com.knu.cse.member.dto.UpdateNickNameAndImageDto;
+import com.knu.cse.member.dto.ValidatedPassowrdForm;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
 import java.io.IOException;
@@ -43,8 +45,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
     private final DeleteMemberRepository deleteMemberRepository;
-
     private final CookieUtil cookieUtil;
+    private final RedisUtil redisUtil;
 
     @Transactional
     public UpdateNickNameAndImageDto updateProfileImageAndNickName(MultipartFile image,String newNickName,Long userId) throws Exception {
@@ -136,4 +138,19 @@ public class MemberService {
         member.deleteProfileImage();
     }
 
+    @Transactional
+    public String changeValidatedPassword(ValidatedPassowrdForm validatedPassowrdForm) throws NotFoundException{
+        String email = validatedPassowrdForm.getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+            () -> new NotFoundException("존재하지 않는 회원입니다."));
+
+        String permittedEmail = redisUtil.getData(validatedPassowrdForm.getPermissionCode());
+        redisUtil.deleteData(validatedPassowrdForm.getPermissionCode());
+
+        if(permittedEmail == null || !permittedEmail.equals(email)){
+            throw new IllegalArgumentException("이메일 인증이 올바르게 수행되지 않았습니다.");
+        }
+        member.changePassword(passwordEncoder.encode(validatedPassowrdForm.getPassword()));
+        return "성공적으로 비밀번호를 변경하였습니다.";
+    }
 }
