@@ -113,4 +113,9 @@ public class CommentService {
         return commentList;
     }
 
+
+    public void updateCommentAuthor(Member member,String newNickName){
+        member.getCommentList().forEach(o->o.updateAuthor(newNickName));
+    }
+
 }

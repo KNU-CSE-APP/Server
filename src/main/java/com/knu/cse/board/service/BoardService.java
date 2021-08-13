@@ -107,4 +107,9 @@ public class BoardService {
             new NotFoundException("존재하지 않는 회원입니다."))
             .stream().map(BoardDto::new).collect(Collectors.toList());
     }
+
+
+    public void updateBoardAuthor(Member member,String newNickName){
+        member.getBoardList().stream().forEach(o->o.updateAuthor(newNickName));
+    }
 }

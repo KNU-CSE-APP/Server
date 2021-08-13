@@ -95,4 +95,8 @@ public class Comment extends BaseTimeEntity {
         this.author = "탈퇴한 회원입니다.";
     }
 
+    public void updateAuthor(String newAuthor){
+        this.author=changedInfo(this.author,newAuthor);
+    }
+
 }
