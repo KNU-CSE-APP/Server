@@ -11,7 +11,6 @@ import com.knu.cse.email.service.AuthService;
 import com.knu.cse.member.repository.MemberRepository;
 import com.knu.cse.member.service.MemberService;
 import com.knu.cse.utils.ApiUtils.ApiResult;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Map;
 
 import static com.knu.cse.utils.ApiUtils.success;
 
@@ -131,8 +128,8 @@ public class MemberController {
     @ApiOperation(value = "비밀번호 찾기 검증 후 비밀번호 변경", notes = "이메일로 본인 인증을 거친 후 바로 비밀번호를 변경할 수 있다."
         + " \n email : 비밀번호를 바꾸려는 이메일\n permissionCode : 이메일로 보낸 인증 번호를 인증하면 서버로부터 받는 코드\n password : 새로운 비밀번호")
     @PostMapping("/changeValidatedPassword")
-    public ApiResult<String> changeValidatedPassword(@Valid @RequestBody ValidatedPassowrdForm validatedPassowrdForm) throws NotFoundException{
-        return success(memberService.changeValidatedPassword(validatedPassowrdForm));
+    public ApiResult<String> changeValidatedPassword(@Valid @RequestBody ValidatedPasswordForm validatedPasswordForm) throws NotFoundException{
+        return success(memberService.changeValidatedPassword(validatedPasswordForm));
     }
 
     @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")

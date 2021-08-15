@@ -8,20 +8,17 @@ import com.knu.cse.deletemember.domain.DeleteMember;
 import com.knu.cse.deletemember.repository.DeleteMemberRepository;
 import com.knu.cse.email.service.AuthService;
 import com.knu.cse.email.util.CookieUtil;
-import com.knu.cse.email.util.JwtUtil;
 import com.knu.cse.email.util.RedisUtil;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.image.S3UploadService;
 import com.knu.cse.member.dto.ChangePasswordForm;
 import com.knu.cse.member.dto.DeleteForm;
-import com.knu.cse.member.dto.LoginSuccessDto;
 import com.knu.cse.member.dto.UpdateNickNameAndImageDto;
-import com.knu.cse.member.dto.ValidatedPassowrdForm;
+import com.knu.cse.member.dto.ValidatedPasswordForm;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
 import java.io.IOException;
 
-import com.knu.cse.reservation.service.ReservationService;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,10 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -135,18 +129,18 @@ public class MemberService {
     }
 
     @Transactional
-    public String changeValidatedPassword(ValidatedPassowrdForm validatedPassowrdForm) throws NotFoundException{
-        String email = validatedPassowrdForm.getEmail();
+    public String changeValidatedPassword(ValidatedPasswordForm validatedPasswordForm) throws NotFoundException{
+        String email = validatedPasswordForm.getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(
             () -> new NotFoundException("존재하지 않는 회원입니다."));
 
-        String permittedEmail = redisUtil.getData(validatedPassowrdForm.getPermissionCode());
-        redisUtil.deleteData(validatedPassowrdForm.getPermissionCode());
+        String permittedEmail = redisUtil.getData(validatedPasswordForm.getPermissionCode());
+        redisUtil.deleteData(validatedPasswordForm.getPermissionCode());
 
         if(permittedEmail == null || !permittedEmail.equals(email)){
             throw new IllegalArgumentException("이메일 인증이 올바르게 수행되지 않았습니다.");
         }
-        member.changePassword(passwordEncoder.encode(validatedPassowrdForm.getPassword()));
+        member.changePassword(passwordEncoder.encode(validatedPasswordForm.getPassword()));
         return "성공적으로 비밀번호를 변경하였습니다.";
     }
 }
