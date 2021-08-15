@@ -3,6 +3,7 @@ package com.knu.cse.member.dto;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -15,6 +16,7 @@ import org.hibernate.validator.constraints.Length;
  */
 
 @Getter
+@NoArgsConstructor
 public class ValidatedPasswordForm {
 
     private String email;
