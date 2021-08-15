@@ -1,3 +1,4 @@
+/*
 package com.knu.cse.config;
 
 import com.knu.cse.member.security.SecurityMember;
@@ -21,3 +22,4 @@ public class Auditor implements AuditorAware<String> {
     }
 
 }
+*/

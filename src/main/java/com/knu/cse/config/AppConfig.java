@@ -15,8 +15,8 @@ public class AppConfig {
     }
 
     // CreatedBy 나 LastModifiedBy 에 사용자를 찾기 위해 이 메소드를 호출해서 결과물을 꺼내간다.
-    @Bean
+   /* @Bean
     public AuditorAware<String> auditorProvider() {
         return new Auditor();
-    }
+    }*/
 }
