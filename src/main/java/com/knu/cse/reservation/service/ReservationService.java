@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -120,5 +121,21 @@ public class ReservationService {
                 classSeat.getClassRoom().getNumber(),
                 classSeat.getNumber()
         );
+    }
+
+    @Transactional
+    public void deleteAllReservation(){
+        List<Reservation> allReservation = reservationRepository.findAll();
+
+        for (Reservation reservation : allReservation) {
+            reservation.getClassSeat().changeUnReserved();
+        }
+//        Reservation reservation = reservationRepository.findByMemberId(member.getId()).orElseThrow(()->
+//                new NotFoundException("예약이 존재하지 않습니다.")
+//        );
+//        reservation.getClassSeat().changeUnReserved();
+//        reservationRepository.save(reservation);
+//        reservationRepository.deleteByMemberId(member.getId());
+        reservationRepository.deleteAll();
     }
 }

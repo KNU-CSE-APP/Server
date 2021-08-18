@@ -81,4 +81,15 @@ public class ReservationController {
         Long extensionNumber = reservationService.extensionSeat(member.get().getId());
         return ApiUtils.success(extensionNumber);
     }
+
+    //예약하기
+    @ApiOperation(value = "예약 전부 삭제하기", notes="현재 예약 전부 삭제")
+    @PostMapping("/deleteAll")
+    public ApiResult<String> deleteAll() throws Exception{
+
+
+
+        reservationService.deleteAllReservation();
+        return ApiUtils.success("모든 예약을 삭제했습니다.");
+    }
 }
