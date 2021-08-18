@@ -66,6 +66,11 @@ public class ReservationService {
         Optional<ClassSeat> findSeat = Optional.ofNullable(classSeatRepository.findById(seatId).orElseThrow(
                 () -> new NotFoundException("좌석이 존재하지 않습니다.")));
 
+        if(findSeat.get().getStatus() == Status.RESERVED){
+            throw new IllegalStateException("이미 예약된 좌석입니다.");
+        }
+
+
         //Reservation 정보 생성
         Reservation reservation = Reservation.createReservation(findMember.get(), findSeat.get());
 

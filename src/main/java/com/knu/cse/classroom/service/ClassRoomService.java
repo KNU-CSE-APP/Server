@@ -79,6 +79,9 @@ public class ClassRoomService {
         List<ClassSeat> classSeats = findRoom.getClassSeats();
         for (ClassSeat classSeat : classSeats) {
             if (classSeat.getNumber().equals(SeatNumber)){
+                if(classSeat.getStatus() == Status.RESERVED){
+                    throw new IllegalStateException("이미 예약된 좌석입니다.");
+                }
                 return classSeat;
             }
         }
