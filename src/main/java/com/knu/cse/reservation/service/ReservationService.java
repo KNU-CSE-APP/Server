@@ -89,7 +89,9 @@ public class ReservationService {
      * @param memberId
      */
     @Transactional
-    public Long extensionSeat(Long memberId) throws Exception {
+    public FindReservationDTO extensionSeat(Long memberId) throws Exception {
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new NotFoundException("등록된 회원이 아닙니다."));
 
         if (!reservationRepository.existsByMemberId(memberId)) {
             throw new NotFoundException("예약된 자리가 없습니다.");
@@ -106,7 +108,7 @@ public class ReservationService {
         if (extensionNum < 3) {
             reservation.upExtensionNum();
             reservation.updateTime();
-            return reservation.getExtensionNum();
+            return new FindReservationDTO(member.getReservation());
         } else {
             throw new IllegalStateException("연장 횟수를 초과 했습니다.");
         }

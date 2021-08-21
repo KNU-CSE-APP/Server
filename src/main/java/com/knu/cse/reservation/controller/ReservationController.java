@@ -52,7 +52,7 @@ public class ReservationController {
 
     @ApiOperation(value = "좌석 연장하기", notes="로그인된 세션의 유저의 좌석 연장함(최대3번)")
     @PostMapping("/extension")
-    public ApiResult<Long> extension() throws Exception{
+    public ApiResult<FindReservationDTO> extension() throws Exception{
         Long userId = authService.getUserIdFromJWT();
         return success(reservationService.extensionSeat(userId));
     }
