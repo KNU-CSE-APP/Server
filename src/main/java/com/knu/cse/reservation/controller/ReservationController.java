@@ -66,7 +66,7 @@ public class ReservationController {
     }
 
     //그 강의실에 예약한 사람 수
-    @ApiOperation(value = "", notes = "")
+    @ApiOperation(value = "해당 강의실을 예약한 사람 수", notes = "building(IT4 or IT5)와 강의실 번호를 넘기면 해당 강의실을 예약한 사람 수가 나옴.")
     @GetMapping("/numbers")
     public ApiResult<Integer> numberOfPeople(@RequestParam("building")Building building, @RequestParam("roomNumber") Long roomNumber){
         return ApiUtils.success(reservationService.numbersOfPeople(building,roomNumber));
