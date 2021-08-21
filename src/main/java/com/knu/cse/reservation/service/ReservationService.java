@@ -1,5 +1,7 @@
 package com.knu.cse.reservation.service;
 
+import com.knu.cse.classroom.domain.Building;
+import com.knu.cse.classroom.service.ClassRoomService;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.classseat.domain.Status;
 import com.knu.cse.classseat.repository.ClassSeatRepository;
@@ -16,13 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-<<<<<<< HEAD
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
-=======
->>>>>>> 08648336daca29191ded087d6ca73e1988ec3d50
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -31,6 +28,8 @@ public class ReservationService {
     private  final MemberRepository memberRepository;
     private final ReservationRepository reservationRepository;
     private final ClassSeatRepository classSeatRepository;
+    private final ClassRoomService classRoomService;
+
 
 
     /**
@@ -73,7 +72,7 @@ public class ReservationService {
         if(findSeat.getStatus().equals(Status.RESERVED))
             throw new IllegalAccessException("이미 예약된 좌석입니다.");
 
-        if(findSeat.get().getStatus() == Status.RESERVED){
+        if(findSeat.getStatus() == Status.RESERVED){
             throw new IllegalStateException("이미 예약된 좌석입니다.");
         }
 
@@ -132,12 +131,12 @@ public class ReservationService {
         for (Reservation reservation : allReservation) {
             reservation.getClassSeat().changeUnReserved();
         }
-//        Reservation reservation = reservationRepository.findByMemberId(member.getId()).orElseThrow(()->
-//                new NotFoundException("예약이 존재하지 않습니다.")
-//        );
-//        reservation.getClassSeat().changeUnReserved();
-//        reservationRepository.save(reservation);
-//        reservationRepository.deleteByMemberId(member.getId());
         reservationRepository.deleteAll();
+    }
+
+    @Transactional
+    public Integer numbersOfPeople(Building building, Long roomNumber){
+        List<ClassSeat> reservedClassSeat = classRoomService.findReservedClassSeat(building, roomNumber);
+        return reservedClassSeat.size();
     }
 }

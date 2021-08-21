@@ -1,5 +1,6 @@
 package com.knu.cse.reservation.controller;
 
+import com.knu.cse.classroom.domain.Building;
 import com.knu.cse.classroom.service.ClassRoomService;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.email.service.AuthService;
@@ -56,14 +57,18 @@ public class ReservationController {
         return success(reservationService.extensionSeat(userId));
     }
 
-    //예약하기
+    //예약 전부 삭제
     @ApiOperation(value = "예약 전부 삭제하기", notes="현재 예약 전부 삭제")
     @PostMapping("/deleteAll")
     public ApiResult<String> deleteAll() throws Exception{
-
-
-
         reservationService.deleteAllReservation();
         return ApiUtils.success("모든 예약을 삭제했습니다.");
+    }
+
+    //그 강의실에 예약한 사람 수
+    @ApiOperation(value = "", notes = "")
+    @GetMapping("/numbers")
+    public ApiResult<Integer> numberOfPeople(@RequestParam("building")Building building, @RequestParam("roomNumber") Long roomNumber){
+        return ApiUtils.success(reservationService.numbersOfPeople(building,roomNumber));
     }
 }
