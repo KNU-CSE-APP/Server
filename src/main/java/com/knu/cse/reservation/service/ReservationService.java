@@ -134,9 +134,20 @@ public class ReservationService {
         reservationRepository.deleteAll();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Integer numbersOfPeople(Building building, Long roomNumber){
         List<ClassSeat> reservedClassSeat = classRoomService.findReservedClassSeat(building, roomNumber);
         return reservedClassSeat.size();
+    }
+
+    @Transactional(readOnly = true)
+    public Long numberOfExtension(Long memberId) throws Exception{
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
+                new NotFoundException("등록된 회원이 아닙니다."));
+        if (member.getReservation() == null){
+            throw new NotFoundException("예약을 한 상태가 아닙니다.");
+        }
+
+        return member.getReservation().getExtensionNum();
     }
 }

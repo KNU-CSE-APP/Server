@@ -68,7 +68,16 @@ public class ReservationController {
     //그 강의실에 예약한 사람 수
     @ApiOperation(value = "해당 강의실을 예약한 사람 수", notes = "building(IT4 or IT5)와 강의실 번호를 넘기면 해당 강의실을 예약한 사람 수가 나옴.")
     @GetMapping("/numbers")
-    public ApiResult<Integer> numberOfPeople(@RequestParam("building")Building building, @RequestParam("roomNumber") Long roomNumber){
+    public ApiResult<Integer> numberOfPeople(@RequestParam("building")Building building, @RequestParam("roomNumber") Long roomNumber) throws Exception{
         return ApiUtils.success(reservationService.numbersOfPeople(building,roomNumber));
+    }
+
+    // 현재 연장을 몇번했는지 출력
+    @ApiOperation(value = "현재 연장 횟수 출력", notes = "로그인한 유저의 현재 연장 횟수 출력, 예약한 상태가 아니면 예외처리함")
+    @GetMapping("/extensionNum")
+    public ApiResult<Long> numberOfExtension() throws Exception{
+        Long userId = authService.getUserIdFromJWT();
+        return ApiUtils.success(reservationService.numberOfExtension(userId));
+
     }
 }
