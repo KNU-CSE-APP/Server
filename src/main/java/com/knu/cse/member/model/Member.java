@@ -44,7 +44,7 @@ public class Member extends BaseEntity {
         this.role = memberRole;
     }
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(fetch=FetchType.LAZY,mappedBy = "member")
     private Reservation reservation;
 
     @OneToMany(mappedBy="member")
