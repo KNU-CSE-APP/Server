@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -115,6 +116,9 @@ public class ClassRoomService {
      * @return  : 해당 건물의 해당 강의실 번호에서 예약가능한(Unreserved) 좌석 List
      */
     public List<ClassSeat> findReservedClassSeat(Building building, Long roomNumber){
+        Optional<ClassRoom> classRoomByNumberAndBuilding = Optional.ofNullable(classRoomRepository.findClassRoomByNumberAndBuilding(roomNumber, building).orElseThrow(
+                () -> new NotFoundException("해당 강의실이 없습니다.")
+        ));
         return classRoomRepository.findClassRoomAndClassSeatsWithUnReserved(building, roomNumber, Status.RESERVED);
     }
 

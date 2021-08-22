@@ -2,16 +2,11 @@ package com.knu.cse.reservation.domain;
 
 import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.classseat.domain.ClassSeat;
-import com.knu.cse.classseat.domain.Status;
 import com.knu.cse.member.model.Member;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import lombok.NoArgsConstructor;
 
 
 @Entity
@@ -29,24 +24,14 @@ public class Reservation extends BaseTimeEntity {
     @JoinColumn(name = "seat_id")
     private ClassSeat classSeat;
 
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-//    private Member member;
     @OneToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-//    public void setMember(Member member){
-//        if (this.member != null){
-//            this.member.getReservations().remove(this);
-//        }
-//        this.member = member;
-//        member.getReservations().add(this);
-//    }
+
     public void setMember(Member member){
     this.member = member;
 }
-
 
     public void setClassSeat(ClassSeat classSeat){
         this.classSeat = classSeat;
@@ -58,7 +43,7 @@ public class Reservation extends BaseTimeEntity {
     }
 
     public void updateTime(){
-        this.dueDate = LocalDateTime.now().plusHours(6);
+        this.dueDate = this.dueDate.plusHours(6);
     }
 
     public void upExtensionNum(){
@@ -79,7 +64,5 @@ public class Reservation extends BaseTimeEntity {
 
         return reservation;
     }
-
-
 
 }
