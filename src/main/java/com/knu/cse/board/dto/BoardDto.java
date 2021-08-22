@@ -2,6 +2,7 @@ package com.knu.cse.board.dto;
 
 import com.knu.cse.board.domain.Board;
 import com.knu.cse.board.domain.Category;
+import com.knu.cse.member.model.Member;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.Getter;
@@ -21,6 +22,8 @@ public class BoardDto {
 
     private String time;
 
+    private String profileImg;
+
     private Integer commentCnt;
 
     public BoardDto(){}
@@ -33,6 +36,11 @@ public class BoardDto {
         this.author=board.getAuthor();
         this.time=board.getLastModifiedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         this.commentCnt=board.getCommentList().size();
+
+        Member member = board.getMember();
+        if(board.getMember()==null) this.profileImg=null;
+        else
+            this.profileImg=member.getProfileImageUrl();
     }
 
 }
