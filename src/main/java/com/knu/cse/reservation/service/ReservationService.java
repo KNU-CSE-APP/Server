@@ -5,6 +5,7 @@ import com.knu.cse.classroom.service.ClassRoomService;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.classseat.domain.Status;
 import com.knu.cse.classseat.repository.ClassSeatRepository;
+import com.knu.cse.email.util.RedisUtil;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
@@ -29,6 +30,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final ClassSeatRepository classSeatRepository;
     private final ClassRoomService classRoomService;
+    private final RedisUtil redisUtil;
 
 
 
@@ -79,8 +81,13 @@ public class ReservationService {
 
         //Reservation 정보 생성
         Reservation reservation = Reservation.createReservation(findMember, findSeat);
+//        RedisUtil
+//        redisUtil.deleteData(verifyEmailDto.getCode());
+//        redisUtil.setDataExpire(permissionCode+"",verifyEmailDto.getEmail(), 60 * 3L);
 
         reservationRepository.save(reservation);
+//        redisUtil.setDataExpire(reservation.getId().toString(),reservation.getId().toString(),60*360L);
+        redisUtil.setDataExpire(reservation.getId().toString(),reservation.getId().toString(),10L);
         return "자리 예약에 성공했습니다.";
     }
 
