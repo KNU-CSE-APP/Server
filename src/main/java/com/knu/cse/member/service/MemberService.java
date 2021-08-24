@@ -10,7 +10,8 @@ import com.knu.cse.email.service.AuthService;
 import com.knu.cse.email.util.CookieUtil;
 import com.knu.cse.email.util.RedisUtil;
 import com.knu.cse.errors.NotFoundException;
-import com.knu.cse.image.S3UploadService;
+import com.knu.cse.image.service.FileUploadService;
+import com.knu.cse.image.service.S3Service;
 import com.knu.cse.member.dto.ChangePasswordForm;
 import com.knu.cse.member.dto.DeleteForm;
 import com.knu.cse.member.dto.UpdateNickNameAndImageDto;
@@ -36,12 +37,12 @@ public class MemberService {
     private final BoardService boardService;
     private final CommentService commentService;
     private final MemberRepository memberRepository;
-    private final S3UploadService uploadService;
+    private final FileUploadService uploadService;
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
     private final DeleteMemberRepository deleteMemberRepository;
-    private final CookieUtil cookieUtil;
     private final RedisUtil redisUtil;
+    private final S3Service s3Service;
 
     @Transactional
     public UpdateNickNameAndImageDto updateProfileImageAndNickName(MultipartFile image,String newNickName,Long userId) throws Exception {
@@ -77,7 +78,8 @@ public class MemberService {
 
     @Transactional
     public String changeProfileImage(MultipartFile file,Member member) throws IOException {
-        String imagePath = uploadService.upload(file, "static");
+        String imagePath = uploadService.uploadImage(file,"profile");
+        if(member.getProfileImageUrl()!=null) s3Service.deleteFile(member.getProfileImageUrl(),"profile");
         member.changeProfileImage(imagePath);
         return imagePath;
     }
@@ -125,6 +127,10 @@ public class MemberService {
     public void deleteProfileImage(Long userId){
         Member member = memberRepository.findById(userId).orElseThrow(
             () -> new NotFoundException("존재하지 않는 회원입니다."));
+
+        if(member.getProfileImageUrl()!=null)
+            s3Service.deleteFile(member.getProfileImageUrl(),"profile");
+
         member.deleteProfileImage();
     }
 

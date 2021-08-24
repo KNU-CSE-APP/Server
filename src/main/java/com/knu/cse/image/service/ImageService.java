@@ -1,7 +1,6 @@
 package com.knu.cse.image.service;
 
 import com.knu.cse.board.domain.Board;
-import com.knu.cse.image.S3UploadService;
 import com.knu.cse.image.domain.Image;
 import com.knu.cse.image.repository.ImageRepository;
 import java.io.IOException;
@@ -17,11 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageService {
 
     private final ImageRepository imageRepository;
-    private final S3UploadService uploadService;
+    private final FileUploadService uploadService;
+    private final S3Service s3service;
 
-    public void saveImage(Board board,List<MultipartFile> images) throws IOException {
+    public void saveBoardImage(Board board,List<MultipartFile> images) throws IOException {
         for(MultipartFile image : images){
-            String imageUrl = uploadService.upload(image, "static");
+            String imageUrl = uploadService.uploadImage(image,"board");
             Image img = new Image(imageUrl,board);
             imageRepository.save(img);
         }
@@ -30,6 +30,7 @@ public class ImageService {
     public void deleteImage(Long boardId,List<String> imageUrl){
         for(String url:imageUrl){
             imageRepository.deleteByBoard_IdAndUrl(boardId,url);
+            s3service.deleteFile(url,"board");
         }
     }
 
