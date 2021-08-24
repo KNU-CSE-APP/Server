@@ -26,7 +26,7 @@ public class ClassSeat extends BaseEntity {
     @JoinColumn(name="room_id")
     private ClassRoom classRoom;
 
-    @OneToOne(mappedBy = "classSeat")
+    @OneToOne(fetch=FetchType.LAZY,mappedBy = "classSeat")
     private Reservation reservation;
 
     @Version

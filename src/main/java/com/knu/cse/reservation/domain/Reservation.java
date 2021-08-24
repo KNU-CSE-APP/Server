@@ -20,11 +20,11 @@ public class Reservation extends BaseTimeEntity {
     private LocalDateTime dueDate;
     private Long extensionNum;
 
-    @OneToOne
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "seat_id")
     private ClassSeat classSeat;
 
-    @OneToOne
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
