@@ -1,5 +1,6 @@
 package com.knu.cse.comment.dto;
 
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ public class ReplyForm {
     private Long boardId;
     @NotNull
     private Long commentId;
-    @NotNull
+    @NotBlank(message = "댓글 내용을 입력해주세요")
     private String content;
 
 
