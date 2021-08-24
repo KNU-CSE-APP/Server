@@ -3,10 +3,12 @@ package com.knu.cse.board.domain;
 import com.knu.cse.base.BaseTimeEntity;
 import com.knu.cse.board.dto.BoardForm;
 import com.knu.cse.comment.domain.Comment;
+import com.knu.cse.image.domain.Image;
 import com.knu.cse.member.model.Member;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +23,7 @@ import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -41,6 +44,9 @@ public class Board extends BaseTimeEntity {
 
     private String author;
 
+    @OneToMany(mappedBy="board",cascade=CascadeType.ALL)
+    private List<Image> imageList;
+
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="member_id")
     private Member member;
@@ -48,9 +54,14 @@ public class Board extends BaseTimeEntity {
     @OneToMany(mappedBy="board", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<Comment>();
 
-    public void edit(BoardForm boardForm){
+    public void edit(BoardForm boardForm,List<String> deleteUrlList){
         title=changedInfo(title,boardForm.getTitle());
         content = changedInfo(content, boardForm.getContent());
+        if(deleteUrlList!=null){
+            this.imageList = imageList.stream()
+                .filter(o -> deleteUrlList.stream().noneMatch(target -> target.equals(o.getUrl())))
+                .collect(Collectors.toList());
+        }
     }
 
     private String changedInfo(String original, String changed){
@@ -70,6 +81,7 @@ public class Board extends BaseTimeEntity {
         this.category = boardForm.getCategory();
         this.title = boardForm.getTitle();
         this.content = boardForm.getContent();
+        this.imageList=new ArrayList<>();
         this.setMember(member);
     }
 
