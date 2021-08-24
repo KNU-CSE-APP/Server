@@ -12,7 +12,9 @@ import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.errors.UnauthorizedException;
 import com.knu.cse.utils.ApiUtils.ApiResult;
 import io.swagger.annotations.ApiOperation;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,8 +48,8 @@ public class BoardController {
 
     @ApiOperation(value = "게시물 글 작성", notes = "로그인을 한 유저가 게시물에 글을 작성 할 수 있다.")
     @PostMapping("/write")
-    public ApiResult<BoardDto> writeBoard(@RequestBody BoardForm boardForm)
-        throws NotFoundException {
+    public ApiResult<BoardDto> writeBoard(BoardForm boardForm)
+        throws NotFoundException, IOException {
         Long userId = authService.getUserIdFromJWT();
         return success(new BoardDto(boardService.writeBoard(userId, boardForm)));
     }
@@ -68,7 +72,7 @@ public class BoardController {
 
     @ApiOperation(value = "게시물 기본키로 글 삭제", notes = "게시물을 작성한 사람은 게시물을 삭제 할 수 있다.")
     @DeleteMapping("/{boardId}")
-    public ApiResult<String> deleteBoard(@PathVariable("boardId") Long boardId) throws NotFoundException{
+    public ApiResult<String> deleteBoard(@PathVariable("boardId") Long boardId){
         try{
             Long userId = authService.getUserIdFromJWT();
             boardService.deleteBoard(userId,boardId);
@@ -84,7 +88,8 @@ public class BoardController {
 
     @ApiOperation(value = "게시물 기본키로 글 수정", notes = "게시물을 작성한 사람은 게시물을 수정 할 수 있다. 제목이나 내용 중 수정하지 않으려는 것은 null이나 빈문자열로 보내야 한다")
     @PutMapping("/{boardId}")
-    public ApiResult<String> editBoard(@PathVariable("boardId") Long boardId,@RequestBody BoardForm boardForm) throws NotFoundException{
+    public ApiResult<String> editBoard(@PathVariable("boardId") Long boardId,BoardForm boardForm)
+        throws IOException {
         try{
             Long userId = authService.getUserIdFromJWT();
             boardService.updateBoard(userId,boardId,boardForm);

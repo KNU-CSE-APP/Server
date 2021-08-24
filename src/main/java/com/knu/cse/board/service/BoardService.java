@@ -7,8 +7,14 @@ import com.knu.cse.board.dto.BoardForm;
 import com.knu.cse.board.repository.BoardRepository;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.errors.UnauthorizedException;
+import com.knu.cse.image.S3UploadService;
+import com.knu.cse.image.domain.Image;
+import com.knu.cse.image.repository.ImageRepository;
+import com.knu.cse.image.service.ImageService;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -25,18 +32,23 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final ImageService imageService;
 
 
     public Page<Board> findAllByCategory(Pageable reqPage,Category category){
         return boardRepository.findAllByCategory(reqPage,category);
     }
 
-    public Board writeBoard(Long userId, BoardForm boardForm){
+    public Board writeBoard(Long userId, BoardForm boardForm) throws IOException {
         Member member = memberRepository.findById(userId).orElseThrow(
             ()-> new NotFoundException("해당 Member를 찾을 수 없습니다"));
 
         Board board = new Board(member, boardForm);
         boardRepository.save(board);
+
+        if(boardForm.getFile()!=null){
+            imageService.saveImage(board,boardForm.getFile());
+        }
 
         return board;
     }
@@ -93,12 +105,22 @@ public class BoardService {
     }
 
 
-    public void updateBoard(Long userId,Long boardId,BoardForm boardForm){
+    public void updateBoard(Long userId,Long boardId,BoardForm boardForm) throws IOException {
         Member member = memberRepository.findById(userId).orElseThrow(() -> new NotFoundException("해당 Member를 찾을 수 없습니다"));
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("해당 Board를 찾을 수 없습니다"));
 
         if(board.getMember().getId()!=member.getId()) throw new UnauthorizedException("게시물 수정 권한이 없습니다");
-        board.edit(boardForm);
+
+        if(boardForm.getFile()!=null){
+            imageService.saveImage(board,boardForm.getFile());
+        }
+
+        if(boardForm.getDeleteUrl()!=null){
+            imageService.deleteImage(board.getId(),boardForm.getDeleteUrl());
+        }
+
+        board.edit(boardForm,boardForm.getDeleteUrl());
+
     }
 
     @Transactional(readOnly = true)
