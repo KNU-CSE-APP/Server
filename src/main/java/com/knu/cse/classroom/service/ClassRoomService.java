@@ -2,6 +2,7 @@ package com.knu.cse.classroom.service;
 
 import com.knu.cse.classroom.domain.Building;
 import com.knu.cse.classroom.domain.ClassRoom;
+import com.knu.cse.classroom.dto.FindClassRoomDTO;
 import com.knu.cse.classroom.repository.ClassRoomRepository;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.classseat.domain.ClassSeatDTO;
@@ -95,8 +96,15 @@ public class ClassRoomService {
      * 모든 강의실과 그 안의 좌석 정보 찾기
      * @return 강의실 List
      */
-    public List<ClassRoom> findAllClassRoomsAndClassSeats(){
-        return (List<ClassRoom>) classRoomRepository.findClassRoomAndClassSeats();
+    @Transactional(readOnly = true)
+    public ArrayList<FindClassRoomDTO> findAllClassRoomsAndClassSeats(){
+        ArrayList<FindClassRoomDTO> findClassRoomDTOS = new ArrayList<FindClassRoomDTO>();
+        List<ClassRoom> allClassRoom = classRoomRepository.findAll();
+        for (ClassRoom classRoom : allClassRoom) {
+            List<ClassSeat> reservedClassSeat = findReservedClassSeat(classRoom.getBuilding(), classRoom.getNumber());
+            findClassRoomDTOS.add(new FindClassRoomDTO(classRoom, reservedClassSeat.size()));
+        }
+        return findClassRoomDTOS;
     }
 
     /**

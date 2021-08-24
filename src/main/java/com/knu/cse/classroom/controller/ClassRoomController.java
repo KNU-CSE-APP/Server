@@ -3,6 +3,7 @@ package com.knu.cse.classroom.controller;
 import com.knu.cse.classroom.domain.Building;
 import com.knu.cse.classroom.domain.ClassRoom;
 import com.knu.cse.classroom.dto.ClassRoomDTO;
+import com.knu.cse.classroom.dto.FindClassRoomDTO;
 import com.knu.cse.classroom.service.ClassRoomService;
 import com.knu.cse.classseat.domain.ClassSeatDTO;
 import com.knu.cse.errors.NotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.knu.cse.utils.ApiUtils.success;
@@ -39,5 +41,11 @@ public class ClassRoomController {
     @GetMapping("/searchSeats/{building}/{roomNumber}")
     public ApiResult<List<ClassSeatDTO>> searchAllSeatsInRoom(@PathVariable Building building, @PathVariable Long roomNumber){
         return success(classRoomService.LookupClassRoom(roomNumber, building));
+    }
+
+    @ApiOperation(value = "강의실 전체 목록 반환",notes = "(building, 강의실 호수, 전체 인원, 예약된 인원)")
+    @GetMapping("/searchAllClassRoom")
+    public ApiResult<ArrayList<FindClassRoomDTO>> searchAllClassRoom(){
+        return success(classRoomService.findAllClassRoomsAndClassSeats());
     }
 }

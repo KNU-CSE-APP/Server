@@ -13,10 +13,12 @@ import com.knu.cse.member.model.Major;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.model.MemberRole;
 import com.knu.cse.member.repository.MemberRepository;
+import com.knu.cse.reservation.domain.ReservationDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +35,31 @@ class ReservationServiceTest {
 //    @Autowired private MemberRepository memberRepository;
 //    @Autowired private ClassRoomService classRoomService;
 //    @Autowired private ReservationService reservationService;
+//    @Autowired private PasswordEncoder passwordEncoder;
+////
 //
+//    @Test
+//    @Rollback(value=false)
+//    public void 예약자동반납확인_Test() throws Exception {
+//        Member member1 = Member.builder()
+//                .email("nun2580@knu.ac.kr")
+//                .password(passwordEncoder.encode("samsung159!"))
+//                .username("김기현")
+//                .nickname("Girin")
+//                .studentId("2016113934")
+//                .gender(Gender.MALE)
+//                .major(Major.ADVANCED)
+//                .role(MemberRole.ROLE_NOT_PERMITTED)
+//                .build();
+//
+//        memberRepository.save(member1);
+//        ClassRoom classRoom = classRoomService.RegistrationClassRoom(Building.IT5, 104L, 20L);
+//        ClassSeat classSeat = classRoomService.findClassSeatByBuildingAndRoomAndSeatNum(Building.IT5, 104L, 13L);
+//
+//        ReservationDTO reservationDTO = new ReservationDTO(classRoom.getBuilding(), classRoom.getNumber(), classSeat.getNumber());
+//        reservationService.reservationSeat(member1.getId(),reservationDTO);
+
+//    }
 //    @Test
 //    @Rollback(value=false)
 //    public void 예약기록확인() throws Exception {
