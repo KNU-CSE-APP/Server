@@ -7,14 +7,12 @@ import com.knu.cse.board.dto.BoardForm;
 import com.knu.cse.board.repository.BoardRepository;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.errors.UnauthorizedException;
-import com.knu.cse.image.S3UploadService;
 import com.knu.cse.image.domain.Image;
-import com.knu.cse.image.repository.ImageRepository;
 import com.knu.cse.image.service.ImageService;
+import com.knu.cse.image.service.S3Service;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.repository.MemberRepository;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -33,6 +30,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final ImageService imageService;
+    private final S3Service s3Service;
 
 
     public Page<Board> findAllByCategory(Pageable reqPage,Category category){
@@ -47,7 +45,7 @@ public class BoardService {
         boardRepository.save(board);
 
         if(boardForm.getFile()!=null){
-            imageService.saveImage(board,boardForm.getFile());
+            imageService.saveBoardImage(board,boardForm.getFile());
         }
 
         return board;
@@ -101,6 +99,11 @@ public class BoardService {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("해당 Board를 찾을 수 없습니다"));
 
         if(board.getMember().getId()!=member.getId()) throw new UnauthorizedException("게시물 삭제 권한이 없습니다");
+        if(board.getImageList()!=null){
+            for(Image image:board.getImageList()){
+                s3Service.deleteFile(image.getUrl(),"board");
+            }
+        }
         boardRepository.deleteById(boardId);
     }
 
@@ -112,7 +115,7 @@ public class BoardService {
         if(board.getMember().getId()!=member.getId()) throw new UnauthorizedException("게시물 수정 권한이 없습니다");
 
         if(boardForm.getFile()!=null){
-            imageService.saveImage(board,boardForm.getFile());
+            imageService.saveBoardImage(board,boardForm.getFile());
         }
 
         if(boardForm.getDeleteUrl()!=null){
