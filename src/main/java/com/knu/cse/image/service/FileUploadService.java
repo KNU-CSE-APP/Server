@@ -35,7 +35,7 @@ public class FileUploadService {
             throw new IllegalArgumentException("파일 변환 중 에러가 발생하였습니다.");
         }
 
-        return s3service.getFileUrl(fileName);
+        return s3service.getFileUrl(prefix+ '/'+fileName);
     }
 
     private String createFileName(String originalFileName){
