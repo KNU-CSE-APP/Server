@@ -1,6 +1,7 @@
 package com.knu.cse.reservation.service;
 
 import com.knu.cse.classroom.domain.Building;
+import com.knu.cse.classroom.domain.ClassRoom;
 import com.knu.cse.classroom.service.ClassRoomService;
 import com.knu.cse.classseat.domain.ClassSeat;
 import com.knu.cse.classseat.domain.Status;
@@ -14,6 +15,9 @@ import com.knu.cse.reservation.domain.Reservation;
 import com.knu.cse.reservation.domain.ReservationDTO;
 import com.knu.cse.reservation.repository.ReservationRepository;
 import java.time.LocalDateTime;
+
+import com.knu.cse.reservationsave.domain.ReservationSave;
+import com.knu.cse.reservationsave.repository.ReservationSaveRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,12 +30,12 @@ import java.util.List;
 @Slf4j
 public class ReservationService {
 
-    private  final MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
     private final ReservationRepository reservationRepository;
     private final ClassSeatRepository classSeatRepository;
     private final ClassRoomService classRoomService;
     private final RedisUtil redisUtil;
-
+    private final ReservationSaveRepository reservationSaveRepository;
 
 
     /**
@@ -47,10 +51,59 @@ public class ReservationService {
             new NotFoundException("예약이 존재하지 않습니다.")
         );
 
-        reservation.getClassSeat().changeUnReserved();
+        ClassSeat classSeat = reservation.getClassSeat();
+        ClassRoom classRoom = classSeat.getClassRoom();
+        classSeat.changeUnReserved();
         reservationRepository.save(reservation);
+
+        reservationSaveRepository.save(
+                ReservationSave.builder()
+                .building(classRoom.getBuilding())
+                .roomNumber(classRoom.getNumber())
+                .seatNumber(classSeat.getNumber())
+                .member(member)
+                .startTime(LocalDateTime.now())
+                .returnCheck(Boolean.TRUE)
+                .build()
+        );
+
         reservationRepository.deleteByMemberId(member.getId());
+        redisUtil.deleteData(String.format("reservation,%s",reservation.getId().toString()));
+
         return "좌석을 반납하였습니다.";
+    }
+
+    /**
+     * reservation PK로 자리 반납(자동반납에 사용됨)
+     * @param reservationId
+     * @return
+     * @throws NotFoundException
+     */
+    @Transactional
+    public String unreservedById(Long reservationId) throws NotFoundException{
+
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
+                () -> new NotFoundException("예약이 존재하지 않습니다.")
+        );
+
+        ClassSeat classSeat = reservation.getClassSeat();
+        ClassRoom classRoom = classSeat.getClassRoom();
+        classSeat.changeUnReserved();
+        reservationRepository.save(reservation);
+
+        reservationSaveRepository.save(
+                ReservationSave.builder()
+                        .building(classRoom.getBuilding())
+                        .roomNumber(classRoom.getNumber())
+                        .seatNumber(classSeat.getNumber())
+                        .member(reservation.getMember())
+                        .startTime(LocalDateTime.now())
+                        .returnCheck(Boolean.TRUE)
+                        .build()
+        );
+
+        reservationRepository.delete(reservation);
+        return "좌석이 자동 반납되었습니다.";
     }
 
     /**
@@ -81,13 +134,21 @@ public class ReservationService {
 
         //Reservation 정보 생성
         Reservation reservation = Reservation.createReservation(findMember, findSeat);
-//        RedisUtil
-//        redisUtil.deleteData(verifyEmailDto.getCode());
-//        redisUtil.setDataExpire(permissionCode+"",verifyEmailDto.getEmail(), 60 * 3L);
 
         reservationRepository.save(reservation);
-//        redisUtil.setDataExpire(reservation.getId().toString(),reservation.getId().toString(),60*360L);
-        redisUtil.setDataExpire(reservation.getId().toString(),reservation.getId().toString(),10L);
+
+        reservationSaveRepository.save(
+                ReservationSave.builder()
+                        .building(reservationDTO.getBuilding())
+                        .roomNumber(reservationDTO.getRoomNumber())
+                        .seatNumber(reservationDTO.getSeatNumber())
+                        .member(reservation.getMember())
+                        .startTime(LocalDateTime.now())
+                        .returnCheck(Boolean.FALSE)
+                        .build()
+        );
+
+        redisUtil.setDataExpire(String.format("reservation,%s",reservation.getId().toString()),memberId.toString(),60*60*6L);
         return "자리 예약에 성공했습니다.";
     }
 
@@ -115,6 +176,7 @@ public class ReservationService {
         if (extensionNum < 3) {
             reservation.upExtensionNum();
             reservation.updateTime();
+            redisUtil.setDataExpire(String.format("reservation,%s",reservation.getId().toString()),memberId.toString(),60*60*6L);
             return new FindReservationDTO(member.getReservation());
         } else {
             throw new IllegalStateException("연장 횟수를 초과 했습니다.");
