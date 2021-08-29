@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 
 @Getter
+@Data
 public class SignInForm {
 
     @Email

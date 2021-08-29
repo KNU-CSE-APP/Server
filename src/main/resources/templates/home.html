@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container" style="max-width: 600px">
+    <div class="py-5 text-center">
+        <h2>홈 화면</h2>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg" type="button" onclick="location.href='write.html'"
+                    th:onclick="|location.href='@{/write}'|">
+                관리자 글쓰기
+            </button>
+        </div>
+        <div class="col">
+            <button class="w-100 btn btn-dark btn-lg" onclick="location.href='reservations.html'"
+                    th:onclick="|location.href='@{/reservations}'|" type="button">
+                예약 기록 확인
+            </button>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+</div> <!-- /container -->
+
+</body>
+</html>

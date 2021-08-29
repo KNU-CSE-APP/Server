@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container" style="max-width: 80%">
+    <form th:action="@{/}" method="GET" style="display: inline">
+        <input type="submit" value="홈 화면으로 가기">
+    </form>
+    <div class="py-5 text-center">
+        <h2>예약 기록</h2></br>
+        <h2 th:each="keyword : ${keywords}">
+            <h2 th:text="${keyword}">키워드</h2>
+            <h2 th:text="${keywords.get(keyword)}"></h2>
+        </h2>
+
+    </div>
+
+    <form th:action="@{../reservations/search}" method="GET" style="display: inline">
+        <input type="text" name="searchBuilding" id="searchBuilding" placeholder="건물 이름(ex>IT4 or IT5)">
+        <input type="text" name="searchRoom" id="searchRoom" placeholder="강의실(ex> 104 or 108 ...)">
+        <input type="text" name="searchSeat" id="searchSeat" placeholder="좌석 번호(ex> 1 or 2 ...)">
+        <input type="text" name="searchEmail" id="searchEmail" placeholder="knucse@knu.ac.kr">
+        <input type="text" name="searchName" id="searchName" placeholder="학생이름">
+        <input type="text" name="searchStudentId" id="searchStudentId" placeholder="학번">
+        <input type="date" name="currentDate" id="currentDate" min="2021-08-20" >
+        <input type="submit" value="전체 목록 검색">
+    </form>
+
+    <hr class="my-4">
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>건물명</th>
+                <th>강의실 번호</th>
+                <th>좌석 번호</th>
+                <th>이메일</th>
+                <th>이름</th>
+                <th>학번</th>
+                <th>전공</th>
+                <th>시작시각</th>
+                <th>반납 여부</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="reservation : ${reservations}">
+                <td th:text="${reservation.building}">건물 이름</td>
+                <td th:text="${reservation.roomNumber}">강의실 번호</td>
+                <td th:text="${reservation.seatNumber}">좌석 번호</td>
+                <td th:text="${reservation.email}">이메일</td>
+                <td th:text="${reservation.username}">이름</td>
+                <td th:text="${reservation.studentId}">학번</td>
+                <td th:text="${reservation.major}">전공</td>
+                <td th:text="${#temporals.format(reservation.startTime,'yyyy-MM-dd HH:mm:ss')}">시작 시각(yyyy-MM-dd HH:mm:ss)</td>
+                <td th:text="${reservation.returnCheck}">반납 여부</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div> <!-- /container -->
+
+</body>
+</html>

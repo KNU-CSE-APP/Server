@@ -14,6 +14,8 @@ import com.knu.cse.member.model.Member;
 import com.knu.cse.member.model.MemberRole;
 import com.knu.cse.member.repository.MemberRepository;
 import com.knu.cse.reservation.domain.ReservationDTO;
+import com.knu.cse.reservationsave.domain.ReservationSave;
+import com.knu.cse.reservationsave.repository.ReservationSaveRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -29,6 +33,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class ReservationServiceTest {
 
+//    @Autowired private ReservationSaveRepository reservationSaveRepository;
+//
+//    @Test
+//    public void 전체기록확인_Test() throws Exception {
+//        List<ReservationSave> all = reservationSaveRepository.findAll();
+//        for (ReservationSave reservationSave : all) {
+//            System.out.println("reservationSave.getBuilding() = " + reservationSave.getBuilding());
+//            System.out.println("reservationSave.getStudentId() = " + reservationSave.getStudentId());
+//        }
+//    }
 //    @Autowired private AuthService authService;
 //    @Autowired private CommentService commentService;
 //    @Autowired private BoardRepository boardRepository;
