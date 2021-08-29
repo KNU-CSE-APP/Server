@@ -37,6 +37,8 @@ public class WebReservationController {
         List<ReservationSave> reservations = reservationSaveService.search(paramMap);
         model.addAttribute("reservations", reservations);
         model.addAttribute("keywords", reservationSaveService.findKeywords(paramMap));
+        model.addAttribute("searchTitle", paramMap);
         return "reservations";
     }
+
 }

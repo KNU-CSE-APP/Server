@@ -64,6 +64,10 @@ dependencies {
 	//Query DSL 추가
 	implementation group: 'com.querydsl', name: 'querydsl-jpa'
 	implementation group: 'com.querydsl', name: 'querydsl-apt'
+
+	//excel
+	compile group: 'org.apache.poi', name: 'poi', version: '4.1.2'        // HSSFWorkbook 사용가능
+	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'  // XSSFWorkbook 사용가능
 }
 
 //querydsl 적용
