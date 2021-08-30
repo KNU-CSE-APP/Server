@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="css/filestyle.css">
+
+  <title>공지사항 글쓰기</title>
+</head>
+<body>
+
+<form th:action="@{/admin/board}" th:object="${boardForm}" method="post"
+      enctype="multipart/form-data">
+
+  <div>
+    <label for="title">카테고리</label>
+    <select class="select_type01 w170" th:field="*{category}">
+      <option value="ADMIN"> 공지사항 </option>
+    </select>
+  </div>
+
+  <div>
+    <label for="title">제목</label>
+    <input type="text" id="title" th:field="*{title}" class="form-control">
+  </div>
+
+  <div>
+    <label for="content">내용</label>
+    <textarea id="content" th:field="*{content}" class="form-control">
+    </textarea>
+  </div>
+  </div>
+
+  <div id="btnDiv" class="">
+    <button type="submit"> 글쓰기 </button>
+  </div>
+
+</form>
+</body>
+</html>

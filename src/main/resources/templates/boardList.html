@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <title>공지사항 글목록</title>
+</head>
+<body>
+
+<table border=1>
+  <tr>
+    <th>번호</th>
+    <th>제목</th>
+    <th>작성시간</th>
+  </tr>
+  <tr th:each="board: ${BoardMap}">
+    <td th:text="${board.boardId}"></td>
+    <td th:text="${board.title}"></td>
+    <td th:text="${board.time}"></td>
+  </tr>
+</table>
+
+<button class="w-100 btn btn-secondary btn-lg" type="button" onclick="location.href='write.html'"
+        th:onclick="|location.href='@{/admin/board}'|">
+  관리자 글쓰기
+</button>
+
+</body>
+</html>
