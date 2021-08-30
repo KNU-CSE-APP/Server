@@ -2,12 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-
-  
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-  <link rel="stylesheet" href="css/filestyle.css">
+  <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 
   <title>공지사항 글쓰기</title>
 </head>
@@ -15,7 +10,6 @@
 
 <form th:action="@{/admin/board}" th:object="${boardForm}" method="post"
       enctype="multipart/form-data">
-
   <div>
     <label for="title">카테고리</label>
     <select class="select_type01 w170" th:field="*{category}">
@@ -33,12 +27,93 @@
     <textarea id="content" th:field="*{content}" class="form-control">
     </textarea>
   </div>
+
+  <div data-name="fileDiv" class="form-group filebox bs3-primary">
+    <label for="file_0" class="col-sm-2 control-label">파일1</label>
+    <div class="col-sm-10">
+      <input type="text" class="upload-name" value="파일 찾기" readonly />
+      <label for="file_0" class="control-label">찾아보기</label>
+      <input type="file" name="file" id="file_0" class="upload-hidden" onchange="changeFilename(this)" />
+
+      <button type="button" onclick="addFile()" class="btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+      <button type="button" onclick="removeFile(this)" class="btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline">
+        <i class="fa fa-minus" aria-hidden="true"></i>
+      </button>
+    </div>
   </div>
 
   <div id="btnDiv" class="">
     <button type="submit"> 글쓰기 </button>
   </div>
 
+
+
 </form>
 </body>
+<link rel="stylesheet" href="/css/style.css">
+
+<script th:inline="javascript">
+  let fileIdx = 1; /*[- 파일 인덱스 처리용 전역 변수 -]*/
+
+  function addFile() {
+
+    const fileDivs = $('div[data-name="fileDiv"]');
+    if (fileDivs.length > 10) {
+      alert('파일은 최대 10개까지 업로드 할 수 있습니다.');
+      return false;
+    }
+
+    fileIdx++;
+
+    const fileHtml = `
+					<div data-name="fileDiv" class="form-group filebox bs3-primary">
+						<label for="file_${fileIdx}" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							<input type="text" class="upload-name" value="파일 찾기" readonly />
+							<label for="file_${fileIdx}" class="control-label">찾아보기</label>
+							<input type="file" name="file" id="file_${fileIdx}" class="upload-hidden" onchange="changeFilename(this)" />
+
+							<button type="button" onclick="removeFile(this)" class="btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline">
+								<i class="fa fa-minus" aria-hidden="true"></i>
+							</button>
+						</div>
+					</div>
+				`;
+
+    $('#btnDiv').before(fileHtml);
+  }
+
+  /*[- end of function -]*/
+
+  function removeFile(elem) {
+
+    const prevTag = $(elem).prev().prop('tagName');
+    if (prevTag === 'BUTTON') {
+      const file = $(elem).prevAll('input[type="file"]');
+      const filename = $(elem).prevAll('input[type="text"]');
+      file.val('');
+      filename.val('파일 찾기');
+      return false;
+    }
+
+    const target = $(elem).parents('div[data-name="fileDiv"]');
+    target.remove();
+
+    fileIdx--;
+  }
+  /*[- end of function -]*/
+
+  function changeFilename(file) {
+
+    file = $(file);
+    const filename = file[0].files[0].name;
+    const target = file.prevAll('input');
+    target.val(filename);
+  }
+  /*[- end of function -]*/
+
+  /*]]>*/
+</script>
 </html>
