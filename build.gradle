@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.5.2'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 	id 'java'
 }
 
@@ -56,7 +57,42 @@ dependencies {
 
 	//s3
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.1.RELEASE'
+
+	//thymeleaf
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	//Query DSL 추가
+	implementation group: 'com.querydsl', name: 'querydsl-jpa'
+	implementation group: 'com.querydsl', name: 'querydsl-apt'
+
+	//excel
+	compile group: 'org.apache.poi', name: 'poi', version: '4.1.2'        // HSSFWorkbook 사용가능
+	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'  // XSSFWorkbook 사용가능
 }
+
+//querydsl 적용
+//apply plugin: "com.ewerk.gradle.plugins.querydsl" //plugin 적용
+//def querydslSrcDir = 'src/main/generated' //Qclass 생성 위치
+//cannot find symbol은 해결됏으나 duplicate 발생
+configure("querydsl-sample") {
+	apply plugin: "io.spring.dependency-management"
+
+	dependencies {
+		compile("com.querydsl:querydsl-core")
+		compile("com.querydsl:querydsl-jpa")
+
+		annotationProcessor("com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa") // querydsl JPAAnnotationProcessor 사용 지정
+		annotationProcessor("jakarta.persistence:jakarta.persistence-api") // java.lang.NoClassDefFoundError(javax.annotation.Entity) 발생 대응
+		annotationProcessor("jakarta.annotation:jakarta.annotation-api") // java.lang.NoClassDefFoundError (javax.annotation.Generated) 발생 대응
+	}
+
+
+	// Gradle clean을 하게되면 생성된 generated 아래 Q클래스 파일이 삭제된다
+	clean {
+		delete file('src/main/generated') // 인텔리제이 큐 클래스 경로
+	}
+}
+
 
 test {
 	useJUnitPlatform()
