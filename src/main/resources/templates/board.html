@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>공지사항 글쓰기</title>
+</head>
+<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+<body>
+
+<div th:each="board: ${Board}">
+
+  <div>
+    <label for="title">게시판 번호 </label>
+    <span id="Id" th:text="${board.boardId}" class="form-control"></span>
+  </div>
+
+  <br/>
+
+  <div>
+    <label for="title">작성시간</label>
+    <span id="time" th:text="${board.time}" class="form-control" ></span>
+  </div>
+
+  <br/>
+  <div>
+    <label for="title">제목</label>
+    <span id="title" th:text="${board.title}" class="form-control"></span>
+  </div>
+
+  <br/>
+
+  <div>
+    <label for="title">내용</label>
+    <span id="content" th:text="${board.content}" class="form-control"></span>
+  </div>
+
+  <br/>
+
+  <div th:each="img : ${board.images}">
+    <img th:src="${img}" class="form-control">
+  </div>
+
+  <button type="button" th:onclick="deleteBoard([[${board.boardId}]])">글 삭제</button>
+  <a th:href="@{/admin/boardlist/?category={category}(category=${board.category})}"> 뒤로가기 </a>
+
+</div>
+
+</body>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+
+    function deleteBoard(idx) {
+
+      if (confirm(idx + "번 게시글을 삭제할까요?")) {
+        var uri = /*[[ @{/admin/board/} ]]*/;
+        var html = "";
+
+        html += '<form name="dataForm" action="'+uri+idx+'" method="post">';
+        html += '<input type="hidden" name="_method" value="delete">'
+        html += '</form>';
+
+        $("body").append(html);
+        document.dataForm.submit();
+      }
+    }
+    /*[- end of function -]*/
+
+    /*]]>*/
+  </script>
+</th:block>
+
+</html>
