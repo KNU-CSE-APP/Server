@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/reservations")
+@RequestMapping("/admin/reservations")
 @RequiredArgsConstructor
 public class WebReservationController {
 
