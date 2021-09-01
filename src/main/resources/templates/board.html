@@ -42,7 +42,7 @@
   </div>
 
   <button type="button" th:onclick="deleteBoard([[${board.boardId}]])">글 삭제</button>
-  <a th:href="@{/admin/boardlist}"> 뒤로가기 </a>
+  <a th:href="@{/admin/boardlist/?category={category}(category=${board.category})}"> 뒤로가기 </a>
 
 </div>
 

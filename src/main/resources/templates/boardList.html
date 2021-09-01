@@ -3,13 +3,18 @@
 <head>
   <meta charset="UTF-8">
 
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-  <title>공지사항 글목록</title>
+  <title>게시판 글 목록</title>
 </head>
 <body>
+
+<h2 th:if="${Category.toString().equals('ADMIN')}"> 학생회 공지사항 게시글 </h2>
+<h2 th:if="${Category.toString().equals('QNA')}"> 질문게시판 게시글 </h2>
+<h2 th:if="${Category.toString().equals('FREE')}"> 자유게시판 게시글 </h2>
 
 <table border=1>
   <tr>
@@ -17,19 +22,25 @@
     <th>번호</th>
     <th>제목</th>
     <th>작성시간</th>
+    <th>작성자</th>
   </tr>
   <tr th:each="board: ${BoardMap}">
-    <td th:onclick="'location.href = \'' + @{/admin/board/{boardId} (boardId=${board.boardId})} + '\''" style="cursor:pointer;">링크로 이동</td>
+    <td th:onclick="'location.href = \'' + @{/admin/board/{boardId} (boardId=${board.boardId})} + '\''"
+        style="cursor:pointer;">링크로 이동
+    </td>
     <td th:text="${board.boardId}"></td>
     <td th:text="${board.title}"></td>
     <td th:text="${board.time}"></td>
+    <td th:text="${board.author}"></td>
   </tr>
 </table>
 
-<button class="w-100 btn btn-secondary btn-lg" type="button" onclick="location.href='write.html'"
-        th:onclick="|location.href='@{/admin/board}'|">
-  관리자 글쓰기
-</button>
+<div th:if="${Category.toString().equals('ADMIN')}">
+  <button class="w-100 btn btn-secondary btn-lg" type="button" onclick="location.href='write.html'"
+          th:onclick="|location.href='@{/admin/board}'|">
+    관리자 글쓰기
+  </button>
+</div>
 
 </body>
 </html>

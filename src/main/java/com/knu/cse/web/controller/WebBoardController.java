@@ -10,7 +10,6 @@ import com.knu.cse.errors.UnauthorizedException;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,10 +32,11 @@ public class WebBoardController {
     private final AuthService authService;
 
     @GetMapping("/boardlist")
-    public String boardList(Model model){
-        List<BoardDto> BoardList = boardService.findByCategory(Category.ADMIN).stream()
+    public String boardList(@RequestParam(name="category") Category category,Model model){
+        List<BoardDto> BoardList = boardService.findByCategory(category).stream()
             .map(BoardDto::new).collect(Collectors.toList());
         model.addAttribute("BoardMap",BoardList);
+        model.addAttribute("Category",category);
 
         return "boardList";
     }
@@ -58,7 +58,7 @@ public class WebBoardController {
         try{
             Long userId = authService.getUserIdFromJWT();
             boardService.deleteBoard(userId,boardId);
-            return "redirect:/admin/boardlist";
+            return "redirect:/admin/boardlist?category=ADMIN";
         }
         catch(NotFoundException e){
             throw new NotFoundException(e.getMessage());
