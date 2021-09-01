@@ -6,17 +6,21 @@ import com.knu.cse.board.dto.BoardForm;
 import com.knu.cse.board.service.BoardService;
 import com.knu.cse.email.service.AuthService;
 import com.knu.cse.errors.NotFoundException;
+import com.knu.cse.errors.UnauthorizedException;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -40,6 +44,28 @@ public class WebBoardController {
     @GetMapping("/board")
     public String oneBoard(@ModelAttribute(name="boardForm") BoardForm boardForm){
         return "write";
+    }
+
+    @GetMapping("/board/{id}")
+    public String getBoard(@PathVariable("id") Long boardId,Model model){
+        BoardDto board = new BoardDto(boardService.findById(boardId));
+        model.addAttribute("Board",board);
+        return "board";
+    }
+
+    @DeleteMapping("/board/{id}")
+    public String deleteBoard(@PathVariable("id") Long boardId){
+        try{
+            Long userId = authService.getUserIdFromJWT();
+            boardService.deleteBoard(userId,boardId);
+            return "redirect:/admin/boardlist";
+        }
+        catch(NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        }
+        catch(UnauthorizedException e){
+            throw new UnauthorizedException(e.getMessage());
+        }
     }
 
     @PostMapping("/board")

@@ -13,11 +13,13 @@
 
 <table border=1>
   <tr>
+    <th>게시물 링크</th>
     <th>번호</th>
     <th>제목</th>
     <th>작성시간</th>
   </tr>
   <tr th:each="board: ${BoardMap}">
+    <td th:onclick="'location.href = \'' + @{/admin/board/{boardId} (boardId=${board.boardId})} + '\''" style="cursor:pointer;">링크로 이동</td>
     <td th:text="${board.boardId}"></td>
     <td th:text="${board.title}"></td>
     <td th:text="${board.time}"></td>
