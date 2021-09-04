@@ -44,6 +44,19 @@
   <button type="button" th:onclick="deleteBoard([[${board.boardId}]])">글 삭제</button>
   <a th:href="@{/admin/boardlist/?category={category}(category=${board.category})}"> 뒤로가기 </a>
 
+
+  <br/>
+
+  <h3>게시물 댓글  <span id="commentCnt" th:text="${board.commentCnt}"></span> </h3>
+
+  <div th:each="comment : ${Comment}">
+    댓글번호 : <span id="commentId" th:text="${comment.commentId}"></span><br/>
+    작성자 :<span id="commentAuthor" th:text="${comment.author}"></span><br/>
+    댓글 내용 :<span id="commentContent" th:text="${comment.content}"></span><br/>
+    작성시간 : <span id="commentTime" th:text="${comment.time}"></span><br/>
+    <button type="button" th:onclick="deleteComment([[${comment.commentId}]],[[${board.boardId}]])">댓글 삭제</button>
+  </div>
+
 </div>
 
 </body>
@@ -66,6 +79,27 @@
         document.dataForm.submit();
       }
     }
+
+    function deleteComment(idx,boardId) {
+
+      console.log(boardId);
+      if (confirm(idx + "번 댓글을 삭제할까요?")) {
+        var uri = /*[[ @{/admin/comment/} ]]*/;
+        var html = "";
+
+        html += '<form name="dataForm" action="'+uri+idx+'" method="post">';
+        html += '<input type="hidden" name="_method" value="delete">'
+        html += '<input type="hidden" id="boardId" name="boardId" value="">'
+        html += '</form>';
+
+        $("body").append(html);
+        $('#boardId').val(boardId);
+        document.dataForm.submit();
+      }
+    }
+
+
+
     /*[- end of function -]*/
 
     /*]]>*/

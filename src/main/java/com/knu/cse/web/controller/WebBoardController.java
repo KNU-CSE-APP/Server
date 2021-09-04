@@ -1,9 +1,12 @@
 package com.knu.cse.web.controller;
 
+import com.knu.cse.board.domain.Board;
 import com.knu.cse.board.domain.Category;
 import com.knu.cse.board.dto.BoardDto;
 import com.knu.cse.board.dto.BoardForm;
 import com.knu.cse.board.service.BoardService;
+import com.knu.cse.comment.dto.CommentDto;
+import com.knu.cse.comment.service.CommentService;
 import com.knu.cse.email.service.AuthService;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.errors.UnauthorizedException;
@@ -28,6 +31,7 @@ public class WebBoardController {
 
 
     private final BoardService boardService;
+    private final CommentService commentService;
 
     private final AuthService authService;
 
@@ -48,8 +52,13 @@ public class WebBoardController {
 
     @GetMapping("/board/{id}")
     public String getBoard(@PathVariable("id") Long boardId,Model model){
-        BoardDto board = new BoardDto(boardService.findById(boardId));
-        model.addAttribute("Board",board);
+        Board board=boardService.findById(boardId);
+        BoardDto boardDto = new BoardDto(boardService.findById(boardId));
+        List<CommentDto> commentDto = board.getCommentList().stream().map(CommentDto::new).collect(
+            Collectors.toList());
+
+        model.addAttribute("Board",boardDto);
+        model.addAttribute("Comment",commentDto);
         return "board";
     }
 
@@ -59,6 +68,21 @@ public class WebBoardController {
             Long userId = authService.getUserIdFromJWT();
             boardService.deleteBoard(userId,boardId);
             return "redirect:/admin/boardlist?category=ADMIN";
+        }
+        catch(NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        }
+        catch(UnauthorizedException e){
+            throw new UnauthorizedException(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/comment/{id}")
+    public String deleteComment(@PathVariable("id") Long commentId,String boardId){
+        try{
+            Long userId = authService.getUserIdFromJWT();
+            commentService.deleteComment(userId,commentId);
+            return "redirect:/admin/board/"+boardId;
         }
         catch(NotFoundException e){
             throw new NotFoundException(e.getMessage());
