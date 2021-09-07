@@ -19,6 +19,7 @@ Version 2.0
 html,
 body {
   position: relative;
+  margin: 0;
   height: 100%;
   background: #f5f7fa;
   color: #505458;
@@ -64,7 +65,8 @@ a {
 a {
   text-decoration: none !important;
   outline: none;
-  color: #3d3d3d;
+  color: white;
+  /*color: #3d3d3d;*/
 }
 a:hover,
 a:active,
@@ -1485,4 +1487,50 @@ textarea.form-control {
     .dropdown.dropdown-lg .dropdown-menu {
         min-width: 500px;
     }
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #269abc;
+}
+
+.navbar__logo{
+  font-size: 24px;
+  color: white;
+}
+
+.navbar__logo{
+  color: #d49466
+}
+
+.navbar__menu{
+  display: flex;
+  list-style: none;
+  padding-left: 0;
+}
+
+.navbar__menu li{
+  padding: 8px 12px;
+}
+
+.navbar__icons{
+  list-style: none;
+  color: white;
+  display: flex;
+}
+
+.navbar__icons li{
+  padding: 8px 12px;
+}
+
+.navbar_icons{
+  list-style: none;
+  color: white;
+  display: flex;
+}
+
+.navbar_icons li {
+  padding: 8px 12px;
 }
