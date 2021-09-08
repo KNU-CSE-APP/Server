@@ -48,13 +48,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         https://fenderist.tistory.com/344
          */
         http.authorizeRequests()
-                .mvcMatchers("/**","/","/home","/swagger-ui.html","/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/user/**").permitAll()
+                .mvcMatchers("/","/home","/swagger-ui.html","/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/user/**").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
             @Override
             public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-                response.sendRedirect("/home");
+//                response.sendRedirect("/home");
             }
         });
 
