@@ -1,11 +1,8 @@
 package com.knu.cse.reservationsave.domain;
 
 import com.knu.cse.classroom.domain.Building;
-import com.knu.cse.member.model.Gender;
 import com.knu.cse.member.model.Major;
 import com.knu.cse.member.model.Member;
-import com.knu.cse.member.model.MemberRole;
-import com.knu.cse.reservation.domain.Reservation;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+  <script>
+    //공통
+    // 참고 출처 : https://redstapler.co/sheetjs-tutorial-create-xlsx/
+    // https://kihyeoksong.tistory.com/81 여기서보기
+    function s2ab(s) {
+      var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+      var view = new Uint8Array(buf);  //create uint8array as viewer
+      for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+      return buf;
+    }
+    function exportExcel(){
+      // step 1. workbook 생성
+      var wb = XLSX.utils.book_new();
+
+      // step 2. 시트 만들기
+      var newWorksheet = excelHandler.getWorksheet();
+
+      // step 3. workbook에 새로만든 워크시트에 이름을 주고 붙인다.
+      XLSX.utils.book_append_sheet(wb, newWorksheet, excelHandler.getSheetName());
+
+      // step 4. 엑셀 파일 만들기
+      var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+
+      // step 5. 엑셀 파일 내보내기
+      saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), excelHandler.getExcelFileName());
+    }
+    $(document).ready(function() {
+      $("#excelFileExport").click(function(){
+        exportExcel();
+      });
+    });
+  </script>
+  <script>
+    var excelHandler = {
+      getExcelFileName : function(){
+        return '예약기록.xlsx';
+      },
+      getSheetName : function(){
+        return 'Reservation Sheet';
+      },
+      getExcelData : function(){
+        return document.getElementById('tblExport');
+      },
+      getWorksheet : function(){
+        return XLSX.utils.table_to_sheet(this.getExcelData());
+      }
+    }
+  </script>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" th:href="@{/home}" th:action="@{/home}" method="GET">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#" th:href="@{/admin/reservations}" th:action="@{/admin/reservations}" method="GET">예약 기록 관련</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/admin/boardlist?category=ADMIN}" th:action="@{/admin/boardlist}" method="GET">게시글 관련</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container" style="max-width: 80%">
+
+  <div class="py-5 text-center">
+    <h2>예약 기록</h2></br>
+    <h2 th:each="keyword : ${keywords}">
+      <h2 th:text="${keyword}">키워드</h2>
+      <h2 th:text="${keywords.get(keyword)}"></h2>
+    </h2>
+
+  </div>
+
+  <form th:action="@{../../admin/reservations/search}" method="GET" style="display: inline">
+    <input type="text" name="searchBuilding" id="searchBuilding" placeholder="건물 이름(ex>IT4 or IT5)">
+    <input type="text" name="searchRoom" id="searchRoom" placeholder="강의실(ex> 104 or 108 ...)">
+    <input type="text" name="searchSeat" id="searchSeat" placeholder="좌석 번호(ex> 1 or 2 ...)">
+    <input type="text" name="searchEmail" id="searchEmail" placeholder="knucse@knu.ac.kr">
+    <input type="text" name="searchName" id="searchName" placeholder="학생이름">
+    <input type="text" name="searchStudentId" id="searchStudentId" placeholder="학번">
+    <input type="date" name="currentDate" id="currentDate" min="2021-08-20" >
+    <input type="submit" value="전체 목록 검색">
+  </form>
+
+
+
+  <hr class="my-4">
+  <div>
+    <input type="button" id="excelFileExport" value="엑셀 파일 다운로드(TABLE)" />
+
+    <table class="table" id="tblExport">
+      <thead>
+      <tr>
+        <th>건물명</th>
+        <th>강의실 번호</th>
+        <th>좌석 번호</th>
+        <th>이메일</th>
+        <th>이름</th>
+        <th>학번</th>
+        <th>전공</th>
+        <th>시작시각</th>
+        <th>반납 여부</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="reservation : ${reservations}">
+        <td th:text="${reservation.building}">건물 이름</td>
+        <td th:text="${reservation.roomNumber}">강의실 번호</td>
+        <td th:text="${reservation.seatNumber}">좌석 번호</td>
+        <td th:text="${reservation.email}">이메일</td>
+        <td th:text="${reservation.username}">이름</td>
+        <td th:text="${reservation.studentId}">학번</td>
+        <td th:text="${reservation.major}">전공</td>
+        <td th:text="${#temporals.format(reservation.startTime,'yyyy-MM-dd HH:mm:ss')}">시작 시각(yyyy-MM-dd HH:mm:ss)</td>
+        <td th:text="${reservation.returnCheck}">반납 여부</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div> <!-- /container -->
+</body>
+</html>
