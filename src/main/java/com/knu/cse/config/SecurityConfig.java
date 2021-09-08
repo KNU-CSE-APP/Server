@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         https://fenderist.tistory.com/344
          */
         http.authorizeRequests()
-                .mvcMatchers("/home/ec2-user","/","/home","/swagger-ui.html","/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/user/**").permitAll()
+                .mvcMatchers("/home/**","/","/home","/swagger-ui.html","/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/user/**").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
