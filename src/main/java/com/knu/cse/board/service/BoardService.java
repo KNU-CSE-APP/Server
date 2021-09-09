@@ -11,6 +11,7 @@ import com.knu.cse.image.domain.Image;
 import com.knu.cse.image.service.ImageService;
 import com.knu.cse.image.service.S3Service;
 import com.knu.cse.member.model.Member;
+import com.knu.cse.member.model.MemberRole;
 import com.knu.cse.member.repository.MemberRepository;
 import java.io.IOException;
 import java.util.List;
@@ -98,7 +99,8 @@ public class BoardService {
         Member member = memberRepository.findById(userId).orElseThrow(() -> new NotFoundException("해당 Member를 찾을 수 없습니다"));
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("해당 Board를 찾을 수 없습니다"));
 
-        if(board.getMember().getId()!=member.getId()) throw new UnauthorizedException("게시물 삭제 권한이 없습니다");
+        if(member.getRole()!=(MemberRole.ROLE_ADMIN) && board.getMember().getId()!=member.getId()) throw new UnauthorizedException("게시물 삭제 권한이 없습니다");
+
         if(board.getImageList()!=null){
             for(Image image:board.getImageList()){
                 s3Service.deleteFile(image.getUrl(),"board");
@@ -112,7 +114,7 @@ public class BoardService {
         Member member = memberRepository.findById(userId).orElseThrow(() -> new NotFoundException("해당 Member를 찾을 수 없습니다"));
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NotFoundException("해당 Board를 찾을 수 없습니다"));
 
-        if(board.getMember().getId()!=member.getId()) throw new UnauthorizedException("게시물 수정 권한이 없습니다");
+        if(member.getRole()!=(MemberRole.ROLE_ADMIN) && board.getMember().getId()!=member.getId()) throw new UnauthorizedException("게시물 수정 권한이 없습니다");
 
         if(boardForm.getFile()!=null){
             imageService.saveBoardImage(board,boardForm.getFile());
