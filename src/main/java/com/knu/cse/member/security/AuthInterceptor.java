@@ -43,7 +43,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if( authentication.getPrincipal().equals("anonymousUser") ) {
-            response.sendRedirect(request.getContextPath() + "/home/");
+            response.sendRedirect(request.getContextPath() + "/unauthorized");
             return false;
         }
 
@@ -51,17 +51,18 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         String email = securityMember.getEmail();
         if ( email == null ) {
-            response.sendRedirect(request.getContextPath() + "/home/");
+            response.sendRedirect(request.getContextPath() + "/unauthorized");
             return false;
         }
 
         Member member = memberRepository.findByEmail(email).orElseThrow(() ->
             new NotFoundException("존재하지 않는 회원입니다."));
 
-        String role = adminRole.role().toString();
+        MemberRole role = adminRole.role(); // 어노테이션에서 설정한 Role
+
         if(MemberRole.ROLE_ADMIN.equals(role) ) {
-            if(MemberRole.ROLE_ADMIN.equals(member.getRole())){
-                response.sendRedirect(request.getContextPath() + "/home/");
+            if(!MemberRole.ROLE_ADMIN.equals(member.getRole())){
+                response.sendRedirect(request.getContextPath() + "/unauthorized");
                 return false;
             }
         }

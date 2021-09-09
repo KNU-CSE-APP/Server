@@ -62,9 +62,6 @@ public class HomeController {
             redisUtil.setDataExpire(refreshJwt, member.getEmail(), JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
             res.addCookie(accessToken);
             res.addCookie(refreshToken);
-
-
-
             return "home";
         }
         catch (Exception e){
@@ -72,6 +69,11 @@ public class HomeController {
             bindingResult.reject("loginFail",e.getMessage());
             return "login";
         }
+    }
+
+    @GetMapping("/unauthorized")
+    public String unauthorized(){
+        return "unauthorized";
     }
 
 }
