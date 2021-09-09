@@ -63,11 +63,11 @@ public class WebBoardController {
     }
 
     @DeleteMapping("/board/{id}")
-    public String deleteBoard(@PathVariable("id") Long boardId){
+    public String deleteBoard(@PathVariable("id") Long boardId,String category){
         try{
             Long userId = authService.getUserIdFromJWT();
             boardService.deleteBoard(userId,boardId);
-            return "redirect:/admin/boardlist?category=ADMIN";
+            return "redirect:/admin/boardlist?category="+category;
         }
         catch(NotFoundException e){
             throw new NotFoundException(e.getMessage());
@@ -93,11 +93,11 @@ public class WebBoardController {
     }
 
     @PostMapping("/board")
-    public String writeBoard(@ModelAttribute(name="boardForm") BoardForm boardForm)
+    public String writeBoard(@ModelAttribute(name="boardForm") BoardForm boardForm,String category)
         throws NotFoundException, IOException {
         Long userId = authService.getUserIdFromJWT();
         boardService.writeBoard(userId,boardForm);
-        return "redirect:/admin/boardlist?category=ADMIN";
+        return "redirect:/admin/boardlist?category="+category;
     }
 }
 

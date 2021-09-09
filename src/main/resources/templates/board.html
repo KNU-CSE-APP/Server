@@ -41,7 +41,7 @@
     <img th:src="${img}" class="form-control">
   </div>
 
-  <button type="button" th:onclick="deleteBoard([[${board.boardId}]])">글 삭제</button>
+  <button type="button" th:onclick="deleteBoard([[${board.boardId}]],[[${board.category}]])">글 삭제</button>
   <a th:href="@{/admin/boardlist/?category={category}(category=${board.category})}"> 뒤로가기 </a>
 
 
@@ -65,7 +65,7 @@
   <script th:inline="javascript">
     /*<![CDATA[*/
 
-    function deleteBoard(idx) {
+    function deleteBoard(idx,category) {
 
       if (confirm(idx + "번 게시글을 삭제할까요?")) {
         var uri = /*[[ @{/admin/board/} ]]*/;
@@ -73,9 +73,11 @@
 
         html += '<form name="dataForm" action="'+uri+idx+'" method="post">';
         html += '<input type="hidden" name="_method" value="delete">'
+        html += '<input type="hidden" id="category" name="category" value="">'
         html += '</form>';
 
         $("body").append(html);
+        $('#category').val(category);
         document.dataForm.submit();
       }
     }
