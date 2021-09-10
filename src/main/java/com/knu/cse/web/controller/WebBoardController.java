@@ -10,6 +10,8 @@ import com.knu.cse.comment.service.CommentService;
 import com.knu.cse.email.service.AuthService;
 import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.errors.UnauthorizedException;
+import com.knu.cse.member.model.MemberRole;
+import com.knu.cse.member.security.Auth;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@Auth
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -32,7 +35,6 @@ public class WebBoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
-
     private final AuthService authService;
 
     @GetMapping("/boardlist")
