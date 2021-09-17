@@ -4,9 +4,11 @@ import com.knu.cse.email.service.AuthService;
 import com.knu.cse.email.util.CookieUtil;
 import com.knu.cse.email.util.JwtUtil;
 import com.knu.cse.email.util.RedisUtil;
+import com.knu.cse.errors.NotFoundException;
 import com.knu.cse.member.dto.SignInForm;
 import com.knu.cse.member.model.Member;
 import com.knu.cse.member.model.MemberRole;
+import com.knu.cse.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -14,8 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -24,6 +24,7 @@ import javax.validation.Valid;
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
+    private final MemberRepository memberRepository;
     private final AuthService authService;
     private final JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
@@ -33,11 +34,16 @@ public class HomeController {
     public String login(@ModelAttribute SignInForm signInForm){
         try {
             Long userId = authService.getUserIdFromJWT();
+            Member member =memberRepository.findById(userId).orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다"));
+            if(!member.getRole().equals(MemberRole.ROLE_ADMIN)){
+                return "/unauthorized";
+            }
+
+            return "forward:/admin/boardlist?category=ADMIN";
         }
         catch (Exception e){
             return "login";
         }
-        return "home";
     }
 
     @PostMapping("/home")
@@ -62,7 +68,7 @@ public class HomeController {
             redisUtil.setDataExpire(refreshJwt, member.getEmail(), JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
             res.addCookie(accessToken);
             res.addCookie(refreshToken);
-            return "home";
+            return "redirect:/admin/boardlist?category=ADMIN";
         }
         catch (Exception e){
             System.out.println(" here ");
