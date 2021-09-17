@@ -1,6 +1,7 @@
 package com.knu.cse.web.controller;
 
 import com.knu.cse.reservationsave.domain.ReservationSave;
+import com.knu.cse.reservationsave.domain.ReservationSavePredicate;
 import com.knu.cse.reservationsave.repository.ReservationSaveRepository;
 import com.knu.cse.reservationsave.service.ReservationSaveService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class WebReservationController {
 
     @GetMapping
     public String reservations(Model model){
-        List<ReservationSave> reservations = reservationSaveRepository.findAll();
+        List<ReservationSave> reservations = reservationSaveRepository.findAll(Sort.by("startTime").descending());
         model.addAttribute("reservations",reservations);
 
         return "reservations";
