@@ -5,6 +5,7 @@ import com.knu.cse.reservationsave.domain.ReservationSavePredicate;
 import com.knu.cse.reservationsave.repository.ReservationSaveRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ public class ReservationSaveService {
 
     @Transactional(readOnly = true)
     public List<ReservationSave> search(HashMap<String, String> paramMap){
-        return (List<ReservationSave>) reservationSaveRepository.findAll(ReservationSavePredicate.search(paramMap));
+        return (List<ReservationSave>) reservationSaveRepository.findAll(ReservationSavePredicate.search(paramMap),Sort.by("startTime").descending());
     }
 
     @Transactional(readOnly = true)

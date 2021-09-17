@@ -26,7 +26,7 @@ public class WebReservationController {
 
     @GetMapping
     public String reservations(Model model){
-        List<ReservationSave> reservations = reservationSaveRepository.findAll();
+        List<ReservationSave> reservations = reservationSaveRepository.findAll(Sort.by("startTime").descending());
         model.addAttribute("reservations",reservations);
 
         return "reservations";
