@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
   <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 
   <title>공지사항 글쓰기</title>
@@ -62,12 +63,12 @@
       </div>
     </div>
 
-    <input type="hidden" id="boardId" name="boardId" th:value="*{content}">
-
     <div id="btnDiv" class="">
       <button type="submit" class="btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline"> 글쓰기 </button>
     </div>
 
+
+    <input type="hidden" id="boardId" name="boardId" th:value="*{content}">
 
   </form>
 </div>
@@ -76,7 +77,7 @@
 <link rel="stylesheet" href="/css/style.css">
 
 <script th:inline="javascript">
-  let fileIdx = 1; /*[- 파일 인덱스 처리용 전역 변수 -]*/
+  let fileIdx = 0; /*[- 파일 인덱스 처리용 전역 변수 -]*/
 
   function addFile() {
 
@@ -90,8 +91,9 @@
 
     const fileHtml = `
 					<div data-name="fileDiv" class="form-group filebox bs3-primary">
-						<label for="file_${fileIdx}" class="col-sm-2 control-label">파일 ${fileIdx}</label>
-						<div class="col-sm-10">
+
+						<div class="col-sm-10" style="display: table;">
+						    <p for="file_${fileIdx}" class="col-sm-1 control-label" style="display:table-cell;vertical-align:middle;">파일 ${fileIdx}</p>
 							<input type="text" class="upload-name" value="파일 찾기" readonly />
 							<label for="file_${fileIdx}" class="control-label">찾아보기</label>
 							<input type="file" name="file" id="file_${fileIdx}" class="upload-hidden" onchange="changeFilename(this)" />

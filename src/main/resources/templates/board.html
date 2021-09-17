@@ -3,60 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <title>공지사항 글쓰기</title>
+
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+  <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+
 </head>
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 
 <body>
 
-<div th:each="board: ${Board}">
-
-  <div>
-    <label for="title">게시판 번호 </label>
-    <span id="Id" th:text="${board.boardId}" class="form-control"></span>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" th:href="@{/home}" th:action="@{/home}" method="GET">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/admin/reservations}" th:action="@{/admin/reservations}" method="GET">예약 기록 관련</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/admin/boardlist?category=ADMIN}" th:action="@{/admin/boardlist}" method="GET">게시글 관련</a>
+        </li>
+      </ul>
+    </div>
   </div>
+</nav>
+<br>
+<div class="container" style="max-width: 80%">
+  <div th:each="board: ${Board}">
 
-  <br/>
+    <div>
+      <h2><label for="title">게시판 번호 </label></h2>
+      <span id="Id" th:text="${board.boardId}" class="form-control"></span>
+    </div>
 
-  <div>
-    <label for="title">작성시간</label>
-    <span id="time" th:text="${board.time}" class="form-control" ></span>
+    <br/>
+
+    <div>
+      <h2><label for="title">작성시간</label></h2>
+      <span id="time" th:text="${board.time}" class="form-control" ></span>
+    </div>
+
+    <br/>
+    <div>
+      <h2><label for="title">제목</label></h2>
+      <span id="title" th:text="${board.title}" class="form-control"></span>
+    </div>
+
+    <br/>
+
+    <div>
+      <h2><label for="title">내용</label></h2>
+      <span id="content" th:text="${board.content}" class="form-control"></span>
+    </div>
+
+    <br/>
+
+    <div th:each="img : ${board.images}">
+      <img th:src="${img}" class="form-control" style="max-width: 300px; height: auto;">
+    </div>
+
+    <div>
+      <button type="button" th:onclick="deleteBoard([[${board.boardId}]],[[${board.category}]])" class="btn btn-secondary btn-lg">글 삭제</button>
+      <a th:href="@{/admin/boardlist/?category={category}(category=${board.category})}" class="btn btn-secondary btn-lg"> 뒤로가기 </a>
+    </div>
+
+    <br/>
+
+    <h3>게시물 댓글  <span id="commentCnt" th:text="${board.commentCnt}"></span> </h3>
+
+    <div th:each="comment : ${Comment}" style="border: 2px solid; margin: 2px; padding: 2px">
+        <span style="font-family: Arial; font-size:25px">
+          작성자 :<span id="commentAuthor" th:text="${comment.author}"></span><br/>
+          댓글번호 : <span id="commentId" th:text="${comment.commentId}" class="text-justify"></span><br/>
+        댓글 내용 :<span id="commentContent" th:text="${comment.content}"></span><br/>
+        작성시간 : <span id="commentTime" th:text="${comment.time}"></span><br/></span>
+        <button type="button" th:onclick="deleteComment([[${comment.commentId}]],[[${board.boardId}]])" class="btn btn-secondary btn-lg">댓글 삭제</button>
+        <br>
+    </div>
+
   </div>
-
-  <br/>
-  <div>
-    <label for="title">제목</label>
-    <span id="title" th:text="${board.title}" class="form-control"></span>
-  </div>
-
-  <br/>
-
-  <div>
-    <label for="title">내용</label>
-    <span id="content" th:text="${board.content}" class="form-control"></span>
-  </div>
-
-  <br/>
-
-  <div th:each="img : ${board.images}">
-    <img th:src="${img}" class="form-control">
-  </div>
-
-  <button type="button" th:onclick="deleteBoard([[${board.boardId}]],[[${board.category}]])">글 삭제</button>
-  <a th:href="@{/admin/boardlist/?category={category}(category=${board.category})}"> 뒤로가기 </a>
-
-
-  <br/>
-
-  <h3>게시물 댓글  <span id="commentCnt" th:text="${board.commentCnt}"></span> </h3>
-
-  <div th:each="comment : ${Comment}">
-    댓글번호 : <span id="commentId" th:text="${comment.commentId}"></span><br/>
-    작성자 :<span id="commentAuthor" th:text="${comment.author}"></span><br/>
-    댓글 내용 :<span id="commentContent" th:text="${comment.content}"></span><br/>
-    작성시간 : <span id="commentTime" th:text="${comment.time}"></span><br/>
-    <button type="button" th:onclick="deleteComment([[${comment.commentId}]],[[${board.boardId}]])">댓글 삭제</button>
-  </div>
-
 </div>
 
 </body>
